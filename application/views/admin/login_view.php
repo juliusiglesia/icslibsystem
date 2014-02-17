@@ -34,13 +34,7 @@
 				</div>
 			</div>
 		</div>
-		<div id = "response-message">
-			<div id= "loading"> </div>
-			<div class="alert alert-danger alert-dismissable">
-				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-				<strong>Error logging in!</strong> <span> </span>
-			</div>
-		</div>
+		<div id = "response-message"> </div>
 		<div class="container">
 			<div class="signin">
 				<div class="panel panel-info">
@@ -72,9 +66,7 @@
 		<!--script src="<?php echo base_url();?>dist/js/modernizr.js"></script-->
     
 		<script type="text/javascript">
-			$("#response-message").hide();
 			$("#submit").click( function(){
-				
 				username = $("#login_form").find("input[name='uname']").val();
 				password = $("#login_form").find("input[name='pword']").val();
 
@@ -86,18 +78,18 @@
 
 						beforeSend: function() {
 							//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
-							$("#loading").html("loading...");
+							$("#response-message").html("<div class='alert alert-success alert-dismissable'><button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button><strong> Loading </strong></div>");
+							$("#response-message").fadeIn('slow');
 						},
 
 						error: function(xhr, textStatus, errorThrown) {
-								$('#response-message').find('span').html(textStatus);
+							$("#response-message").html("<div class='alert alert-danger alert-dismissable'><button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button><span>" + textStatus + "</span></div>");
+							$("#response-message").fadeIn('slow');
 						},
 
 						success: function( result ){
 							if ( result != "1" ){  
-								$("#loading").hide();
-								$("#response-message").show();
-								$("#response-message").find('span').html( result );
+								$("#response-message").html("<div class='alert alert-danger alert-dismissable'><button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button><strong>Error logging in!</strong> <span>" + result + "</span></div>");
 								$("#response-message").fadeIn('slow');
 							}
 							else {

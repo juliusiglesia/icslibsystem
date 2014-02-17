@@ -66,6 +66,33 @@ class Reservation_queue_model extends CI_Model{
 
 		return $return_array;
 	}
+
+	public function update_claimed_date( $materialid, $idnumber, $start_date ){
+		//$date="2014-01-31"; //$date="2014-02-28";
+		
+		//if ordinary day, just add 3 days
+		$claimed_date = date("Y-m-d", strtotime($start_date . "+3 day"));
+		//If Thurs, from the ordinary day add 2 days as a count for Saturday and Sunday
+		if(date('l', strtotime( $start_date)) == "Thursday") $claimed_date = date("Y-m-d", strtotime($claimed_date. "+2 day"));
+		//If Fri, from the ordinary day add 2 days as a count for Saturday and Sunday
+		if(date('l', strtotime( $start_date)) == "Friday") $claimed_date = date("Y-m-d", strtotime($claimed_date. "+2 day"));
+		return $claimed_date;
+	}
+	
+	public function do_claim( $materialid, $idnumber, $start_date, $expectedreturn ){
+
+		//stores the inputs to an array and finally insert it to table borrowedmaterial	
+        $data = array(
+					'idnumber'=>$idnumber,
+					'materialid'=>$materialid,
+					'start'=>$start_date,
+					'expectedreturn'=>$expectedreturn
+				);
+		
+		$this->db->insert('borrowedmaterial', $data);
+		$query = "DELETE from reservation where idnumber LIKE '${idnumber}' AND materialid LIKE '${materialid}'";
+		$this->db->query($query);
+	}
 }
 
 ?>

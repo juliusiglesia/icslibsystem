@@ -183,7 +183,18 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 		<a href='admin_search'> Home </a><br>
 		</div>
 
+		<script src="<?php echo base_url();?>dist/js/jquery.js"></script>
+		<script src="<?php echo base_url();?>dist/js/bootstrap.js"></script>
+		<script src="<?php echo base_url();?>dist/js/holder.js"></script>
+		
+		<!--script src="<?php echo base_url();?>dist/js/dynamic.js"></script-->
+		<!--script src="<?php echo base_url();?>dist/js/modernizr.js"></script-->
+		
 		<script type="text/javascript">
+			$("#logout").click(function(){
+				window.location.href = "<?php echo site_url('admin/logout'); ?>";
+			});
+			
 			window.onload = function() {
 				add.materialid.onblur = validateMaterialID;
 				add.type.onblur = disableClassification;

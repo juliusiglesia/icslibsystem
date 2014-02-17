@@ -114,6 +114,10 @@
 		
 		<script>
 			$(document).ready(function(){
+				$("#logout").click(function(){
+					window.location.href = "<?php echo site_url('admin/logout'); ?>";
+				});
+				
 				$(".sendNotif").click( function(){
 					var parent = $(this).parent();
 					var idnumber = $.trim(parent.siblings('.idnumber').text());

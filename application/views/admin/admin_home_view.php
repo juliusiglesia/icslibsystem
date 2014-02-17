@@ -88,31 +88,6 @@
 			$("#logout").click(function(){
 				window.location.href = "<?php echo site_url('admin/logout'); ?>";
 			});
-
-			$("#reserved-nav").click(function(){
-				$.ajax({
-
-					url: "<?php echo base_url();?>admin/reservation_queue",
-					dataType: "json",
-
-					beforeSend: function() {
-						//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
-						$("#error_message").html("loading...");
-					},
-
-					error: function(xhr, textStatus, errorThrown) {
-							$('#error_message').html(textStatus);
-					},
-
-					success: function( result ){
-						if( result == "" ) $("#result").html("No reserved!");
-						else{
-							$("#result").html(result[0].id);
-
-						}
-					}
-				});
-			});
 		</script>
 	</body>
 </html>

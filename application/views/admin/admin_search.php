@@ -310,10 +310,12 @@
     <script>
         $(document).ready(function() { 
             $("#myTable").tablesorter();
+            
+            $("#logout").click(function(){
+                window.location.href = "<?php echo site_url('admin/logout'); ?>";
+            });
         }); 
-    </script>
-   
-    <script>
+
         function alertID(loc){
       var str = document.getElementById(loc).value;
       str = str.split("|");

@@ -14,7 +14,7 @@ class Notification_model extends CI_Model{
 
 	public function __construct(){
 		parent::__construct();
-	//loads the database to allow to allow selection and insertion of data
+		//loads the database to allow to allow selection and insertion of data
 		$this->load->database();
 	}
 	
@@ -25,27 +25,16 @@ class Notification_model extends CI_Model{
 		$query = $this->db->query('SELECT idnumber FROM borrower');
 		return $query->result();
 	}//end of get_idnumber
-	
-	public function notify( $materialid, $idnumber, $message ){
-		$read =	0;
-		//current date and time
-		date_default_timezone_set("Asia/Dubai");
+
+	public function notify( $materialid, $idnumber){
+		date_default_timezone_set("Asia/Manila");
 		$time = date('Y-m-d H:i:s');
+		$claimdate = date("Y-m-d", strtotime($time . "+2 day"));
+		if(date('l', strtotime($time)) == "Friday") $claimdate = date("Y-m-d", strtotime($claimdate . "+2 day"));
 
-		//stores the inputs to an array and finally insert it to table notification	
-        $data = array(
-					'idnumber'=>$idnumber,
-					'materialid'=>$materialid,
-					'message'=>$message,
-					'read'=>$read,
-					'time'=>$time
-				);
-		
-		$this->db->insert('notification', $data); 
-		
-	}//end of process
-
+		$query = "UPDATE reservation SET started = 1, startdate = '${time}', claimdate = '${claimdate}' WHERE materialid LIKE '${materialid}' AND idnumber LIKE '${idnumber}'";
+		$this->db->query($query);
+	}
 }//end of class
-
 
 ?>

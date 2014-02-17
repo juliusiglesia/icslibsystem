@@ -66,7 +66,7 @@
 				<div id="main-page">
 					<div id = "main-content">
 						<h1> Reserved Books </h1>
-						<table border = "1">
+						<table id = "reserved-materials">
 							<thead>
 								<tr>
 									<th title="Material ID">Library Material ID</th>
@@ -78,8 +78,13 @@
 								</tr>
 							</thead>
 						<?php
-							
+							echo 	"<script> 
+										var rowCount = 0; 
+									</script>";
 							foreach($reservations as $row){
+								echo 	"<script> 
+											rowCount++; 
+										</script>";
 								echo "<tr id = '${row['materialid']}'>";
 
 								echo "<td class = 'materialid' > ${row['materialid']} </td>";
@@ -103,19 +108,24 @@
 								
 								if( $row['started'] == 0 ){
 									echo "<td> Not yet notified </td>";
+									echo "<td> ${row['queue']} </td>";
+									echo "<td><button class='sendNotif btn btn-primary' name='notify' value='${row['id']}'>Notify</button>";
+									echo "<button class='sendClaim btn btn-primary' name='claim' value='${row['id']}'  disabled>Claim</button>";
+									echo "</td>";
 								} else {
-									echo "<td> ${row['date']} </td>";
+									echo "<td> ${row['startdate']} </td>";
+									echo "<td> ${row['queue']} </td>";
+									echo "<td><button class='sendNotif btn btn-primary' name='notify' value='${row['id']}' disabled>Notify</button>";
+									echo "<button class='sendClaim btn btn-primary' name='claim' value='${row['id']}'>Claim</button>";
+									echo "</td>";
 								}
-
-								echo "<td> ${row['queue']} </td>";
-								echo "<td><button click class='sendNotif btn btn-primary'>Send notification</button>";
 								echo "</tr>";
 							}
-							
 						?>
 						</table>
 					</div>
 				</div>
+				<button id="button" > button </button>
 				<div id = "error"> </div>
 			</div>
 
@@ -136,16 +146,25 @@
 		<!--script src="<?php echo base_url();?>dist/js/modernizr.js"></script-->
 		
 		<script>
+			
 			$(document).ready(function(){
-				$(".sendNotif").click( function(){
+				event.preventDefault();
+				var currentData = <?php echo json_encode($reservations); ?>;
+
+				$("#logout").click(function(){
+					window.location.href = "<?php echo site_url('admin/logout'); ?>";
+				});
+				
+				$(".sendClaim").click( function(){
+					var thisButton = $(this);
 					var parent = $(this).parent();
 					var idnumber = $.trim(parent.siblings('.idnumber').text());
 					var materialid = $.trim(parent.siblings('.materialid').text());
 					
 					$.ajax({
 						type: "POST",
-						url: "<?php echo base_url();?>admin/notification",
-						data: { materialid : materialid, idnumber : idnumber, message: '1' }, 
+						url: "<?php echo base_url();?>admin/claim_reservation",
+						data: { materialid : materialid, idnumber : idnumber }, 
 
 						beforeSend: function() {
 							//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
@@ -160,16 +179,125 @@
 							// show that notification is successful
 							$('#error').html(result);
 							if( result == "" ){
-								//alert("Success!")
+								thisButton.attr('disabled', 'disabled');
+								// remove row
+								//alert("Student has been notified");
+							} else {
+								//alert("Failed to notify");
+							}
+						}
+					});
+				});
+				
+				$(".sendNotif").click( function(){
+					var thisButton = $(this);
+					var parent = $(this).parent();
+					var idnumber = $.trim(parent.siblings('.idnumber').text());
+					var materialid = $.trim(parent.siblings('.materialid').text());
+
+					$.ajax({
+						type: "POST",
+						url: "<?php echo base_url();?>admin/notification",
+						data: { materialid : materialid, idnumber : idnumber }, 
+
+						beforeSend: function() {
+							//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
+							$("#error_message").html("loading...");
+						},
+
+						error: function(xhr, textStatus, errorThrown) {
+								$('#error_message').html(textStatus);
+						},
+
+						success: function( result ){
+							// show that notification is successful
+							$('#error').html(result);
+							if( result == "" ){
+
+								// alert here if success
+								thisButton.attr('disabled', true);
+								thisButton.next().removeAttr('disabled');
+
+								alert("Success!")
 							} else {
 								//alert("Fail!");
 							}
 						}
 					});
+				});
 
+				function getRowCount(){
+
+				}
+
+				$("#button").click(function(){
+					$.ajax({
+
+						url: "<?php echo base_url();?>update/reservation_queue",
+						dataType: "json",
+
+						beforeSend: function() {
+							//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
+							//$("#error_message").html("loading...");
+						},
+
+						error: function(xhr, textStatus, errorThrown) {
+							//	$('#error_message').html(textStatus);
+						},
+
+						success: function( result ){
+							alert(result.length);
+							alert(rowCount);
+							alert( currentData[0].id );
+							updateContents( currentData, result );
+							currentData = result;
+							console.log( currentData );
+						}
+
+					});
 				});
 			});
 			
+			function updateContents( current, result ){
+				var exist = false;
+				if( result.length != current.length ){
+					for( var i = 0; i < result.length; i++  ){
+						for( var j = 0; j < current.length; j++  ){
+							if( result[i].id == current[j].id  ){
+								exist = true;
+							}
+						}		
+						if( !exist ) {
+							$('#reserved-materials').prepend("<tr id ='" + result[i].materialid + "' > <td class = 'materialid' > " + result[i].materialid + "  </td> <td class = 'idnumber' > " + result[i].idnumber + "  </td> <td>" + "<span class = 'name' > " + result[i].name + " </span>, <span class = 'year' > " + result[i].year + " </span>." + printEdition( result[i].edvol ) + "<span> <br /> ( " + result[i].type + " )</span> </td> <td> " + printDate( result[i].started ) + " </td> <td> " + result[j].queue + " </td> <td><button click class='sendNotif btn btn-primary' name='notify' value='${row['id']}'>Notify</button> <button click class='sendClaim btn btn-primary' name='claim' value='${row['id']}'>Claim</button> </td></tr>");
+						}
+						
+						exist = false;
+					}
+				}
+
+				function printEdition( data ){
+					if( data != null ){
+						if( data % 10 == 1 )
+							return "<span> "+ data +"st Edition </span>."; 
+						if( data % 10 == 2 )
+							return "<span> "+ data +"nd Edition </span>."; 
+						if( data % 10 == 3 )
+							return "<span> "+ data +"rd Edition </span>."; 
+						else 
+							return "<span> "+ data +"th Edition </span>."; 
+					}
+				}
+
+				function printDate( data ){
+					if( data == 0 ){
+						return "Not yet notified";
+					} else {
+						return data;
+					}
+				}
+			}
+
+
 		</script>
 
 	</body>
