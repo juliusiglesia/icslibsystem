@@ -66,23 +66,45 @@
 			<div class="leftMain">
 				<div id="main-page">
 					<div id = "main-content">
+
+					<div id="pager" class="pager">
+						<form>
+						<img src="images/first.png" class="first"/>
+						<img src="images/prev.png" class="prev"/>
+						<input type="text" class="pagedisplay"/>
+						<img src="images/next.png" class="next"/>
+						<img src="images/last.png" class="last"/>
+						<select class="pagesize">
+							<option value="">LIMIT</option>
+							<option value="2">2 per page</option>
+							<option value="5">5 per page</option>
+							<option value="10">10 per page</option>
+							
+						</select>
+					</form>
+					</div>
+
 						<br />
 						<br />
 						<form method="post"  style="width: 600px ; margin-left: auto; margin-right: auto;" role="form">
-                                        <input type="text" id = "searchReservedBooks" name ="search"  size="80"/>
-                                        <input class = "btn btn-primary" type="submit" id = "searchReservedBooks" value="Search" name="search_books"/> 
-                                        <br />
+							<input type="text" id = "searchReservedBooks" name ="search"  size="80"/>
+							<input class = "btn btn-primary" type="submit" id = "searchReservedBooks" value="Search" name="search_books"/> 
+							<div id = "success_notify" class = "alert alert-success">  </div>
+							<div id = "success_claim" class = "alert alert-success">  </div>
+							<br />
                         </form>
 
                          <br/>
+
 						<table id = "reserved-materials" class="tablesorter" border = "1" cellspacing='5' cellpadding='5' align = 'center'>
 							<thead>
 								<tr>
 									<th style='width:10%;' title="Material ID">Material ID</th>
-									<th style='width:10%;' title="Type">Type</th>
-									<th style='width:50%;' title="Material">Material</th>
-									<th style='width:10%;' title="Borrower">Borrower</th>			
+									<th style='width:5%;' title="Type">Type</th>
+									<th style='width:10%;' title="Borrower">Borrower</th>
+									<th style='width:50%;' title="Material">Material</th>	
 									<th style='width:10%;' title="Start date">Claim Date</th>
+									<th style='width:5%;' title="Rank">Action</th>
 									<th style='width:10%;' title="Action">Action</th>
 								</tr>
 							</thead>
@@ -98,7 +120,8 @@
 
 										echo "<td class = 'materialid' > ${row['materialid']} </td>";
 										echo "<td class = 'type' > ${row['type']} </td>";
-										
+										echo "<td class = 'idnumber' > ${row['idnumber']} </td>";
+
 										echo "<td>";
 										echo "<span class = 'name' ><b> ${row['name']}</span></b>" . ",";
 										echo "<span >Author, </span>" . ".";
@@ -149,13 +172,20 @@
 		<script src="<?php echo base_url();?>dist/js/bootstrap.js"></script>
 		<script src="<?php echo base_url();?>dist/js/holder.js"></script>
 		<script src="<?php echo base_url();?>js/jquery.tablesorter.js" type="text/javascript"></script>
-		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/jquery.dataTables.min.js"></script>
-		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/dataTables.bootstrap.js"></script>
+		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/jquery.tablesorter.js"></script>
+		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/jquery.tablesorter.pager.js"></script>
 		<!--script src="<?php echo base_url();?>dist/js/dynamic.js"></script-->
 		<!--script src="<?php echo base_url();?>dist/js/modernizr.js"></script-->
 		
 		<script>
-			
+			$(document).ready(function() {
+				$("#reserved-materials")
+					.tablesorter({widthFixed: true, widgets: ['zebra']})
+					.tablesorterPager({container: $("#pager")}); 
+			} );
+
+			document.getElementById("success_notify").style.display='none';
+			document.getElementById("success_claim").style.display='none';
 			$(document).ready(function(){
 				
 				event.preventDefault();
@@ -197,9 +227,9 @@
 
 				function printDate( data, date ){
 					if( data == 0 ){
-						return "Not yet notified";
+						return "<td>Not yet notified </td>";
 					} else {
-						return date;
+						return "<td>" + date + "</td>";
 					}
 				}
 
@@ -238,7 +268,7 @@
 								$('#reserved-materials-body').html("");
 								//alert(result.length);
 								for( i = 0; i < result.length; i++ ){
-									$('#reserved-materials-body').append("<tr id ='" + result[i].materialid + "' > <td class = 'materialid' > " + result[i].materialid + "  </td> <td class = 'idnumber' > " + result[i].idnumber + "  </td> <td>" + "<span class = 'name' > " + result[i].name + " </span>, <span class = 'year' > " + result[i].year + " </span>." + printEdition( result[i].edvol ) + "<span> <br /> ( " + result[i].type + " )</span> </td> <td> " + printDate( result[i].started, result[i].startdate ) + " </td> <td> " + result[i].queue + " </td> " + printButton( result[i].started ) + "</tr>");
+									$('#reserved-materials-body').append("<tr id ='" + result[i].materialid + "' > <td class = 'materialid' > " + result[i].materialid + "  </td><td class = 'type' > " + result[i].type + " </td> <td class = 'idnumber' > " + result[i].idnumber + "  </td> <td>" + "<span class = 'name' > <strong> " + result[i].name + " </strong> </span>, Author,<span class = 'year' > " + result[i].year + " </span>." + printEdition( result[i].edvol ) + "<span>  <br /> ( " + result[i].type + " )</span> </td>" + printDate( result[i].started, result[i].claimdate ) + "<td> " + result[i].queue + " </td> " + printButton( result[i].started ) + "</tr>");
 								}
 								
 							} else {
@@ -262,7 +292,7 @@
 					var parent = $(this).parent();
 					var idnumber = $.trim(parent.siblings('.idnumber').text());
 					var materialid = $.trim(parent.siblings('.materialid').text());
-					
+			
 					$.ajax({
 						type: "POST",
 						url: "<?php echo base_url();?>admin/claim_reservation",
@@ -279,11 +309,19 @@
 
 						success: function( result ){
 							// show that notification is successful
-							$('#error').html(result);
-							if( result == "" ){
+							//$('#error').html(result);
+							if( result != "1" ){
 								thisButton.attr('disabled', 'disabled');
 								// remove row
 								//alert("Student has been notified");
+								document.getElementById("success_notify").style.display='none';
+
+								$("#success_claim").show();
+								$("#success_claim").html("Successfully claimed!");
+								$("#success_claim").fadeIn('slow');
+								document.body.scrollTop = document.documentElement.scrollTop = 0;
+								setTimeout(function() { $('#success_claim').fadeOut('slow') }, 5000);
+								$("#"+materialid).html("");	
 							} else {
 								//alert("Failed to notify");
 							}
@@ -314,13 +352,19 @@
 						success: function( result ){
 							// show that notification is successful
 							$('#error').html(result);
-							if( result == "" ){
+							if( result != "1" ){
 
 								// alert here if success
 								thisButton.attr('disabled', true);
 								thisButton.next().removeAttr('disabled');
 
-								alert("Success!")
+								//alert("Success!")
+								$("#success_notify").show();
+								$("#success_notify").html("Successfully notified!");
+								$("#success_notify").fadeIn('slow');
+								document.body.scrollTop = document.documentElement.scrollTop = 0;
+								setTimeout(function() { $('#success_notify').fadeOut('slow') }, 5000);
+
 							} else {
 								//alert("Fail!");
 							}

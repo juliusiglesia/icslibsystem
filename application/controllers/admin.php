@@ -34,7 +34,9 @@ class Admin extends CI_Controller {
 	public function search_reservations(){
 		$this->load->model('admin/reservation_queue_model'); 
 		header('Content-Type: application/json', true);
-		echo json_encode($this->reservation_queue_model->search_reservations());			
+		$array = $this->reservation_queue_model->search_reservations();
+
+		echo json_encode($array);			
 	}
 
 	/*
@@ -471,9 +473,9 @@ class Admin extends CI_Controller {
 		$this->load->model('admin/reservation_queue_model');
 		$materialid = $this->input->post('materialid');
 		$idnumber = $this->input->post('idnumber');
+		var_dump($_POST);
 		date_default_timezone_set("Asia/Manila");
 		$start_date = date('Y-m-d');
-		 
 		$expectedreturn = $this->reservation_queue_model->update_claimed_date( $materialid, $idnumber, $start_date );
 		$this->reservation_queue_model->do_claim( $materialid, $idnumber, $start_date, $expectedreturn );
 		
