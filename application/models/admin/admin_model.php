@@ -329,10 +329,17 @@
 		$query = $this->db->query("SELECT * FROM librarymaterial WHERE materialid = '".$this->db->escape_like_str($name)."'");
 		return $query->result();
 	}
-	public function book_update($data){
+	
+	public function book_update($data, $data1){
 		$this->load->database();
 		$id = $this->db->escape_like_str($data['materialid']);
-		$this->db->update("librarymaterial",$data,"materialid = '". $id."'");
+		$this->db->update("librarymaterial",$data1,"materialid = '". $id."'"); 	
+	}
+	
+	public function author_update($data,$data2){
+		$this->load->database();
+		$id = $this->db->escape_like_str($data['materialid']); 
+		$this->db->update("author",$data2,"materialid = '". $id."'"); 	
 	}
 	public function book_delete($data){
 		$this->load->database();

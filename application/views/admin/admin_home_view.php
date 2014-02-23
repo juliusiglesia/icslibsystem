@@ -14,6 +14,7 @@
 	<link href="<?php echo base_url();?>dist/css/bootstrap.css" rel="stylesheet">
 	<link href="<?php echo base_url();?>dist/css/carousel.css" rel="stylesheet">
 	<link href="<?php echo base_url();?>dist/css/signin.css" rel="stylesheet">
+	<link href="<?php echo base_url();?>dist/css/style2.css" rel="stylesheet">
 
 	<style type="text/css" id="holderjs-style"></style></head>
 
@@ -63,23 +64,28 @@
 			<div class="leftMain">
 				<div id = "main-page">
 					<div id = "main-content">
-						<h1> Welcome Admin! </h1>
+						<br />
+						<br />
+						<h1 style="width: 800px ; margin-left: auto; margin-right: auto;">STATISTICS</h1>
+						<canvas id="bargraph" height="350" width="500"></canvas>
+						<br />
+						<br />
 					</div>
 				</div>
 			</div>
-
-			<!-- FOOTER -->
-			<div class = "container marketing" >
-				<footer>
-					<p class="pull-right"><a href="#"> Back to Top </a></p>
-					<p>2013 Company, Inc. <a href="#">Privacy</a> | <a href="#">Terms</a> | <a href="#">About</a> | <a href="#">Privacy</a> | <a href="#">Contact</a> </p>
-				</footer>
-			</div><!-- /.container -->
 		</div>
 		
+		<!-- FOOTER -->
+		 <footer>
+            <a href="#" class="back-to-top"><img id="foot" src="<?php echo base_url();?>dist/images/top_icon.PNG" alt="Back to Top"></a>
+            <p>2013 Company, Inc. <a href="#">Privacy</a> | <a href="#">Terms</a> | <a href="#">About</a> | <a href="#">Privacy</a> | <a href="#">Contact</a> </p>
+        </footer>
+		
+
 		<script src="<?php echo base_url();?>dist/js/jquery.js"></script>
 		<script src="<?php echo base_url();?>dist/js/bootstrap.js"></script>
 		<script src="<?php echo base_url();?>dist/js/holder.js"></script>
+		<script src="<?php echo base_url();?>dist/js/Chart.js"></script>
 		
 		<!--script src="<?php echo base_url();?>dist/js/dynamic.js"></script-->
 		<!--script src="<?php echo base_url();?>dist/js/modernizr.js"></script-->
@@ -88,6 +94,54 @@
 			$("#logout").click(function(){
 				window.location.href = "<?php echo site_url('admin/logout'); ?>";
 			});
+
+			$("#reserved-nav").click(function(){
+				$.ajax({
+
+					url: "<?php echo base_url();?>admin/reservation_queue",
+					dataType: "json",
+
+					beforeSend: function() {
+						//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
+						$("#error_message").html("loading...");
+					},
+
+					error: function(xhr, textStatus, errorThrown) {
+							$('#error_message').html(textStatus);
+					},
+
+					success: function( result ){
+						if( result == "" ) $("#result").html("No reserved!");
+						else{
+							$("#result").html(result[0].id);
+
+						}
+					}
+				});
+			});
 		</script>
+
+		<script>
+			var barChartData = {
+				labels : ["January","February","March","April","May","June","July"],
+				datasets : [
+					{
+						fillColor : "rgba(220,220,220,0.5)",
+						strokeColor : "rgba(220,220,220,1)",
+						data : [65,59,90,81,56,55,40]
+					},
+					{
+						fillColor : "rgba(151,187,205,0.5)",
+						strokeColor : "rgba(151,187,205,1)",
+						data : [28,48,40,19,96,27,100]
+					}
+				]
+				
+			}
+
+		var myLine = new Chart(document.getElementById("bargraph").getContext("2d")).Bar(barChartData);
+		
+		</script>
+
 	</body>
 </html>

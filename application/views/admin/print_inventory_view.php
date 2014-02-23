@@ -90,7 +90,7 @@ $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetTitle('ICS Library Inventory Report');
 
 // set default header data
-$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, 'Inventort Report For: ', 'A.Y. 2013-2014 2nd Semester');
+$pdf->SetHeaderData("ICSlogo.jpg", PDF_HEADER_LOGO_WIDTH, 'Inventory Report For: ', 'A.Y. 2013-2014 2nd Semester');
 $pdf->SetFooterData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
 
 // set header and footer fonts
@@ -128,6 +128,8 @@ $header = array('Name of Magazine', 'Copies', 'Actual');
 // print colored table
 $pdf->ColoredTable($header, $libinventory['mags']);
 
+
+
 // add a page
 $pdf->AddPage();
 
@@ -159,6 +161,14 @@ $html = '<h3>Theses and Dissertation Papers</h3></br>';
 $pdf->writeHTML($html, true, false, true, false, '');
 
 $pdf->ColoredTable($header, $libinventory['theses']);
+
+//add a page
+$pdf->AddPage();
+
+$html = '<h3>Journals</h3></br>';
+$pdf->writeHTML($html, true, false, true, false, '');
+
+$pdf->ColoredTable($header, $libinventory['journals']);
 
 // add a page
 $pdf->AddPage();

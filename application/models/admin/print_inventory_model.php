@@ -21,7 +21,7 @@
 
 			$query = $this->db->query("SELECT name, quantity, quantity+borrowedcopy AS total 
 										FROM librarymaterial 
-										WHERE type LIKE 'Magazine'");	//gets all materials classified under Magazine
+										WHERE type LIKE 'Magazines'");	//gets all materials classified under Magazine
 			$mags = $query->result_array();
 
 			$query = $this->db->query("SELECT name, quantity, quantity+borrowedcopy AS total 
@@ -44,11 +44,17 @@
 										WHERE type LIKE 'Thesis'");		//gets all materials classified under Thesis
 			$theses = $query->result_array();
 
+			$query = $this->db->query("SELECT name, quantity, quantity+borrowedcopy AS total 
+										FROM librarymaterial 
+										WHERE type LIKE 'Journals'");		//gets all materials classified under Thesis
+			$journals = $query->result_array();
+
 			$return_array['mags'] = (array)$mags;
 			$return_array['books'] = (array)$books;
 			$return_array['refs'] = (array)$refs;
 			$return_array['sps'] = (array)$sps;
 			$return_array['theses'] = (array)$theses;
+			$return_array['journals'] = (array)$journals;
 			return $return_array;
 		}
 	}

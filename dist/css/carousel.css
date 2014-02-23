@@ -3,7 +3,8 @@
 /* Padding below the footer and lighter body text */
 
 body {
-  padding-top:50px;
+  padding-top:60px;
+  margin-top:10px;
   color: #5a5a5a;
 }
 
@@ -34,25 +35,39 @@ body {
 	margin-right:auto;
 	margin-left:auto;
 	width:1150px;
-	height:300px;
-	height: 600px;
 	margin-top:1px;
-	border:1px solid white;
+	border:1px solid transparent;
+	min-height:500px;
 }
 
 .sidebarMain {
-	float:left;
+	float:left;	
 }
 
 .leftMain{
 	width:950px;
-	border-left:1px solid black;
-	border-right:1px solid black;
-	border-bottom:1px solid black;
+	border-left:1px solid #a8a8ff;
+	border-right:1px solid #a8a8ff;
+	border-bottom:1px solid #a8a8ff;
 	border-top:1px solid transparent;
 	margin-left:auto;
 	margin-top:-1px;
+	min-height:300px;
+}
+
+#profileCont{
+	width:1000px;
+	border-left:1px solid #a8a8ff;
+	border-right:1px solid #a8a8ff;
+	border-bottom:1px solid #a8a8ff;
 	height:auto;
+	margin-left:0;
+}
+
+#profContent{
+	padding-left: 5%;
+	padding-right: 5%;
+	padding-bottom: 5%;
 }
 
 /* CUSTOMIZE THE CAROUSEL
@@ -114,7 +129,7 @@ body {
 ------------------------- */
 
 .featurette-divider {
-  margin: 80px 0; /* Space out the Bootstrap <hr> more */
+  margin: 60px 0; /* Space out the Bootstrap <hr> more */
 }
 
 /* Thin out the marketing headings */

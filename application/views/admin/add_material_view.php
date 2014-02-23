@@ -81,10 +81,10 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
         <div id = "main-content">
 		<div id="container">
 		<form name="add" method="post" action="admin_search">
-			<table>
+			<table id="formTable">
 				<tr>
 					<td><label>Library Material ID</label></td>
-					<td><input type="text" name="materialid" required></td>
+					<td><input type="text" name="materialid" pattern="[A-Z0-9]+-[A-Z0-9]+" required></td>
 					<td><label>(e.g. CS1-A1, CS-01, C-1)</label></td>
 					<td><span style="color: red;" name="helpmaterialid"></td>
 				</tr>
@@ -136,24 +136,17 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 				</tr>
 				<tr>
 					<td><label>Title</label></td>
-					<td><input type="text" name="name" required></td>
+					<td><input type="text" name="name" pattern="[A-Z][A-Za-z0-9\ \.\,\-\'\?\!]+" required></td>
 					<td><span style="color: red;" name="helpname"></td>
 				</tr>
 				<tr>
-					<td><label>Author</label></td>
-					<td><input type="text" name="fname" placeholder="First Name" required></td>
-					<td><input type="text" name="mname" placeholder="Middle Name" required></td>
-					<td><input type="text" name="lname" placeholder="Last Name" required></td>
-					<td><span style="color: red;" name="helpauthor"></td>
-				</tr>
-				<tr>
 					<td><label>Year of Publication</label></td>
-					<td><input type="number" name="year" placeholder="YYYY" min="1950" max="2014" required></td>
+					<td><input type="number" name="year" placeholder="YYYY" min="1950" max="2014" pattern="[0-9][0-9][0-9][0-9]" required></td>
 					<td><span style="color: red;" name="helpyear"></td>
 				</tr>
 				<tr>
 					<td><label>Edition(optional)</label></td>
-					<td><input type="text" name="edvol"></td>
+					<td><input type="text" name="edvol" pattern="[0-9]" ></td>
 					<td><span style="color: red;" name="helpedvol"></td>
 				</tr>
 				<tr>
@@ -176,24 +169,82 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 					<td><input type="radio" name="requirement" value="0" checked > None </td>
 					<td><input type="radio" name="requirement" value="1"> Letter of the Owner / Consent of Instructor</td>
 					<td></td>
+				</tr>
 				<tr>
+					<td><label>Author</label></td>
+					<td><input type="text" name="fname" placeholder="First Name" pattern="[A-Za-z]+" required></td>
+					<td><input type="text" name="mname" placeholder="Middle Name" pattern="[A-Za-z]+" required></td>
+					<td><input type="text" name="lname" placeholder="Last Name" pattern="[A-Za-z]+" required></td>
+					<td><input type="button" value="x" onclick="deleteRow(this)" disabled ></td>
+					<td><input type="button" value="+" onClick="addRow()"></td>
+					<td><span style="color: red;" name="helpauthor"/></td>
+					<td><input type="hidden" name="numberOfAuthors" value="1"/></td>
+				</tr>
 		</table>
 		<input type="submit" name="insert" value="Add">
 		</form><br>
-		<a href='admin_search'> Home </a><br>
 		</div>
 
-		<script src="<?php echo base_url();?>dist/js/jquery.js"></script>
-		<script src="<?php echo base_url();?>dist/js/bootstrap.js"></script>
-		<script src="<?php echo base_url();?>dist/js/holder.js"></script>
-		
-		<!--script src="<?php echo base_url();?>dist/js/dynamic.js"></script-->
-		<!--script src="<?php echo base_url();?>dist/js/modernizr.js"></script-->
-		
 		<script type="text/javascript">
-			$("#logout").click(function(){
-				window.location.href = "<?php echo site_url('admin/logout'); ?>";
-			});
+			var n = 1;
+			
+			function deleteRow(row){
+				n--;
+				
+				var i=row.parentNode.parentNode.rowIndex;
+				document.getElementById('formTable').deleteRow(i);
+			}
+		
+			function addRow(){
+				n++;
+				
+				var x=document.getElementById('formTable');
+				// deep clone the targeted row
+				var new_row = x.rows[9].cloneNode(true);
+				
+				// set the innerHTML of the first row 
+				new_row.cells[0].innerHTML = '';
+				
+				var inp6 = new_row.cells[7].getElementsByTagName('input')[0];;
+				inp6.value = n;
+				
+				// grab the input from the first cell and update its ID and value
+				var inp1 = new_row.cells[1].getElementsByTagName('input')[0];
+				inp1.name += n;
+				inp1.placeholder = 'First Name';
+				inp1.required = true;
+				inp1.pattern = "[A-Za-z]+";
+				inp1.value = '';
+				
+				// grab the input from the first cell and update its ID and value
+				var inp2 = new_row.cells[2].getElementsByTagName('input')[0];
+				inp2.name += n;
+				inp2.placeholder = 'Middle Name';
+				inp2.required = true;
+				inp2.pattern = "[A-Za-z]+";
+				inp2.value = '';
+				
+				
+				// grab the input from the first cell and update its ID and value
+				var inp3 = new_row.cells[3].getElementsByTagName('input')[0];
+				inp3.name += n;
+				inp3.placeholder = 'Last Name';
+				inp3.required = true;
+				inp3.pattern = "[A-Za-z]+";
+				inp3.value = '';
+				
+				
+				var inp4 = new_row.cells[4].getElementsByTagName('input')[0];
+				inp4.disabled = false;
+				
+				var inp5 = new_row.cells[5].getElementsByTagName('input')[0];
+				inp5.disabled = false;
+				
+				
+				
+				// append the new row to the table
+				x.appendChild(new_row);
+			}
 			
 			window.onload = function() {
 				add.materialid.onblur = validateMaterialID;
@@ -218,7 +269,9 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 				if (msg == "Invalid input. ") msg="";
 
 				document.getElementsByName("helpmaterialid")[0].innerHTML = msg;
-				if (msg == "") return true;
+				if (msg == ""){ 
+					return true;
+				}
 			}
 			
 			function disableClassification(){
@@ -238,13 +291,15 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 				if (str == "") {
 					msg+="Title is required. ";
 				}
-				if (!str.match(/^[A-Za-z0-9\ \.\,\-\']+$/)) {
+				if (!str.match(/^[A-Z][A-Za-z0-9\ \.\,\-\'\?\!]+$/)) {
 					msg+="Characters are invalid.";
 				}
 				if (msg == "Invalid input. ") msg="";
 
 				document.getElementsByName("helpname")[0].innerHTML = msg;
-				if (msg == "") return true;
+				if (msg == ""){ 
+					return true;
+				}
 			}
 			
 			function validateAuthorF(){
@@ -259,7 +314,9 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 				if (msg == "Invalid input. ") msg="";
 
 				document.getElementsByName("helpauthor")[0].innerHTML = msg;
-				if (msg == "") return true;
+				if (msg == ""){ 
+					return true;
+				}
 			}
 			
 			function validateAuthorM(){
@@ -274,7 +331,9 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 				if (msg == "Invalid input. ") msg="";
 
 				document.getElementsByName("helpauthor")[0].innerHTML = msg;
-				if (msg == "") return true;
+				if (msg == ""){ 
+					return true;
+				}
 			}
 			
 			function validateAuthorL(){
@@ -289,7 +348,9 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 				if (msg == "Invalid input. ") msg="";
 
 				document.getElementsByName("helpauthor")[0].innerHTML = msg;
-				if (msg == "") return true;
+				if (msg == ""){ 
+					return true;
+				}
 			}
 			
 			function validateYear(){
@@ -304,22 +365,26 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 				if (msg == "Invalid input. ") msg="";
 
 				document.getElementsByName("helpyear")[0].innerHTML = msg;
-				if (msg == "") return true;
+				if (msg == ""){ 
+					return true;
+				}
 			}
 			
 			function validateEdition(){
 				msg = "Invalid input. ";
 				str = add.edvol.value;
 				if (str == "") {
-					add.edvol.value = "NULL";
+					add.edvol.value = "";
 				}
-				else if (!str.match(/^[A-Za-z0-9\(\)]+$/) && str != "") {
+				else if (!str.match(/^[0-9]+$/) && str != "") {
 					msg="Characters are invalid.";
 				}
 				if (msg == "Invalid input. ") msg="";
 				
 				document.getElementsByName("helpedvol")[0].innerHTML = msg;
-				if (msg == "") return true;
+				if (msg == ""){ 
+					return true;
+				}
 			}
 			
 		</script>

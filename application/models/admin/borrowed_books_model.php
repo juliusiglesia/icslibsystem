@@ -23,15 +23,34 @@ class Borrowed_books_model extends CI_Model{
 		$return_array = array();
 		$this->load->database();
 		$query = $this->db->query("SELECT * 
-									FROM librarymaterial INNER JOIN borrowedmaterial ON librarymaterial.materialid = borrowedmaterial.materialid AND borrowedmaterial.status LIKE 'BORROWED'");
-		
+									FROM librarymaterial INNER JOIN borrowedmaterial ON librarymaterial.materialid = borrowedmaterial.materialid AND borrowedmaterial.status LIKE 'BORROWED' ORDER BY expectedreturn");
+		/*
 		$result = $query->result();
 
 		foreach($result as $row) {
 				$return_array[count($return_array)] = (array)$row;
 		}
+		*/
+		return $query;
+	}
 
-		return $return_array;
+	public function get_searched_book($word) {
+
+		$return_array = array();
+		$this->load->database();
+		if($word!=''){
+			$query = $this->db->query("SELECT * 
+										FROM librarymaterial INNER JOIN borrowedmaterial ON librarymaterial.materialid = borrowedmaterial.materialid 
+										AND (borrowedmaterial.materialid LIKE '%$word%' OR librarymaterial.course LIKE '%$word%' OR librarymaterial.name LIKE '%$word%')
+										AND borrowedmaterial.status LIKE 'BORROWED' ORDER BY expectedreturn");
+		}else{
+			$query = $this->db->query("SELECT * 
+										FROM librarymaterial INNER JOIN borrowedmaterial ON librarymaterial.materialid = borrowedmaterial.materialid 
+										AND borrowedmaterial.status LIKE 'BORROWED' ORDER BY expectedreturn");
+
+		}
+
+		return $query;
 	}
 }
 

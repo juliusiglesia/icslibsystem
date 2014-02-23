@@ -18,7 +18,7 @@ class Reservation_queue_model extends CI_Model{
 	/*
 	*	Gets the lists of the reservations in the system
 	*/
-	public function get_reservations() {
+	public function get_reservations( $search = "" ) {
 		
 		/*
 		*	get all the id, store it in an array
@@ -29,6 +29,8 @@ class Reservation_queue_model extends CI_Model{
 		*	}
 		*
 		*/
+
+		$search = trim($search);
 
 		$return_array = array();
 		$this->load->database();
@@ -50,12 +52,34 @@ class Reservation_queue_model extends CI_Model{
 			$count = $query->row();
 			$count = $count->available;
 			
+			if( $search == "" ){
 			// get the n reservations for a library material, n = available copy of material
-			$query = $this->db->query("SELECT * FROM reservation INNER JOIN librarymaterial ON reservation.materialid=librarymaterial.materialid 
+			$query = $this->db->query("SELECT * FROM reservation INNER JOIN librarymaterial ON reservation.materialid=librarymaterial.materialid
 										WHERE reservation.materialid LIKE '${temp}' 
 										ORDER BY queue ASC 
 										LIMIT 0, ${count}");
-			
+			}
+
+			else {
+				$search = strtolower($search);
+				$temp_search = explode(" ", $search);
+				$where = "( ";
+				for( $i = 0; $i < count($temp_search); $i++ ){
+					$where = $where . "LOWER(librarymaterial.materialid) LIKE '%" . $temp_search[$i] . "%' OR ";
+					$where = $where . "LOWER(name) LIKE '%" . $temp_search[$i] . "%' OR ";
+					$where = $where . "LOWER(idnumber) LIKE '%" . $temp_search[$i] . "%' OR ";
+					$where = $where . "LOWER(type) LIKE '%" . $temp_search[$i] . "%' OR ";
+					$where = $where . "queue LIKE '%" . $temp_search[$i] . "%' OR ";
+					$where = $where . "startdate LIKE '%" . $temp_search[$i] . "%' OR ";
+					if ( $i == count($temp_search)-1 ) $where = $where . "reservation.claimdate LIKE '%" . $temp_search[$i] . "%' )";
+					else $where = $where . "reservation.claimdate LIKE '%" . $temp_search[$i] . "%' OR ";
+				}				
+
+				$query = $this->db->query("SELECT * FROM reservation INNER JOIN librarymaterial ON reservation.materialid=librarymaterial.materialid
+											WHERE reservation.materialid LIKE '${temp}' AND	${where}
+											ORDER BY queue ASC 
+											LIMIT 0, ${count}");	
+				}
 			// get the result as object
 			$query = $query->result();
 
@@ -90,9 +114,25 @@ class Reservation_queue_model extends CI_Model{
 				);
 		
 		$this->db->insert('borrowedmaterial', $data);
+		$query1 = "UPDATE librarymaterial SET borrowedcount = borrowedcount+1, borrowedcopy = borrowedcopy+1 WHERE materialid LIKE '${materialid}'";
 		$query = "DELETE from reservation where idnumber LIKE '${idnumber}' AND materialid LIKE '${materialid}'";
+		//echo "<script> alert(${query1}) </script>";
+		$this->db->query($query1);
 		$this->db->query($query);
 	}
+
+
+	public function get_author(){
+		$query = $this->db->query("SELECT fname, mname, lname FROM author WHERE materialid LIKE '${materialid}'");
+		return $query->result();
+	}
+
+	public function search_reservations(){
+		$search = $this->input->post('search');
+		return $this->get_reservations( $search );
+	}
+
+
 }
 
 ?>

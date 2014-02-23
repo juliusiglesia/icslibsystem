@@ -31,6 +31,12 @@ class Admin extends CI_Controller {
 		}
 	}
 
+	public function search_reservations(){
+		$this->load->model('admin/reservation_queue_model'); 
+		header('Content-Type: application/json', true);
+		echo json_encode($this->reservation_queue_model->search_reservations());			
+	}
+
 	/*
 	*	Controls the view of notification in the system
 	*/
@@ -231,52 +237,64 @@ class Admin extends CI_Controller {
 	}
 
 	public function borrowed_books() { 
-		$is_logged_in = $this->is_logged_in();
-		if( !$is_logged_in ){
-			redirect('/admin/login', 'refresh');
-		} else {
-			$this->no_cache();
-			$data['user'] = $is_logged_in;
-			// loads the model php file which will interact with the database
-			$this->load->model('admin/borrowed_books_model'); 
-			// calls the function get_reservation_array(), and store it to the data array
-			$data['borrowed_books'] = $this->borrowed_books_model->get_borrowed_books();
-			// views the result by passing the data to the view php file
-			
-			$this->load->view('admin/borrowed_books_view', $data);
+		// loads the model php file which will interact with the database
+		$this->load->model('admin/borrowed_books_model'); 
+		if($this->input->post('search_borrowed_books')){
+			$word = $this->input->post('search');
+			$array['borrowed_books'] = $this->borrowed_books_model->get_searched_book($word);
+			//$array['flag'] = $array['borrowed_books'];
+			if($array['borrowed_books']->num_rows==0){
+				$array['borrowed_books'] = $this->borrowed_books_model->get_borrowed_books();
+			}
+		}else{
+		// calls the function get_reservation_array(), and store it to the data array
+			$array['borrowed_books'] = $this->borrowed_books_model->get_borrowed_books();
+			$array['flag'] = $array['borrowed_books'];
+		// views the result by passing the data to the view php file
 		}
+			$this->load->view('admin/borrowed_books_view', $array);
+
 	}
+	
+	public function material_returned(){
+		// loads the model php file which will interact with the database
+        $this->load->model('admin/material_returned_model'); 
+		//calls function get_idnumber, add and stores it to the data array
+		//$data['groups'] = $this->notification_model->get_idnumber();
+		// views the result by passing the data to the view php file
+        //$this->load->view('admin/notification_view', $data);
+		//calls function save(), to save or to insert the data that has been processed
+		//$this->save();
+		$materialid = $this->input->post('materialid');
+		$idnumber = $this->input->post('idnumber');
+		$message = $this->input->post('message');
+    	$this->notification_model->notify( $materialid, $idnumber, $message );
+    }
 
 	public function admin_search() {
-	
-		$is_logged_in = $this->is_logged_in();
-		if( !$is_logged_in ){
-			redirect('/admin/login', 'refresh');
-		} else {
-			$this->no_cache();
-			$data['user'] = $is_logged_in;
-			//$this->load->view('admin/borrowed_books_view', $data);
+
+		$this->load->model('admin/admin_model');
+		$this->load->library('javascript');
 		
+		if($this->input->post('search_books')!=''){
+			$filter = $this->input->post('filter');
+			$type = $this->input->post('type');
+			$access = $this->input->post('access');
+			$avail = $this->input->post('avail');
+			$word = $this->input->post('search');
 
-			$this->load->model('admin/admin_model');
-			$this->load->library('javascript');
+			$data['sql2'] = $this->admin_model->search($filter,$type,$word,$access,$avail);
+			$this->load->view('admin/admin_search',$data);
+
+		}else{
+			$data['sql2'] = $this->admin_model->viewAll();
+			$this->load->view('admin/admin_search',$data);
+		}
+		
+		if($this->input->post('insert') != ''){
+			$numberOfAuthors = $this->input->post('numberOfAuthors');
 			
-			if($this->input->post('search_books')!=''){
-				$filter = $this->input->post('filter');
-				$type = $this->input->post('type');
-				$access = $this->input->post('access');
-				$avail = $this->input->post('avail');
-				$word = $this->input->post('search');
-
-				$data['sql2'] = $this->admin_model->search($filter,$type,$word,$access,$avail);
-				$this->load->view('admin/admin_search',$data);
-
-			}else{
-				$data['sql2'] = $this->admin_model->viewAll();
-				$this->load->view('admin/admin_search',$data);
-			}
-			
-			if($this->input->post('insert') != ''){
+			if($numberOfAuthors > 1){
 				$materialid = $this->input->post('materialid');
 				$course = $this->input->post('course');
 				$type = $this->input->post('type');
@@ -286,14 +304,11 @@ class Admin extends CI_Controller {
 				$access = $this->input->post('access');
 				$available = $this->input->post('available');
 				$requirement = $this->input->post('requirement');
-
-				$fname = $this->input->post('fname');
-				$mname = $this->input->post('mname');
-				$lname = $this->input->post('lname');
 				
 				$query = $this->db->get_where('librarymaterial', array('materialid' => $materialid));
 
 				if( $query->num_rows() > 0 ) {
+					header('location:/icslibsystem/index.php/admin/add_material');
 				} 
 				else {
 					$data_libmaterial = array(
@@ -307,44 +322,140 @@ class Admin extends CI_Controller {
 						'available' => $available,
 						'requirement' => $requirement,
 					);
-				
+			
 					$this->load->model('admin/add_material_model');
 					$this->add_material_model->insert_material($data_libmaterial);
+				}
 				
+				for($i=$numberOfAuthors; $i>0; $i--){
+					if($i == 1){
+						$fname = $this->input->post('fname');
+						$mname = $this->input->post('mname');
+						$lname = $this->input->post('lname');
+					}
+					else{
+						$k = 'fname' . $i;
+						$s = 'mname' . $i;
+						$p = 'lname' . $i;
+						$fname = $this->input->post($k);
+						$mname = $this->input->post($s);
+						$lname = $this->input->post($p);
+					}
+					
 					$data_author = array(
 						'materialid' => $materialid,
 						'fname' => $fname,
 						'mname' => $mname,
 						'lname' => $lname,
-					);
-				
-				
+					);	
+					
 					$this->load->model('admin/add_material_model');
 					$this->add_material_model->insert_author($data_author);
-				}	
-			}
+				}
+			}	
+			else{
+				$materialid = $this->input->post('materialid');
+				$course = $this->input->post('course');
+				$type = $this->input->post('type');
+				$name = $this->input->post('name');
+				$year = $this->input->post('year');
+				$edvol = $this->input->post('edvol');
+				$access = $this->input->post('access');
+				$available = $this->input->post('available');
+				$requirement = $this->input->post('requirement');
 			
+				$fname = $this->input->post('fname');
+				$mname = $this->input->post('mname');
+				$lname = $this->input->post('lname');
+			
+				$query = $this->db->get_where('librarymaterial', array('materialid' => $materialid));
+
+				if( $query->num_rows() > 0 ) {
+					header('location:/icslibsystem/index.php/admin/add_material');
+				} 
+				else {
+					$data_libmaterial = array(
+						'materialid' => $materialid,
+						'course' => $course,
+						'type' => $type,
+						'name' => $name,
+						'year' => $year,
+						'edvol' => $edvol,
+						'access' => $access,
+						'available' => $available,
+						'requirement' => $requirement,
+					);
+			
+					$this->load->model('admin/add_material_model');
+					$this->add_material_model->insert_material($data_libmaterial);
+			
+					$data_author = array(
+						'materialid' => $materialid,
+						'fname' => $fname,
+						'mname' => $mname,
+						'lname' => $lname,
+					);	
+					
+					$this->load->model('admin/add_material_model');
+					$this->add_material_model->insert_author($data_author);
+				}
+			}	
 		}
 	}
 	
-	public function update() {
+	public function update()
+	{
 		$data['title'] = "Edit Books";
 		$this->load->model("admin/model_function");
 		$name = $this->input->get('flag', TRUE);
 		$data['result'] = $this->model_function->get_book_info($name);
 		$this->load->view('admin/view_update',$data);
 	}
-
-	public function update_page($data) {	
+	public function update_page($data)
+	{	
 		$this->load->helper('url');
-		$data = $this->input->post(NULL, TRUE);
-		$this->load->model('admin/admin_model');
-		$this->admin_model->book_update($data);
-		header('location:/icslibsystem/admin/admin_search');
-		
+		$data = $this->input->post(NULL, TRUE);				
+		if($this->input->post('submit')){
+			$this->load->model('admin/admin_model');
+			
+			//get form variable
+			$materialid = $this->input->post('materialid');
+			$name = $this->input->post('name');
+			$type = $this->input->post('type');
+			$course = $this->input->post('course');
+			$lname = $this->input->post('lname');
+			$fname = $this->input->post('fname');
+			$mname = $this->input->post('mname');
+			$available = $this->input->post('available');
+			$access = $this->input->post('access');
+			$year = $this->input->post('year');
+			$requirement = $this->input->post('requirement');
+			$quantity = $this->input->post('quantity');
+			
+			$data1 = array(
+            'name' => $name,
+			'type' => $type,
+			'course' => $course,
+			'available' => $available,
+			'access' => $access,
+			'year' => $year,
+			'requirement' => $requirement,
+			'quantity' => $quantity,
+			);
+							
+			$data2 = array(
+			'lname' => $lname,
+			'fname' => $fname,
+			'mname' => $mname,
+			);
+			
+			$this->admin_model->book_update($data,$data1);
+			$this->admin_model->author_update($data,$data2);
+		}
+		header('location:/icslibsystem/admin/admin_search');		
 	}
-
 	public function delete(){	
+		
 		$this->load->model('admin/admin_model');
 		$data['materialid'] = $this->input->get('flag', TRUE);
 		$this->admin_model->book_delete($data);
@@ -352,16 +463,10 @@ class Admin extends CI_Controller {
 	}
 	
 	public function add_material() {
-		$is_logged_in = $this->is_logged_in();
-		if( !$is_logged_in ){
-			redirect('/admin/login', 'refresh');
-		} else {
-			$this->no_cache();
-			$data['user'] = $is_logged_in;
-			$this->load->view('admin/add_material_view', $data);
-		}
+		$this->load->view('admin/add_material_view');
+		
 	}
-
+	
 	public function claim_reservation(){
 		$this->load->model('admin/reservation_queue_model');
 		$materialid = $this->input->post('materialid');

@@ -48,5 +48,20 @@ $route['admin/notification'] = 'admin/notification';
 $route['admin/inventory'] = 'admin/print_inventory';
 $route['admin/login'] = 'admin/login';
 
+$route['borrower'] = 'borrower';
+$route['login'] = 'borrower/login';
+$route['logout'] = 'borrower/logout';
+$route['inside_search'] = 'borrower/inside_search';
+$route['outside_search'] = 'borrower/outside_search';
+$route['profile'] = 'borrower/load_profile';
+$route['reserve'] = 'borrower/reserve';
+$route['reserve_continue'] = 'borrower/reserve_continue';
+$route['search'] = 'borrower/search';
+$route['register'] = 'borrower/register';
+$route['reserved_materials'] = 'borrower/reserved_materials_view';
+$route['borrowed_materials'] = 'borrower/borrowed_materials_view';
+$route['user_search'] = 'borrower/user_search';
+
+
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */
