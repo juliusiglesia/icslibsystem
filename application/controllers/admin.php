@@ -142,6 +142,8 @@ class Admin extends CI_Controller {
 		} else {
 			$this->no_cache();
 			$data['user'] = $is_logged_in;
+			$this->load->model('admin/admin_model');
+			$data['stats'] = $this->admin_model->get_stats_model();
 			$this->load->view('admin/admin_home_view', $data);
 		}
 	}
@@ -234,8 +236,7 @@ class Admin extends CI_Controller {
      }
 
 	public function index(){
-		echo "Admin!";
-		echo "Welcome to ICSLIB!";
+		$this->login();
 	}
 
 	public function borrowed_books() { 
