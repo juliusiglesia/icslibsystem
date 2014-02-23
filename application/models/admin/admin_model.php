@@ -345,13 +345,12 @@
 		$this->load->database();
 		$this->db->delete("librarymaterial",$data);
 	}
-
+    
     public function get_stats_model(){
-        $this->load->database();
-        $sql = "SELECT COUNT(DISTINCT l.materialid) AS libmatcount, COUNT(DISTINCT b.id) AS bormatcount, (COUNT(DISTINCT l.materialid) - COUNT(DISTINCT b.id)) AS diffcount FROM borrowedmaterial b, librarymaterial l";
-        $query = $this->db->query($sql);
-        return $query->result();
-    }
-	
+         $this->load->database();
+         $sql = "SELECT COUNT(DISTINCT l.materialid) AS libmatcount, COUNT(DISTINCT b.id) AS bormatcount, (COUNT(DISTINCT l.materialid) - COUNT(DISTINCT b.id)) AS diffcount FROM borrowedmaterial b, librarymaterial l";
+         $query = $this->db->query($sql);
+         return $query->result();
+     }	
 }
 ?>

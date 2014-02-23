@@ -147,7 +147,7 @@ class Admin extends CI_Controller {
 			$this->load->view('admin/admin_home_view', $data);
 		}
 	}
-	
+
 	/*
 	*	function verification for displaying input text for:
 	*		1. email

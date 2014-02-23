@@ -68,17 +68,15 @@
 						<br />
 						<h1 style="width: 800px ; margin-left: auto; margin-right: auto;">STATISTICS</h1>
 						<canvas id="bargraph" height="350" width="500"></canvas>
-						<br/>
-						<br/>
-						<?php 
-							foreach ($stats as $row) {
-								echo "Library Material Count:".$row->libmatcount." Borrowed Material Count: ".$row->bormatcount." Not Borrowed Material Count: ".$row->diffcount;
-								//echo "<br/>";
-							}
-						?>
+						<br />
+						<br />
 
-						<br/>
-						<br/>
+						<?php 
+ 							foreach ($stats as $row) {
+ 								echo "Library Material Count:".$row->libmatcount." Borrowed Material Count: ".$row->bormatcount." Not Borrowed Material Count: ".$row->diffcount;
+ 								//echo "<br/>";
+ 							}
+ 						?>
 					</div>
 				</div>
 			</div>
