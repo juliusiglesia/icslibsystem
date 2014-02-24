@@ -142,8 +142,8 @@ class Admin extends CI_Controller {
 		} else {
 			$this->no_cache();
 			$data['user'] = $is_logged_in;
-			$this->load->model('admin/admin_model');
-			$data['stats'] = $this->admin_model->get_stats_model();
+			$this->load->model('admin/get_stats_model');
+			$data['stats'] = $this->get_stats_model->get_library_stats();
 			$this->load->view('admin/admin_home_view', $data);
 		}
 	}
