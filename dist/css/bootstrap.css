@@ -2225,6 +2225,7 @@ textarea.input-lg {
 .form-horizontal .form-group {
   margin-right: -15px;
   margin-left: -15px;
+  height:35px;
 }
 
 .form-horizontal .form-group:before,

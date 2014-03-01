@@ -7,7 +7,7 @@
 					<h3 class="form-signin-heading">Please sign in</h3>
 				</div>
 				<form id = "login_form" class="form-signin" role="form">
-					<input type="email"name = "uname" class="form-control" placeholder="Email address" required autofocus>
+					<input type="email"name = "uname" class="form-control" placeholder="Username" required autofocus>
 					<input type="password" name = "pword" class="form-control" placeholder="Password" required>
 					<button class="btn btn-lg btn-primary btn-block" type="button" id = "submit">Sign in</button>
 				</form>
@@ -42,7 +42,7 @@
 
 						beforeSend: function() {
 							//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
-							$("#error_message").html("loading...");
+							$("#error_message").html("Loading...");
 						},
 
 						error: function(xhr, textStatus, errorThrown) {
@@ -63,4 +63,4 @@
 					});
 			});
 		</script>
-		<?php include 'footer.php'; ?> 
+		<?php include 'footer.php'; ?>  

@@ -34,19 +34,20 @@ class Borrowed_model extends CI_Model{
 		$this->load->database();
 		$idnum=$this->session->userdata('idnumber');
 		// Books on Hand
-		$query = $this->db->query("SELECT author.fname, author.mname, author.materialid, author.lname,librarymaterial.name, librarymaterial.year, librarymaterial.type
+		$query = $this->db->query("SELECT DATEDIFF((SELECT CURDATE()),borrowedmaterial.expectedreturn)*settings.fine as user_fine, author.fname, author.mname, author.materialid, author.lname,librarymaterial.name, librarymaterial.year, librarymaterial.type
 									FROM librarymaterial 
 									JOIN borrowedmaterial 
 										ON librarymaterial.materialid = borrowedmaterial.materialid
 									JOIN author
 										ON author.materialid = borrowedmaterial.materialid
-									WHERE borrowedmaterial.idnumber = '$idnum' AND borrowedmaterial.actualreturn IS NULL");
+									JOIN settings
+									WHERE borrowedmaterial.idnumber = '$idnum' AND borrowedmaterial.actualreturn IS NULL
+									ORDER BY user_fine desc");
 					
 		$result = $query->result();
 			foreach ($result as $tuple)
 				$return_array[count($return_array)] = (array)$tuple;
-			return $return_array;
-			
+			return $return_array;	
 	}
 	
 	public function get_reservations(){
@@ -66,26 +67,113 @@ class Borrowed_model extends CI_Model{
 		return $return_array2;
 	}
 
-	public function get_overdue(){
-		$return_array3 = array();
+	public function get_reserved_books(){
+		$return_array2 = array();
 		$this->load->database();
 	
 		//Reserved Books
 		$idnum=$this->session->userdata('idnumber');
 		$query = $this->db->query("SELECT author.fname, author.mname, author.materialid, author.lname,librarymaterial.name, librarymaterial.year, librarymaterial.type
 									FROM librarymaterial 
+									JOIN reservation 
+										ON librarymaterial.materialid = reservation.materialid
+									JOIN author
+										ON author.materialid = reservation.materialid
+									WHERE reservation.idnumber = '$idnum'");
+		$result = $query->result();
+		foreach ($result as $tuple)
+			$return_array2[count($return_array2)] = (array)$tuple;
+		return $return_array2;
+	}
+	public function get_overdue(){
+		$return_array3 = array();
+		$this->load->database();
+	
+		//Reserved Books
+		$idnum=$this->session->userdata('idnumber');
+		$query = $this->db->query("SELECT DATEDIFF((SELECT CURDATE()),borrowedmaterial.expectedreturn)*settings.fine as user_fine, author.fname, author.mname, author.materialid, author.lname,librarymaterial.name, librarymaterial.year, librarymaterial.type
+									FROM librarymaterial 
 									JOIN borrowedmaterial 
 										ON librarymaterial.materialid = borrowedmaterial.materialid
 									JOIN author
 										ON author.materialid = borrowedmaterial.materialid
-									WHERE borrowedmaterial.idnumber = '$idnum' /*AND  borrowedmaterial.expectedreturn < (SELECT sysdate()) AND borrowedmaterial.actualreturn = NULL */");
+									JOIN settings
+									WHERE borrowedmaterial.idnumber = '$idnum'
+									AND borrowedmaterial.actualreturn IS NULL
+									AND borrowedmaterial.expectedreturn <(SELECT CURDATE())
+									ORDER BY user_fine desc");
 					
 		$result = $query->result();
 		foreach ($result as $tuple)
-			$return_array2[count($return_array3)] = (array)$tuple;
+			$return_array3[count($return_array3)] = (array)$tuple;
 		return $return_array3;
 	}
-	
+
+	public function get_borrowed_material_count(){
+
+		$return_array = array();
+		$this->load->database();
+		$idnum=$this->session->userdata('idnumber');
+		// Books on Hand
+		$query ="SELECT COUNT(librarymaterial.materialid)
+									FROM librarymaterial 
+									JOIN borrowedmaterial 
+										ON librarymaterial.materialid = borrowedmaterial.materialid
+									JOIN author
+										ON author.materialid = borrowedmaterial.materialid
+									WHERE borrowedmaterial.idnumber = '$idnum' AND borrowedmaterial.actualreturn IS NULL";
+		$res = $this->db->query($query);	
+		$query = $res->result();
+			foreach ($query as $tuple)
+				$return_array[count($return_array)] = (array)$tuple;
+
+		return $return_array;
+	}
+
+	public function get_reserved_material_count(){
+
+		$return_array = array();
+		$this->load->database();
+		$idnum=$this->session->userdata('idnumber');
+		// Books on Hand
+		$query ="SELECT COUNT(author.materialid)
+									FROM librarymaterial 
+									JOIN reservation 
+										ON librarymaterial.materialid = reservation.materialid
+									JOIN author
+										ON author.materialid = reservation.materialid
+									WHERE reservation.idnumber = '$idnum'";
+		$res = $this->db->query($query);	
+		$query = $res->result();
+			foreach ($query as $tuple)
+				$return_array[count($return_array)] = (array)$tuple;
+
+		return $return_array;
+	}
+
+	public function get_overdue_material_count(){
+
+		$return_array = array();
+		$this->load->database();
+		$idnum=$this->session->userdata('idnumber');
+		// Books on Hand
+		$query ="SELECT COUNT(librarymaterial.materialid)
+									FROM librarymaterial 
+									JOIN borrowedmaterial 
+										ON librarymaterial.materialid = borrowedmaterial.materialid
+									JOIN author
+										ON author.materialid = borrowedmaterial.materialid
+									WHERE borrowedmaterial.idnumber = '$idnum'
+									AND borrowedmaterial.actualreturn IS NULL
+									AND borrowedmaterial.expectedreturn < (SELECT CURDATE())";
+		$res = $this->db->query($query);	
+		$query = $res->result();
+			foreach ($query as $tuple)
+				$return_array[count($return_array)] = (array)$tuple;
+
+		return $return_array;
+	}
+
 }
 
 ?>

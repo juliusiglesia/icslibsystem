@@ -32,7 +32,7 @@ class MYPDF extends TCPDF {
         $this->SetFont('', 'B');
        
         // Header
-        $w = array(140, 20, 20);
+        $w = count($header) == 4?array(30, 180, 20, 20):array(180, 20, 20);
         $num_headers = count($header);
         for($i = 0; $i < $num_headers; ++$i) {
             $this->Cell($w[$i], 7, $header[$i], 1, 0, 'C', 1);
@@ -48,20 +48,40 @@ class MYPDF extends TCPDF {
         $fill = 0;
         $count = 0;
         $actual = 0;
-        foreach($data as $row) {
-            $this->Cell($w[0], 6, $row['name'], 'LR', 0, 'L', $fill, null, 3);
-            $this->Cell($w[1], 6, number_format($row['quantity']), 'LR', 0, 'C', $fill, null, 3);
-            $this->Cell($w[2], 6, number_format($row['total']), 'LR', 0, 'C', $fill, null, 3);
-            $count+=number_format($row['quantity']);
-            $actual+=number_format($row['total']);
+        if(count($w) == 3){
+            foreach($data as $row) {
+                $this->Cell($w[0], 6, $row['name'], 'LR', 0, 'L', $fill, null, 3);
+                $this->Cell($w[1], 6, number_format($row['quantity']), 'LR', 0, 'C', $fill, null, 3);
+                $this->Cell($w[2], 6, number_format($row['total']), 'LR', 0, 'C', $fill, null, 3);
+                $count+=number_format($row['quantity']);
+                $actual+=number_format($row['total']);
+                $this->Ln();
+                $fill=!$fill;
+            }
+            $this->Cell($w[0], 6, "Total", 'LR', 0, 'C', $fill, null, 3);
+            $this->Cell($w[1], 6, number_format($count), 'LR', 0, 'C', $fill, null, 3);
+            $this->Cell($w[2], 6, number_format($actual), 'LR', 0, 'C', $fill, null, 3);
             $this->Ln();
             $fill=!$fill;
         }
-        $this->Cell($w[0], 6, "Total", 'LR', 0, 'L', $fill, null, 3);
-        $this->Cell($w[1], 6, number_format($count), 'LR', 0, 'C', $fill, null, 3);
-        $this->Cell($w[2], 6, number_format($actual), 'LR', 0, 'C', $fill, null, 3);
-        $this->Ln();
-        $fill=!$fill;
+
+        else{
+            foreach($data as $row) {
+                $this->Cell($w[0], 6, $row['isbn'], 'LR', 0, 'L', $fill, null, 3);
+                $this->Cell($w[1], 6, $row['name'], 'LR', 0, 'L', $fill, null, 3);
+                $this->Cell($w[2], 6, number_format($row['quantity']), 'LR', 0, 'C', $fill, null, 3);
+                $this->Cell($w[3], 6, number_format($row['total']), 'LR', 0, 'C', $fill, null, 3);
+                $count+=number_format($row['quantity']);
+                $actual+=number_format($row['total']);
+                $this->Ln();
+                $fill=!$fill;
+            }
+            $this->Cell($w[0]+$w[1], 6, "Total", 'LR', 0, 'C', $fill, null, 3);
+            $this->Cell($w[2], 6, number_format($count), 'LR', 0, 'C', $fill, null, 3);
+            $this->Cell($w[3], 6, number_format($actual), 'LR', 0, 'C', $fill, null, 3);
+            $this->Ln();
+            $fill=!$fill;
+        }
 
         $this->Cell(array_sum($w), 0, '', 'T');
     }
@@ -83,14 +103,14 @@ class MYPDF extends TCPDF {
     }
 }
 // create new PDF document
-$pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+$pdf = new MYPDF("L", PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
 // set document information
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetTitle('ICS Library Inventory Report');
 
 // set default header data
-$pdf->SetHeaderData("ICSlogo.jpg", PDF_HEADER_LOGO_WIDTH, 'Inventory Report For: ', 'A.Y. 2013-2014 2nd Semester');
+$pdf->SetHeaderData("ICSlogo.jpg", PDF_HEADER_LOGO_WIDTH, 'Inventory Report For: ', $libinventory['sem']);
 $pdf->SetFooterData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
 
 // set header and footer fonts
@@ -116,6 +136,40 @@ $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 // set font
 $pdf->SetFont('helvetica', '', 12);
 
+
+$pdf->AddPage();
+
+$html = '<div style ="line-height:700%;"><br></div>';
+$pdf->writeHTML($html, true, false, true, false, "C");
+$html = '<font size="36"><center>ICS Library Inventory Report</center></font><br>
+        <h4>Institute of Computer Science, UPLB</h4>
+        </div>';
+$pdf->writeHTML($html, true, false, true, false, "C");
+
+
+// add a page
+$pdf->AddPage();
+
+$html = '<h3>Books</h3></br>';
+$pdf->writeHTML($html, true, false, true, false, '');
+// column titles
+$header = array('ISBN','Course', 'Copies', 'Actual');
+
+// data loading
+// print colored table
+$pdf->ColoredTable($header, $libinventory['books']);
+
+
+//add a page
+$pdf->AddPage();
+
+$html = '<h3>Journals</h3></br>';
+$pdf->writeHTML($html, true, false, true, false, '');
+// column titles
+$header = array('ISBN','Title', 'Copies', 'Actual');
+
+$pdf->ColoredTable($header, $libinventory['journals']);
+
 // add a page
 $pdf->AddPage();
 
@@ -127,20 +181,6 @@ $header = array('Name of Magazine', 'Copies', 'Actual');
 // data loading
 // print colored table
 $pdf->ColoredTable($header, $libinventory['mags']);
-
-
-
-// add a page
-$pdf->AddPage();
-
-$html = '<h3>Books</h3></br>';
-$pdf->writeHTML($html, true, false, true, false, '');
-// column titles
-$header = array('Course', 'Copies', 'Actual');
-
-// data loading
-// print colored table
-$pdf->ColoredTable($header, $libinventory['books']);
 
 // add a page
 $pdf->AddPage();
@@ -161,14 +201,6 @@ $html = '<h3>Theses and Dissertation Papers</h3></br>';
 $pdf->writeHTML($html, true, false, true, false, '');
 
 $pdf->ColoredTable($header, $libinventory['theses']);
-
-//add a page
-$pdf->AddPage();
-
-$html = '<h3>Journals</h3></br>';
-$pdf->writeHTML($html, true, false, true, false, '');
-
-$pdf->ColoredTable($header, $libinventory['journals']);
 
 // add a page
 $pdf->AddPage();

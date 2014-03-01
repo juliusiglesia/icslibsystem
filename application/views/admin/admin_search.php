@@ -1,78 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    
-    <!--TO BE PUT in a js file -->
-    <script type="text/javascript">
-      function toggle() {
-       if( document.getElementById("hidethis").style.display=='none' ){
-         document.getElementById("hidethis").style.display = 'table-row'; // set to table-row instead of an empty string
-       }else{
-         document.getElementById("hidethis").style.display = 'none';
-       }
-      }
-      </script>
-
-    <link rel="shortcut icon" href="http://getbootstrap.com/docs-assets/ico/favicon.png">
-
-    <title>ICS-iLS</title>
-
-    <link href="<?php echo base_url();?>dist/css/bootstrap.css" rel="stylesheet">
-    <link href="<?php echo base_url();?>dist/css/carousel.css" rel="stylesheet">
-    <link href="<?php echo base_url();?>dist/css/signin.css" rel="stylesheet">
-    <link href="<?php echo base_url();?>dist/css/style.css" rel="stylesheet">
-
-    <style type="text/css" id="holderjs-style"></style></head>
-
-<body>
-        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="#"><img src="<?php echo base_url();?>dist/images/logowhite.png" height="30px"></a>
-                </div>
-                
-                <form class="navbar-form navbar-right" role="form">
-                    <button type="button" class="btn btn-success" id = "logout" >Log out</button>
-                </form>
-
-            </div>
-        </div>
+<<<<<<< HEAD
+<?php include 'admin_header.php';?></div>
+=======
+<?php include 'admin_header.php'?></div>
+>>>>>>> 5fd38ac4c3936aaa9fac9514aa9af01f2f8cbe62
         <div class="mainBody">
             <!-- Nav tabs -->
             <div class="sidebarMain">
-                <ul class="nav nav-pills nav-stacked">
-                    <li id = "overview-nav">
-                        <a href="<?php echo base_url();?>admin/home">Overview</a>
-                    </li>
-                    <li id = "reserved-nav" >
-                        <a href="<?php echo base_url();?>admin/reservation">Reserved Books</a>
-                    </li>
-                    <li id = "borrowed-nav">
-                        <a href="<?php echo base_url();?>admin/borrowed_books">Borrowed Books</a>
-                    </li>
-                    <li id = "view-nav" class="active" >
-                        <a href="<?php echo base_url();?>admin/admin_search2">View All Library Materials</a>
-                    </li>
-                    <li id = "add-nav" >
-                        <a href="<?php echo base_url();?>admin/add_material">Add A New Material</a>
-                    </li>
-                    <li id = "generate-nav" >
-                        <a href="<?php echo base_url();?>admin/print_inventory" target = "_blank" >Generate Report</a>
-                    </li>
-                </ul>
-            </div>   
+				<ul class="nav nav-pills nav-stacked">
+					<li id = "reserved-nav">
+						<a href="<?php echo base_url();?>admin/reservation"><span class="glyphicon glyphicon-import"></span> &nbsp;Reserved Books</a>
+					</li>
+					<li id = "borrowed-nav" >
+						<a href="<?php echo base_url();?>admin/borrowed_books"><span class="glyphicon glyphicon-export"></span> &nbsp;Borrowed Books</a>
+					</li>
+					<li id = "view-nav" class="active">
+						<a href="<?php echo base_url();?>admin/admin_search"><span class="glyphicon glyphicon-search"></span> &nbsp;View All Materials</a>
+					</li>
+					<li id = "add-nav">
+						<a href="<?php echo base_url();?>admin/add_material"><span class="glyphicon glyphicon-plus"></span> &nbsp;Add A New Material&nbsp;&nbsp;&nbsp;</a>
+					</li>
+					<li id = "overview-nav">
+						<a href="<?php echo base_url();?>admin/home"><span class="glyphicon glyphicon-dashboard"></span> &nbsp;Overview</a>
+					</li>	
+				</ul>
+			</div>  
 
         <div class="leftMain">
                 <br />
@@ -80,16 +31,17 @@
                 <div id="main-page">
                     <div id = "main-content">
 						
-                        <form method="post">
-						
-                         <label for="filter">Filter by:</label>
+                        <form method="post"  style="width: 800px ; margin-left: auto; margin-right: auto;" role="form">
+                         <label for="filter"><span class="label label-default">Filter by:</span></label>
                                 <select name="filter">
                                     <option value="none">Any Field</option>
                                     <option value="author">Author</option>
                                     <option value="subject">Course</option>
                                     <option value="title">Title</option>
                                 </select>
-                          <label for="type">Type:</label>
+						<input type="text" name="search"  size="80"/>
+						<input class = "btn btn-primary" type="submit" value="Search" name="search_books"/> 
+                          <label for="type"<span class="label label-default">Type:</span></label>
                                 <select name="type">
                                     <option value="allTypes">All</option>
                                     <option value="book">Book</option>
@@ -101,7 +53,7 @@
                                     <option value="magazine">Magazines</option>
                                 </select>          
 
-                         <label for="access">Accessible by:</label>
+                         <label for="access"><span class="label label-default">Accessible by:</span></label>
                                 <select name="access"> 
                                         <option value="allAccess">---</option>
                                         <option value="1">Student</option>
@@ -109,18 +61,12 @@
                                         <option value="3">Room Use</option>
                                         <option value="4">Student/Faculty</option>
                                 </select>
-                                <br />
-                                    Availability:
-                                    <input type="radio" name="avail" value="1" id="available"/>
-                                    <label for="available">Available</label>
-                                    <input type="radio" name="avail" value="0" id="notavail"/>
-                                    <label for="notavail">Not Available</label>
+						  <span class="label label-default">Availability:</span>
+								<input type="radio" name="avail" value="1" id="available"/>
+								<label for="available">Available</label>
+								<input type="radio" name="avail" value="0" id="notavail"/>
+								<label for="notavail">Not Available</label>
                                     <input type="radio" name="avail" value="allAvail" id="avail" checked="true"/>
-                                    <label for="available">Both</label>
-
-                         <input type="text" name="search"/>
-
-                         <input type="submit" value="Search" name="search_books"/>
                         </form>
                          <br/>
                          <br/>
@@ -170,73 +116,220 @@
                                         echo "<table id='myTable' class='tablesorter' summary='Results' border='1' cellspacing='5' cellpadding='5' align = 'center'>
                                             <thead>
                                             <tr class='info'>
-                                            <th style='width:10%;' scope='col'><center>Material ID</center></th>
-                                            <th style='width:10%;' scope='col'><center>Course Class</center></th>
-                                            <th style='width:28%;' scope='col' ><center>Material</center></th>
-                                            <td style='width:7%;' scope='col'><center>Accessibility</center></td>
-                                            <td style='width:7%;' scope='col' ><center>Availability</center></td>
-                                            <th style='width:12%;' scope='col'><center>Borrowed Count</center></th>
-                                            <th style='width:7%;' scope='col'><center>Req.</center></th>
-                                            <th style='width:9%;' scope='col'><center>Book Count</center></th>
-                                            <td style='width:10%;' scope='col'><center>Action</center></td>
+											<td style='width:1%;' scope='col'><b><center>ISBN</center></b></th>
+                                            <th style='width:10%;' scope='col'><center>Library Material ID</center></th>
+                                            <td style='width:1%;' scope='col'><b><center>Type</center></b></th>
+                                            <th style='width:45%;' scope='col' ><center>Library Information</center></th>
+                                            <th style='width:1%;' scope='col'><center>Req.</center></th>
+                                            <th style='width:1%;' scope='col' ><center>Available Copies</center></td>
+                                            <td style='width:1%;' scope='col'><b><center>Action</center></b></td>
+<<<<<<< HEAD
                                             </tr>
-                                            </thead>";
-                                        
-                                        echo "<tbody>";    
+                                            </thead>
+                                            <tfoot>
+                                            <tr class='info'>
+											<td style='width:1%;' scope='col'><b><center>ISBN</center></b></th>
+                                            <th style='width:10%;' scope='col'><center>Library Material ID</center></th>
+                                            <td style='width:1%;' scope='col'><b><center>Type</center></b></th>
+                                            <th style='width:45%;' scope='col' ><center>Library Information</center></th>
+                                            <th style='width:1%;' scope='col'><center>Req.</center></th>
+                                            <th style='width:1%;' scope='col' ><center>Available Copies</center></td>
+                                            <td style='width:1%;' scope='col'><b><center>Action</center></b></td>
+                                            </tr>
+=======
+                                            </tr>
+                                            </thead>
+                                            <tfoot>
+                                            <tr class='info'>
+											<td style='width:1%;' scope='col'><b><center>ISBN</center></b></th>
+                                            <th style='width:10%;' scope='col'><center>Library Material ID</center></th>
+                                            <td style='width:1%;' scope='col'><b><center>Type</center></b></th>
+                                            <th style='width:45%;' scope='col' ><center>Library Information</center></th>
+                                            <th style='width:1%;' scope='col'><center>Req.</center></th>
+                                            <th style='width:1%;' scope='col' ><center>Available Copies</center></td>
+                                            <td style='width:1%;' scope='col'><b><center>Action</center></b></td>
+                                            </tr>
+>>>>>>> 5fd38ac4c3936aaa9fac9514aa9af01f2f8cbe62
+                                            </tfoot>";
+                                        echo "<tbody>";
+										$prevMat = (object) array(
+												'materialid' => null,
+												'course' => null,
+												'type' => null,
+												'name' => null,
+												'year' => null,
+												'edvol' => null,
+												'access' => null,
+												'available' => null,
+												'requirement' => null,
+												'quantity' => null,
+											);
+											
+										$rowAuthors = null;
+										$rowAuthor = null;
                                         foreach ($sql2->result() as $q){
-                                                                                            
-                                            echo "<tr>";
-                                            echo "<td><center>" . $q->materialid . "</center></td>";
-                                            echo "<td><center>" . $q->course . "</center></td>";
-                                            echo "<td>" . $q->name. ".<br />" . $q->lname .", ".$q->fname." ".$q->mname 
-                                            . ".<br />". $q->year . ", ". $q->type.".</td>";
+											
+											if($prevMat->materialid == null){
+												$prevMat->materialid = $q->materialid;
+												$prevMat->course = $q->course;
+												$prevMat->type = $q->type;
+												$prevMat->name = $q->name;
+												$prevMat->year = $q->year;
+												$prevMat->edvol = $q->edvol;
+												$prevMat->access = $q->access;
+												$prevMat->available = $q->available;
+												$prevMat->requirement = $q->requirement;
+												$prevMat->borrowedcount = $q->borrowedcount;
+												$prevMat->quantity = $q->quantity;
+											}
+											
+											if($prevMat->materialid == $q->materialid){
+												$rowAuthors .= $q->lname . " " . $q->fname . " " . $q->mname . " |";
+												$rowAuthor .= $q->lname . ", " . $q->fname . " " . $q->mname . "<br />";
+												continue;
+												
+											}else if($prevMat->materialid != $q->materialid && $prevMat->materialid != null){
+												
+												echo "<tr>";
+												if($q->type == 'Book' || $q->type == 'Reference'){											
+													echo "<td><br /><center>ISBN</center></td>";
+												}
+												else echo "<td>---</td>";
+												
+												echo "<td><center>" . $prevMat->materialid . "</center></td>";
 
-                                                if($q->access==1) //student
-                                                    $access = "Student";
-                                                else if($q->access==2)//faculty
-                                                    $access = "Faculty";
-                                                else if($q->access==3)//room use
-                                                    $access = "Room Use";
-                                                else if($q->access==4)//student/faculty
-                                                    $access = "Student/Faculty";
+												if($q->type == 'Book')
+													$type = "<span class='glyphicon glyphicon-book'></span>";
+												else if($q->type == 'CD')
+													$type = "<span class='glyphicon glyphicon-headphones'></span>";
+												else if($q->type == 'SP')
+													$type = "<span class='glyphicon glyphicon-file'></span>";
+												else if($q->type == 'Reference')
+													$type = "<span class='glyphicon glyphicon-paperclip'></span>";
+												else if($q->type == 'Journals')
+													$type = "<span class='glyphicon glyphicon-pencil'></span>";
+												else if($q->type == 'Magazines')
+													$type = "<span class='glyphicon glyphicon-picture'></span>";
+												else if($q->type == 'Thesis')
+													$type = "<span class='glyphicon glyphicon-bookmark'></span>";	
+												echo "<td><center><br />" . $type . "</center></td>";
+												
+												echo "<td><span class='title'><b>" . $prevMat->name. ".</b></span><br /><span class='author'>". $rowAuthor
+												.$prevMat->year."</span></td>";
 
-                                            echo "<td><center>" . $access . "</center></td>";
-
-                                                if($q->available==0) //not available
-                                                    $avail = "Not available";
-                                                else if($q->available=1)//available
-                                                    $avail = "Available";
-
-                                            echo "<td><center>" . $avail  . "</center></td>";
-                                            echo "<td><center>" . $q->borrowedcount . "</center></td>";
-
-                                            if($q->requirement==0){
-                                                $req = "none";
-                                            }else if($q->requirement==1){
-                                                $req = "consent of instructor";
-                                            }else if($q->requirement==2){
-                                                $req = "consent of owner";
-                                            }
-                                            echo "<td><center>" . $req . "</center></td>";
-                                            echo "<td><center>" . $q->quantity . "</center></td>";
-                                            $rowVal = $q->materialid . "|" . $q->course . "|" . $q->name . "|" . $q->lname ."|" . $q->fname . "|" . $q->mname . "|" . $q->year . "|" . $q->type . "|" . $q->access . "|" . $q->available . "|" . $q->borrowedcount . "|" . $q->requirement . "|" . $q->quantity;
-                                            echo "<td><button type='button' class='updateButton btn btn-default' name='".$q->materialid."' value='UPDATE' onclick=\"alertID('rowVal_".$q->materialid."' )\" data-toggle='modal'/>UPDATE</button>
-                                                <input value='".$rowVal."' id = 'rowVal_".$q->materialid."' hidden disabled/></a>
-                                                <a href ='delete?flag=".$q->materialid."' name = 'delete'><button type='button' class='btn btn-danger' value='DELETE' onclick=\"alertIT(); return false;\">DELETE</button></a></td>";
-                                            echo "</tr>";
+												if($q->requirement==0){
+													$req = "none";
+												}else if($q->requirement==1){
+													$req = "COI";
+												}else if($q->requirement==2){
+													$req = "COO";
+												}
+												echo "<td><br /><center>" . $req . "</center></td>";
+												$availcopy = $q->quantity - $q->borrowedcopy;
+												echo "<td><br /><center>" . $availcopy ."/" .$q->quantity. "</center></td>";
+												
+												$rowVal = $prevMat->materialid . "|" . $prevMat->course . "|" . $prevMat->name . "|" . $prevMat->year . "|" . $prevMat->type . "|" . $prevMat->access . "|" . $prevMat->available . "|" . $prevMat->borrowedcount . "|" . $prevMat->requirement . "|" . $prevMat->quantity;
+												echo "<td><button type='button' class='updateButton btn btn-default' name='".$prevMat->materialid."' value='UPDATE' onclick=\"alertID('rowVal_".$prevMat->materialid."','rowAuthor_".$prevMat->materialid."')\" data-toggle='modal'/><span class='glyphicon glyphicon-edit'></button>
+													<input value='".$rowVal."' id = 'rowVal_".$prevMat->materialid."' hidden disabled/></a>
+													<input value='".$rowAuthors."' id = 'rowAuthor_".$prevMat->materialid."' hidden disabled /></a>
+													<a href ='delete?flag=".$prevMat->materialid."' name = 'delete'><button type='button' class='btn btn-danger' value='DELETE' onclick=\"alertIT(); return false;\"><span class='glyphicon glyphicon-remove'></button></a></td>";
+												echo "</tr>";
+												$rowAuthors = null;
+											}
+											$rowAuthors = $q->lname . " " . $q->fname . " " . $q->mname . " |";
+											$rowAuthor = $q->lname . ", " . $q->fname . " " . $q->mname . "<br />";
+											$prevMat->materialid = $q->materialid;
+											$prevMat->course = $q->course;
+											$prevMat->type = $q->type;
+											$prevMat->name = $q->name;
+											$prevMat->year = $q->year;
+											$prevMat->edvol = $q->edvol;
+											$prevMat->access = $q->access;
+											$prevMat->available = $q->available;
+											$prevMat->requirement = $q->requirement;
+											$prevMat->quantity = $q->quantity;
                                         }
+										
+										
+										
+												echo "<tr>";
+												if($q->type == 'Book' || $q->type == 'Reference'){											
+													echo "<td><br /><center>ISBN</center></td>";
+												}
+												else echo "<td>---</td>";
+												
+												echo "<td><center>" . $prevMat->materialid . "</center></td>";
+
+												if($q->type == 'Book')
+													$type = "<span class='glyphicon glyphicon-book'></span>";
+												else if($q->type == 'CD')
+													$type = "<span class='glyphicon glyphicon-headphones'></span>";
+												else if($q->type == 'SP')
+													$type = "<span class='glyphicon glyphicon-file'></span>";
+												else if($q->type == 'Reference')
+													$type = "<span class='glyphicon glyphicon-paperclip'></span>";
+												else if($q->type == 'Journals')
+													$type = "<span class='glyphicon glyphicon-pencil'></span>";
+												else if($q->type == 'Magazines')
+													$type = "<span class='glyphicon glyphicon-picture'></span>";
+												else if($q->type == 'Thesis')
+													$type = "<span class='glyphicon glyphicon-bookmark'></span>";	
+												echo "<td><center><br />" . $type . "</center></td>";
+												
+												echo "<td>" . $prevMat->name. ".<br />". $rowAuthor// . $q->lname .", ".$q->fname." ".$q->mname 
+												. $prevMat->year . ", ". $prevMat->type.".</td>";
+												
+												if($q->requirement==0){
+													$req = "none";
+												}else if($q->requirement==1){
+													$req = "COI";
+												}else if($q->requirement==2){
+													$req = "COO";
+												}
+												echo "<td><br /><center>" . $req . "</center></td>";
+												$availcopy = $q->quantity - $q->borrowedcopy;
+												echo "<td><br /><center>" . $availcopy ."/" .$q->quantity. "</center></td>";
+												$rowVal = $prevMat->materialid . "|" . $prevMat->course . "|" . $prevMat->name . "|" . $prevMat->year . "|" . $prevMat->type . "|" . $prevMat->access . "|" . $prevMat->available . "|" . $prevMat->borrowedcount . "|" . $prevMat->requirement . "|" . $prevMat->quantity;
+												
+												echo "<td>
+													<button type='button' class='updateButton btn btn-default' name='".$prevMat->materialid."' value='UPDATE' onclick=\"alertID('rowVal_".$prevMat->materialid."','rowAuthor_".$prevMat->materialid."')\" data-toggle='modal'/><span class='glyphicon glyphicon-edit'></button>
+													<input value='".$rowVal."' id = 'rowVal_".$prevMat->materialid."' hidden disabled/></a>
+													<input value='".$rowAuthors."' id = 'rowAuthor_".$prevMat->materialid."' hidden disabled/></a>
+													<a href ='delete?flag=".$prevMat->materialid."' name = 'delete'><button type='button' class='btn btn-danger' value='DELETE' onclick=\"alertIT(); return false;\"><span class='glyphicon glyphicon-remove'></button></a></td>";
+												echo "</tr>";
+												$rowAuthors = null;
                                        echo "</tbody>";
                                     echo "</table>"; 
                                 }
                          ?>
                          </div>
+                         <div class="pager">
+							<!--<img src="../addons/pager/icons/first.png" class="first" alt="First" />
+							<img src="../addons/pager/icons/prev.png" class="prev" alt="Prev" />-->
+							<span class="first" style="cursor:pointer">First</span>
+							<span class="prev" style="cursor:pointer">Prev</span>
+							<strong> <span class="pagedisplay"></span></strong> <!--this can be any element, including an input-->
+							<span class="next" style="cursor:pointer">Next</span>
+							<span class="last" style="cursor:pointer">Last</span>
+							<br/>
+							<span>Page size: </span>
+							<select class="pagesize" title="Select page size">
+								<option value="10">10</option>
+								<option value="20">20</option>
+								<option value="30">30</option>
+								<option value="40">40</option>
+							</select>
+							<span>Go to: </span>
+							<select class="gotoPage" title="Select page number"></select>
+						</div>
+					</div>
                     </div>
                 </div>
 
-                 <footer>
-                    <p class="pull-right"><a href="#"> <img src="<?php echo base_url();?>images/top_icon.PNG" alt="back to top" width="50" height="50"/> </a></p>
-                    <p>2013 Company, Inc. <a href="#">Privacy</a> | <a href="#">Terms</a> | <a href="#">About</a> | <a href="#">Privacy</a> | <a href="#">Contact</a> </p>
-                  </footer>
+                <!-- FOOTER -->
+		<footer> <a href="#" class="back-to-top"><span class='glyphicon glyphicon-chevron-up'></span></a>
+			<center><p id="small">2013 CMSC 128 AB-6L. All Rights Reserved. <a href="#">Privacy</a> | <a href="#">Terms</a> | <a href="#">About</a> | <a href="#">Contact</a> </p></center>
+		</footer>
       
     <div class="modal fade" id="container1" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
               <div class="modal-dialog">
@@ -312,12 +405,7 @@
 								<td></td>
 							</tr>
 						
-								<tr>
-								<td><label>Author</label></td>
-								<td><input type="text" id="lname" required /></td>
-								<td><input type="text" id="fname" required /></td>
-								<td><input type="text" id="mname" required /></td>
-								</tr>							
+														
 							
                                 <tr>
                                 <td><label>Availability</label></td>
@@ -338,7 +426,7 @@
                                 </select>
                                 </td>
                                 </tr>
-                            
+								                           
                                 <tr>
 								<td><label>Year Published</label></td>
                                 <td><input type="number" name="year" id="year" min="1950" max="2013" required/></td>
@@ -353,65 +441,283 @@
 																
                                 <tr>
 								<td><label>Quantity</label></td>
-								<td><input type="number" name="quantity" id="quantity" min="0" max="100" required/></td>
+								<td><input type="number" name="quantity" id="quantity" min="0" max="100" required /></td>
 								<td><span style="color: red;" name="helpquantity"></td>
 								</tr>
+								
+								<tr>
+								<td><label>Author</label></td>
+								<td><input type="text" id="lname[0]" placeholder = "Last Name" required /></td>
+								<td><input type="text" id="fname[0]" placeholder = "First Name" required /></td>
+								<td><input type="text" id="mname[0]" placeholder = "Middle Name" required /></td>
+								<td><input type="button" value="x" onclick="deleteRow(this)" disabled/></td>
+								<td><input type="button" value="+" onClick="addRow()"  /></td>
+								<td><span style="color: red;" name="helpauthor"/></td>
+								<td><input type="hidden" name="numberOfAuthors" value="1"/></td>
+								</tr>		
 													
                         </table>
-						
-						<input type = "submit"  name="submit" />
+						<table>
+							<tr>
+							<td><input type="hidden" name="fnameOfAuthors" id="fnameOfAuthors" value=" "/></td>
+							<td><input type="hidden" name="mnameOfAuthors" id="mnameOfAuthors" value=" "/></td>
+							<td><input type="hidden" name="lnameOfAuthors" id="lnameOfAuthors" value=" "/></td>
+							<td><input type="hidden" name="numberOfAuthors" id="numberOfAuthors" value="0"/></td>
+							</tr>
+						</table>
+						<input type = "submit"  name="submit" onclick="submitForm()"/>
                         </form>
 
                   </div>
                   <div class="modal-footer">
-                    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                    <button class="btn" data-dismiss="modal" aria-hidden="true" onclick="resetN()">Cancel</button>
                   </div>
                  </div>
                 </div>
             </div></div></div>
 
+		<script src="<?php echo base_url();?>dist/js/jquery.js"></script>
+		<script src="<?php echo base_url();?>dist/js/holder.js"></script>
+<<<<<<< HEAD
+		<script src="<?php echo base_url();?>dist/js/bootstrap.js"></script>
+    	<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/jquery.tablesorter.js"></script>
+		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/jquery.tablesorter.pager.js"></script>
+		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/jquery.tablesorter.widgets.js"></script>
+		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/widget-pager.js"></script>
+		<!--script src="<?php echo base_url();?>dist/js/dynamic.js"></script-->
+		<!--script src="<?php echo base_url();?>dist/js/modernizr.js"></script-->
+		
+		<script id="js">
+			$(function(){
 
-    <script src="<?php echo base_url();?>dist/js/jquery.js"></script>
-    <script src="<?php echo base_url();?>dist/js/bootstrap.js"></script>
-    <script src="<?php echo base_url();?>dist/js/holder.js"></script>
-    <script src="<?php echo base_url();  ?>js/jquery-latest.js" type="text/javascript"></script>
-    <script src="<?php echo base_url();  ?>js/jquery.tablesorter.js" type="text/javascript"></script>
+			var pagerOptions = {
+
+			// target the pager markup - see the HTML block below
+			container: $(".pager"),
+
+			// use this url format "http:/mydatabase.com?page={page}&size={size}&{sortList:col}"
+			ajaxUrl: null,
+
+			// modify the url after all processing has been applied
+			customAjaxUrl: function(table, url) { return url; },
+
+			// process ajax so that the data object is returned along with the total number of rows
+			// example: { "data" : [{ "ID": 1, "Name": "Foo", "Last": "Bar" }], "total_rows" : 100 }
+			ajaxProcessing: function(ajax){
+			if (ajax && ajax.hasOwnProperty('data')) {
+			// return [ "data", "total_rows" ];
+			return [ ajax.total_rows, ajax.data ];
+			}
+			},
+
+			// output string - default is '{page}/{totalPages}'
+			// possible variables: {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows}
+			output: '{startRow} to {endRow} ({totalRows})',
+
+			// apply disabled classname to the pager arrows when the rows at either extreme is visible - default is true
+			updateArrows: true,
+
+			// starting page of the pager (zero based index)
+			page: 0,
+
+			// Number of visible rows - default is 10
+			size: 10,
+
+			// Save pager page & size if the storage script is loaded (requires $.tablesorter.storage in jquery.tablesorter.widgets.js)
+			savePages : true,
+
+			//defines custom storage key
+			storageKey:'tablesorter-pager',
+
+			// if true, the table will remain the same height no matter how many records are displayed. The space is made up by an empty
+			// table row set to a height to compensate; default is false
+			fixedHeight: true,
+
+			// remove rows from the table to speed up the sort of large tables.
+			// setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled.
+			removeRows: false,
+
+			// css class names of pager arrows
+			cssNext: '.next', // next page arrow
+			cssPrev: '.prev', // previous page arrow
+			cssFirst: '.first', // go to first page arrow
+			cssLast: '.last', // go to last page arrow
+			cssGoto: '.gotoPage', // select dropdown to allow choosing a page
+
+			cssPageDisplay: '.pagedisplay', // location of where the "output" is displayed
+			cssPageSize: '.pagesize', // page size selector - select dropdown that sets the "size" option
+
+			// class added to arrows when at the extremes (i.e. prev/first arrows are "disabled" when on the first page)
+			cssDisabled: 'disabled', // Note there is no period "." in front of this class name
+			cssErrorRow: 'tablesorter-errorRow' // ajax error information row
+
+			};
+
+			$("table")
+				.tablesorter({
+						theme: 'blue',
+						widthFixed: true,
+						widgets: ['zebra']
+					})
+
+			.bind('pagerChange pagerComplete pagerInitialized pageMoved', function(e, c){
+				var msg = '"</span> event triggered, ' + (e.type === 'pagerChange' ? 'going to' : 'now on') + ' page <span class="typ">' + (c.page + 1) + '/' + c.totalPages + '</span>';
+				$('#display')
+					.append('<li><span class="str">"' + e.type + msg + '</li>')
+					.find('li:first').remove();
+			})
+
+			.tablesorterPager(pagerOptions);
+
+		});
+	
+	</script>
+=======
+		<script src="<?php echo base_url();  ?>js/jquery.tablesorter.js" type="text/javascript"></script>
+		<script src="<?php echo base_url();?>dist/js/bootstrap.js"></script>
+>>>>>>> 5fd38ac4c3936aaa9fac9514aa9af01f2f8cbe62
     <script>
         $(document).ready(function() { 
             $("#myTable").tablesorter();
+			var offset = 220;
+                var duration = 500;
+                jQuery(window).scroll(function() {
+                    if (jQuery(this).scrollTop() > offset) {
+                        jQuery('.back-to-top').fadeIn(duration);
+                    } else {
+                        jQuery('.back-to-top').fadeOut(duration);
+                    }
+                });
+                
+                jQuery('.back-to-top').click(function(event) {
+                    event.preventDefault();
+                    jQuery('html, body').animate({scrollTop: 0}, duration);
+                    return false;
+                })
         }); 
     </script>
+		
+	<script type="text/javascript">
+		var n = 1;
+		function resetN(){
+			n=1;
+		}
+			function submitForm(){
+				var arr_fname = new Array();
+				var arr_mname = new Array();
+				var arr_lname = new Array();
+				
+				var assign_arr_fname = document.getElementById("fnameOfAuthors");
+				var assign_arr_mname = document.getElementById("mnameOfAuthors");
+				var assign_arr_lname = document.getElementById("lnameOfAuthors");
+				var assign_num = document.getElementById("numberOfAuthors");
+					
+				for(var i=0;i<n;i++){
+					arr_fname[i] = document.getElementById("fname["+i+"]").value;
+					arr_mname[i] = document.getElementById("mname["+i+"]").value;
+					arr_lname[i] = document.getElementById("lname["+i+"]").value;
+				}
+				assign_arr_fname.value = arr_fname;
+				assign_arr_mname.value = arr_mname;
+				assign_arr_lname.value = arr_lname;
+				assign_num.value = n;
+			}
+	
+			function deleteRow(row){
+				n-=1;
+				var i=row.parentNode.parentNode.rowIndex;
+				document.getElementById('formTable').deleteRow(i);
+			}
+		
+			function addRow(){				
+				var x=document.getElementById('formTable');
+				// deep clone the targeted row
+				var new_row = x.rows[9].cloneNode(true);
+				
+				// set the innerHTML of the first row 
+				new_row.cells[0].innerHTML = '';
+				
+				var inp6 = new_row.cells[7].getElementsByTagName('input')[0];;
+				inp6.value = n;
+				
+				// grab the input from the first cell and update its ID and value
+				var inp3 = new_row.cells[1].getElementsByTagName('input')[0];
+				inp3.id = "lname["+n+"]";
+				inp3.placeholder = 'Last Name';
+				inp3.required = true;
+				inp3.pattern = "[A-Za-z]+";
+				inp3.value = '';
+				
+				// grab the input from the first cell and update its ID and value
+				var inp1 = new_row.cells[2].getElementsByTagName('input')[0];
+				inp1.id = "fname["+n+"]";
+				inp1.placeholder = 'First Name';
+				inp1.required = true;
+				inp1.pattern = "[A-Za-z]+";
+				inp1.value = '';
+				
+				// grab the input from the first cell and update its ID and value
+				var inp2 = new_row.cells[3].getElementsByTagName('input')[0];
+				inp2.id = "mname["+n+"]";
+				inp2.placeholder = 'Middle Name';
+				inp2.required = true;
+				inp2.pattern = "[A-Za-z]+";
+				inp2.value = '';
+				
+				
+				var inp4 = new_row.cells[4].getElementsByTagName('input')[0];
+				inp4.disabled = false;
+				
+				var inp5 = new_row.cells[5].getElementsByTagName('input')[0];
+				inp5.disabled = false;
+								
+				// append the new row to the table
+				x.appendChild(new_row);
+				n+=1;
+		}
+	</script>
 	
     <script>
-      function alertID(loc){
-      var str = document.getElementById(loc).value;
-      str = str.split("|");
-      document.getElementById("materialid").value = str[0].toString();
-      document.getElementById("course").value = str[1].toString();
-      document.getElementById("name").value = str[2].toString();
-	  document.getElementById("lname").value = str[3].toString();
-	  document.getElementById("fname").value = str[4].toString();
-	  document.getElementById("mname").value = str[5].toString();
-      document.getElementById("year").value = parseInt(str[6]);
-      document.getElementById("type").value = str[7];
-      document.getElementById("access").value = parseInt(str[8]);
-      var x = document.getElementsByClassName("updateButton");
-      
-      if(str[9] == '1')
-      document.getElementsByName("available")[0].checked = true;
-      else if(str[9] == '0')
-      document.getElementsByName("available")[1].checked = true;
-           
-      if(str[11] == '1')
-      document.getElementsByName("requirement")[0].checked = true;
-      else if(str[11] == '0')
-      document.getElementsByName("requirement")[1].checked = true;
-      document.getElementById("quantity").value = parseInt(str[12]);
-    
-    for (var i = 0; i < x.length; i++){
-      x[i].setAttribute('data-target', '#container1');
-      
-      }
+		function alertID(loc,loc1){
+
+		var str = document.getElementById(loc).value;
+		var authors = document.getElementById(loc1).value.toString();
+		str = str.split("|");
+		authors = authors.split("|");
+		document.getElementById("materialid").value = str[0].toString();
+		document.getElementById("course").value = str[1].toString();
+		document.getElementById("name").value = str[2].toString();
+
+		document.getElementById("year").value = parseInt(str[3]);
+		document.getElementById("type").value = str[4];
+		document.getElementById("access").value = parseInt(str[5]);
+		var x = document.getElementsByClassName("updateButton");
+
+		if(str[6] == '1')
+		document.getElementsByName("available")[0].checked = true;
+		else if(str[6] == '0')
+		document.getElementsByName("available")[1].checked = true;
+
+		if(str[8] == '1')
+		document.getElementsByName("requirement")[0].checked = true;
+		else if(str[8] == '0')
+		document.getElementsByName("requirement")[1].checked = true;
+		document.getElementById("quantity").value = parseInt(str[9]);
+
+		for(var i=0;i<authors.length-1;i++){
+		var author = authors[i].split(" ");
+
+		document.getElementById("lname["+i+"]").value = author[0].toString();
+		document.getElementById("fname["+i+"]").value = author[1].toString();
+		document.getElementById("mname["+i+"]").value = author[2].toString();
+		if(authors.length-1 > 1 && i!=authors.length-2){addRow();}
+		
+		}
+		
+		for (var i = 0; i < x.length; i++){
+		x[i].setAttribute('data-target', '#container1');
+
+		}
     }
         function alertIT(){
             var x;
@@ -440,12 +746,12 @@
 				add.materialid.onblur = validateMaterialID;
 				add.type.onblur = disableClassification;
 				add.name.onblur = validateName;
-				add.fname.onblur = validateAuthorF;
-				add.mname.onblur = validateAuthorM;
-				add.lname.onblur = validateAuthorL;
+				//add.fname.onblur = validateAuthorF;
+				//add.mname.onblur = validateAuthorM;
+				//add.lname.onblur = validateAuthorL;
 				add.year.onblur = validateYear;
-				add.edvol.onblur = validateEdition;
-				add.borrowedcount.onblur = validateBorrowedCount;
+				//add.edvol.onblur = validateEdition;
+				//add.borrowedcount.onblur = validateBorrowedCount;
 				add.quantity.onblur = validateQuantity;
 			}
 			
@@ -489,7 +795,7 @@
 				document.getElementsByName("helpname")[0].innerHTML = msg;
 				if (msg == "") return true;
 			}
-			
+			/*
 			function validateAuthorF(){
 				msg = "Invalid input. ";
 				strf = add.fname.value;
@@ -534,7 +840,7 @@
 				document.getElementsByName("helpauthor")[0].innerHTML = msg;
 				if (msg == "") return true;
 			}
-			
+			*/
 			function validateYear(){
 				msg = "Invalid input. ";
 				str = add.year.value;
@@ -550,7 +856,7 @@
 				if (msg == "") return true;
 			}
 			
-			function validateBorrowedCount(){
+			/*function validateBorrowedCount(){
 				msg = "Invalid input. ";
 				str = add.borrowedcount.value;
 				if (str == "") {
@@ -563,7 +869,7 @@
 
 				document.getElementsByName("helpborrowedcount")[0].innerHTML = msg;
 				if (msg == "") return true;
-			}		
+			}*/		
 			
 			function validateQuantity(){
 				msg = "Invalid input. ";
@@ -580,7 +886,7 @@
 				if (msg == "") return true;
 			}					
 			
-			function validateEdition(){
+			/*function validateEdition(){
 				msg = "Invalid input. ";
 				str = add.edvol.value;
 				if (str == "") {
@@ -593,7 +899,7 @@
 				
 				document.getElementsByName("helpedvol")[0].innerHTML = msg;
 				if (msg == "") return true;
-			}
+			}*/
 			
 		</script>
 </body></html>

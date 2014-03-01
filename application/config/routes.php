@@ -61,6 +61,12 @@ $route['register'] = 'borrower/register';
 $route['reserved_materials'] = 'borrower/reserved_materials_view';
 $route['borrowed_materials'] = 'borrower/borrowed_materials_view';
 $route['user_search'] = 'borrower/user_search';
+$route['update_email'] = 'borrower/update_email';
+$route['update_password'] = 'borrower/update_password';
+$route['cancel_reservation'] = 'borrower/cancel_reservation';
+$route['registration'] = 'borrower/registration';
+$route['verify_account'] = 'borrower/verify_account';
+$route['advanced_search'] = 'borrower/advanced_search';
 
 
 /* End of file routes.php */

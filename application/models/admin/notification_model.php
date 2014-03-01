@@ -26,15 +26,16 @@ class Notification_model extends CI_Model{
 		return $query->result();
 	}//end of get_idnumber
 
-	public function notify( $materialid, $idnumber){
+	public function notify( $materialid, $idnumber, $isbn){
 		date_default_timezone_set("Asia/Manila");
 		$time = date('Y-m-d H:i:s');
 		$claimdate = date("Y-m-d", strtotime($time . "+2 day"));
 		if(date('l', strtotime($time)) == "Friday") $claimdate = date("Y-m-d", strtotime($claimdate . "+2 day"));
 
-		$query = "UPDATE reservation SET started = 1, startdate = '${time}', claimdate = '${claimdate}' WHERE materialid LIKE '${materialid}' AND idnumber LIKE '${idnumber}'";
+		$query = "UPDATE reservation SET started = 1, startdate = '${time}', claimdate = '${claimdate}' WHERE materialid LIKE '${materialid}' AND idnumber LIKE '${idnumber}' AND isbn LIKE '${isbn}'";
 		$this->db->query($query);
 	}
+	
 }//end of class
 
 ?>

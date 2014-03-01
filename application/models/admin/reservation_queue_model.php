@@ -34,20 +34,30 @@ class Reservation_queue_model extends CI_Model{
 
 		$return_array = array();
 		// get all the materialids with reservations
-		$query = $this->db->query("SELECT DISTINCT reservation.materialid 
-									FROM librarymaterial INNER JOIN reservation 
-										ON librarymaterial.materialid = reservation.materialid ");
+		$query = $this->db->query("SELECT DISTINCT reservation.materialid, reservation.isbn 
+									FROM librarymaterial INNER JOIN reservation
+										ON librarymaterial.materialid = reservation.materialid 
+											AND librarymaterial.isbn = reservation.isbn 
+										WHERE reservation.materialid NOT IN 
+										( SELECT materialid 
+											FROM borrowedmaterial
+											WHERE status LIKE 'BORROWED'
+											GROUP BY idnumber
+											HAVING COUNT(idnumber) > 3
+										) ");
 		
 		$result = $query->result();
 		
 		foreach($result as $row) {
 			// get the materialid, store it to a variable
-			$temp = $row->materialid;
+			$matid = $row->materialid;
+			$isbn = $row->isbn;
 
 			// make the query for determining the number of available materials
 			$query = $this->db->query("SELECT quantity-borrowedcopy AS available 
 										FROM librarymaterial 
-										WHERE materialid LIKE '${temp}'");				
+										WHERE materialid LIKE '${matid}'
+											AND isbn LIKE '${isbn}'");				
 			
 			// get the result, store it t a variable
 			$count = $query->row();
@@ -55,7 +65,8 @@ class Reservation_queue_model extends CI_Model{
 
 			$query = $this->db->query("SELECT COUNT(*) AS total 
 										FROM reservation 
-										WHERE materialid LIKE '${temp}'");				
+										WHERE materialid LIKE '${matid}'
+											AND isbn LIKE '${isbn}'");				
 			
 			// get the result, store it t a variable
 			$total = $query->row();
@@ -63,7 +74,8 @@ class Reservation_queue_model extends CI_Model{
 
 			$query = $this->db->query("SELECT MIN(queue) AS min 
 										FROM reservation 
-										WHERE materialid LIKE '${temp}'");				
+										WHERE materialid LIKE '${matid}'
+											AND isbn LIKE '${isbn}'");				
 			
 			// get the result, store it t a variable
 			$min = $query->row();
@@ -73,7 +85,8 @@ class Reservation_queue_model extends CI_Model{
 				// get the n reservations for a library material, n = available copy of material
 				$query = $this->db->query("SELECT *, ${total} AS total, queue-${min}+1 AS queue FROM reservation INNER JOIN librarymaterial 
 												ON reservation.materialid=librarymaterial.materialid
-											WHERE reservation.materialid LIKE '${temp}'
+											WHERE reservation.materialid LIKE '${matid}'
+												AND reservation.isbn LIKE '${isbn}'
 											ORDER BY queue, 1-started ASC
 											LIMIT 0, ${count}");
 			} else {
@@ -103,11 +116,11 @@ class Reservation_queue_model extends CI_Model{
 				}				
 
 				$query = $this->db->query("SELECT * FROM reservation INNER JOIN librarymaterial ON reservation.materialid=librarymaterial.materialid
-											WHERE (reservation.materialid LIKE '${temp}' AND	${where} )
+											WHERE (reservation.materialid LIKE '${matid}' AND	${where} )
 												OR reservation.materialid IN ( 
 													SELECT materialid 
 													FROM author 
-													WHERE materialid LIKE '${temp}' AND ${where2}
+													WHERE materialid LIKE '${matid}' AND ${where2}
 												)
 											ORDER BY queue ASC 
 											LIMIT 0, ${count}");	
@@ -118,9 +131,10 @@ class Reservation_queue_model extends CI_Model{
 			// add the result of the query in the return array by typecasting the object to an array
 			foreach ($query as $tuple){
 				$id = $tuple->materialid;
+				$isbn = $tuple->isbn;
 				$query = $this->db->query("SELECT fname, mname, lname 
 											FROM author
-											WHERE materialid LIKE '${id}'");
+											WHERE materialid LIKE '${id}' AND isbn LIKE '${isbn}'");
 		
 				$result = $query->result();
 				$tuple->author = (array)$result;
@@ -136,7 +150,7 @@ class Reservation_queue_model extends CI_Model{
 		return $return_array;
 	}
 
-	public function update_claimed_date( $materialid, $idnumber, $start_date ){
+	public function update_claimed_date( $materialid, $isbn, $idnumber, $start_date ){
 		//$date="2014-01-31"; //$date="2014-02-28";
 		
 		//if ordinary day, just add 3 days
@@ -148,18 +162,19 @@ class Reservation_queue_model extends CI_Model{
 		return $claimed_date;
 	}
 	
-	public function do_claim( $materialid, $idnumber, $start_date, $expectedreturn ){
+	public function do_claim( $materialid, $isbn, $idnumber, $start_date, $expectedreturn ){
 		//stores the inputs to an array and finally insert it to table borrowedmaterial	
         $data = array(
 					'idnumber'=>$idnumber,
 					'materialid'=>$materialid,
+					'isbn'=>$isbn,
 					'start'=>$start_date,
 					'expectedreturn'=>$expectedreturn
 				);
 		
 		$this->db->insert('borrowedmaterial', $data);
-		$query1 = "UPDATE librarymaterial SET borrowedcount = borrowedcount+1, borrowedcopy = borrowedcopy+1 WHERE materialid LIKE '${materialid}'";
-		$query = "DELETE from reservation where idnumber LIKE '${idnumber}' AND materialid LIKE '${materialid}'";
+		$query1 = "UPDATE librarymaterial SET borrowedcount = borrowedcount+1, borrowedcopy = borrowedcopy+1 WHERE materialid LIKE '${materialid}' AND isbn LIKE '${isbn}'";
+		$query = "DELETE from reservation where idnumber LIKE '${idnumber}' AND materialid LIKE '${materialid}' AND isbn LIKE '${isbn}'";
 		//echo "<script> alert(${query1}) </script>";
 		$this->db->query($query1);
 		$this->db->query($query);

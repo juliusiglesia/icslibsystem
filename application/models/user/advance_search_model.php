@@ -14,43 +14,32 @@
 			$this->load->library("session");
 			
 			$conditions = array();
+			$types = array();
 			$SO = $this->session->userdata('search_option');
-			if(!empty($search_option)){
-				foreach($search_option as $option) {
-					
-					//get the queries
-					if($option=='author'){ //check if author is checked
-						$conditions[] = "a.fname LIKE '%{$search}%' OR a.mname LIKE '%{$search}%' OR a.lname LIKE '%{$search}%'";
-					}
-
-					else if($option=='title'){ //check if title is checked
-						$conditions[] = "l.name LIKE '%{$search}%'";
-					}
-
-					else if($option=='course'){ //check if course is checked
-						$conditions[] = "l.course LIKE '%{$search}%'";
-					}
-
-					else if($option=='year'){ //check if year is checked
-						$conditions[] = "l.year LIKE '%{$search}'";
-					}
+			if(!empty($type)){
+				foreach($type as $t) {
+						$types[] = "l.type LIKE '%{$t}%'";
 				}
 
-				//query for type
-				$lib_mat_type = "";
-				if(!empty($type)) $lib_mat_type = "AND l.type LIKE '%{$type}%'";
+				//get the queries
+				if($search_option=='author'){ //check if author is checked
+					$conditions[] = "a.fname LIKE '%{$search}%' OR a.mname LIKE '%{$search}%' OR a.lname LIKE '%{$search}%'";
+				}
+				else if($search_option=='name'){ //check if title is checked
+					$conditions[] = "l.name LIKE '%{$search}%'";
+				}
+				else if($search_option=='course'){ //check if course is checked
+					$conditions[] = "l.course LIKE '%{$search}%'";
+				}
 
+				else if($search_option=='year'){ //check if year is checked
+					$conditions[] = "l.year LIKE '%{$search}'";
+				}
 
-				//final sql query
-					/*$stmt = "SELECT * FROM author a, librarymaterial l WHERE
-							.implode(' AND ', {$conditions}).'AND a.materialid = l.materialid
-							ORDER BY l.name'";
-					*/
-					
-					$stmt = "SELECT * FROM author a, librarymaterial l WHERE "
-										. "(" . implode(' OR ', $conditions) .")". "{$lib_mat_type} AND a.materialid = l.materialid
+				$stmt = "SELECT * FROM author a, librarymaterial l WHERE "
+										. "(" . implode(' OR ', $conditions) .")". "AND" ."(" . implode(' OR ', $types) .")" . " AND a.materialid = l.materialid
 										ORDER BY l.name";
-				
+					
 				//echo $stmt;
 				$query = $this->db->query($stmt);
 //-----				return $query->result();	
@@ -63,9 +52,9 @@
 			
 			}else{
 				//pag walang pinili sa checkboxes = general search
-				
-				$this->load->model('user/basic_search_model');
-				$this->basic_search_model->get_search_res($search);
+				echo "ERROR!";
+				//$this->load->controller('borrower');
+				//$this->borrower->outside_search();
 			}			
 		}
 	}	
