@@ -9,47 +9,69 @@ class Registration_model extends CI_Model{
 	}
 	
 
-	public function checkidnum($idnumber)
-	{
-		$this->load->database();
-		$query = $this->db->query("SELECT count(idnumber) as count FROM borrower WHERE idnumber LIKE '$idnumber'");//title
-		$result = $query->result();
-		return $result;
-	}
+	/*
+	*	Sets user status to ACTIVATED
+	*/
+	public function validate_account($email, $password){
+	
+		$this->db->where("email",$email);
+		$this->db->where("password",$password);
+		$query=$this->db->get("borrower");
 
-	public function checkidnum_sample($idnumber)
-	{
-		$this->load->database();
-		$query = $this->db->query("SELECT count(idnumber) as count FROM sample WHERE idnumber LIKE '$idnumber'");//title
-		$result = $query->result();
-		return $result;
+		if($query->num_rows()>0){
+			$profile = array('status' => 'ACTIVATED');
+			$this->db->where('email', $email);
+			//update borrower profile
+			$this->db->update('borrower', $profile);
+			return $query;
+		}	
+		
+		else return false;
 	}
-
-	public function check_email_borrower($email)
-	{
-		$this->load->database();
-		$query = $this->db->query("SELECT count(email) as count FROM borrower WHERE email LIKE '$email'");//title
-		$result = $query->result();
-		return $result;
-	}
-
-	public function resend_email_verification($email){
-		$this->load->database();
-		$query = $this->db->query("SELECT count(email) as count FROM borrower WHERE email LIKE '$email' AND status LIKE 'DEACTIVATED'");//title
-		$result = $query->result();
-		return $result;
-	}
-
+	
+	
+	/*
+	*	Adds user info to borrower table
+	*/
+	public function add_user()
+		{
+			
+			$str = $this->input->post('idnumber');
+			if(preg_match( '/^\d{4}-?\d{5}$/' ,$str)){
+				/*if(preg_match( '/^\d{9}$/' ,$str)){
+					$this->input->post('idnumber');
+				}*/
+				$classification = "S";
+			}
+			else{
+				$classification = "F";
+			}
+			$data=array(
+				'fname' =>$this->input->post('fname'),
+				'mname' =>$this->input->post('mname'),
+				'lname' =>$this->input->post('lname'),
+				'idnumber' =>$this->input->post('idnumber'),
+				'email' =>$this->input->post('email'),
+				'password' =>SHA1($this->input->post('password')),
+				'college' =>$this->input->post('college'),
+				'course' =>$this->input->post('course'),
+				'sex' =>$this->input->post('sex'),
+				'classification' =>$classification
+			);
+			$idnumber = $this->input->post('idnumber');
+			$this->db->insert('borrower',$data);	
+		}
 
 	public function idnumber_exist_check($idnumber)
 			{
 				$query = $this->db->get_where('sample', array('idnumber' => $idnumber));
 				if($query->num_rows() > 0)
 				{
-					return FALSE;
+					$query->free_result();
+					return TRUE;
 				}
 				$query->free_result();
-				return TRUE;
+				return FALSE;
 			}	
 
 	public function idnumber_borrower_check($idnumber)

@@ -12,14 +12,9 @@
 				<TR>
 					<TD style="padding: 6px; color: #222222" align="left">
 				 	<!-- Begin Box 1 -->
-						<table bgcolor="#ffffff" cellspacing="0" cellpadding="2" border="0" style="width: 100%; border-collapse: collapse; bordercolor: #111111">
+						<table bgcolor="#dedede" cellspacing="0" cellpadding="2" border="0" style="width: 100%; border-collapse: collapse; bordercolor: #111111">
 							<tr>
-								<?php
-									if($this->session->userdata('email'))
-										echo "<form action='user_search' method='post'>";
-									else
-										echo "<form action='outside_search' method='post'>";
-								?>
+								<form action="user_search" method="post">
 								<td align="left">
 									<select size="1" name="filter">
 										<option value="author">Author</option>
@@ -33,7 +28,7 @@
 									
 									<input type="submit" value="    Search    " name="eventSubmit_doSearchadvanced" id="defaultButton" />&nbsp;&nbsp;
 									<input type="reset" value="    Reset    " name="btnReset" /></td>
-									<td align = "center"><a href="<?php echo base_url();?>advanced_search">Advanced Search</a></td>
+									<td align = "center"><button onclick="toggle()">Advanced Search</button></td>
 									
 								
 								</form>

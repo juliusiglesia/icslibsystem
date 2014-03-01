@@ -1,97 +1,64 @@
-<<<<<<< HEAD
-<?php include 'admin_header.php';?>
-	<script type="text/javascript">
-		function claim( thisDiv ){
-					var thisButton = thisDiv;
-					var parent = thisDiv.parent();
-					var idnumber = $.trim(parent.siblings('.idnumber').text());
-					var materialid = $.trim(parent.siblings('.materialid').text());
-					var isbn = $.trim(parent.siblings('.isbn').text());
-			
-					$.ajax({
-						type: "POST",
-						url: "<?php echo base_url();?>admin/claim_reservation",
-						data: { materialid : materialid, idnumber : idnumber, isbn : isbn }, 
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	
+	<link rel="shortcut icon" href="<?php echo base_url();?>dist/images/favicon.png">
 
-						beforeSend: function() {
-							//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
-							$("#error_message").html("loading...");
-						},
+	<title>ICS-iLS</title>
 
-						error: function(xhr, textStatus, errorThrown) {
-								$('#error_message').html(textStatus);
-						},
+	<link href="<?php echo base_url();?>dist/css/bootstrap.css" rel="stylesheet">
+	<link href="<?php echo base_url();?>dist/css/carousel.css" rel="stylesheet">
+	<link href="<?php echo base_url();?>dist/css/signin.css" rel="stylesheet">
+	<link href="<?php echo base_url();?>dist/css/style.css" rel="stylesheet">
+	<link href="<?php echo base_url();?>dist/css/style2.css" rel="stylesheet">
+	<link href="<?php echo base_url();?>dist/css/date_picker.css" rel="stylesheet">
+	<link href="<?php echo base_url();?>dist/css/styles.css" rel="stylesheet" /> <!--for chart -->
 
-						success: function( result ){
-							// show that notification is successful
-							//$('#error').html(result);
-							if( result != "1" ){
-								thisButton.attr('disabled', 'disabled');
-								// remove row
-								//alert("Student has been notified");
-								document.getElementById("success_notify").style.display='none';
-=======
-<?php include 'admin_header.php'?>
->>>>>>> 5fd38ac4c3936aaa9fac9514aa9af01f2f8cbe62
+	<style type="text/css" id="holderjs-style"></style></head>
 
-								$("#success_claim").show();
-								$("#success_claim").html("Successfully claimed!");
-								$("#success_claim").fadeIn('slow');
-								document.body.scrollTop = document.documentElement.scrollTop = 0;
-								setTimeout(function() { $('#success_claim').fadeOut('slow') }, 5000);
-								$("#"+materialid).html("");	
-							} else {
-								//alert("Failed to notify");
-							}
-						}
-					});
-				}
+	<body>
+		 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand"><img src="<?php echo base_url();?>dist/images/logo4.png" height="30px"></a>
+                </div>
+				<!--<div class="alert alert-success" id="returned">
+					<a href="#" class="close" data-dismiss="alert" id="boton_cerrar">&times;</a> 
+					<strong>Successfully returned material!</strong>     
+				</div>-->
+                <form class="navbar-form navbar-right" role="form">
+                    <!-- Split button -->
+                <div class="btn-group">
+                  <button type="button" class="btn btn-default" data-toggle="dropdown">
+					<span class="glyphicon glyphicon-cog"></span>
+				  </button>
+                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="<?php echo base_url();?>admin/settings">Settings</a></li>
+                    <li><a href="#">Help</a></li>
+                    <li class="divider"></li>
+                    <li><a href="<?php echo base_url();?>admin/logout">Log-out</a></li>
+                  </ul>
+                </div>
+                </form>
 
-				function notify( thisDiv ){
-					var thisButton = thisDiv;
-					var parent = thisDiv.parent();
-					var idnumber = $.trim(parent.siblings('.idnumber').text());
-					var materialid = $.trim(parent.siblings('.materialid').text());
-					var isbn = $.trim(parent.siblings('.isbn').text());
+            </div>
+        </div>
 
-					$.ajax({
-						type: "POST",
-						url: "<?php echo base_url();?>admin/notification",
-						data: { materialid : materialid, idnumber : idnumber, isbn : isbn }, 
-
-						beforeSend: function() {
-							//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
-							$("#error_message").html("loading...");
-						},
-
-						error: function(xhr, textStatus, errorThrown) {
-								$('#error_message').html(textStatus);
-						},
-
-						success: function( result ){
-							// show that notification is successful
-							$('#error').html(result);
-							if( result != "1" ){
-
-								// alert here if success
-								thisButton.attr('disabled', true);
-								thisButton.next().removeAttr('disabled');
-
-								//alert("Success!")
-								$("#success_notify").show();
-								$("#success_notify").html("Successfully notified!");
-								$("#success_notify").fadeIn('slow');
-								document.body.scrollTop = document.documentElement.scrollTop = 0;
-								setTimeout(function() { $('#success_notify').fadeOut('slow') }, 5000);
-
-							} else {
-								//alert("Fail!");
-							}
-						}
-					});
-				}
-
-	</script>
 		<div class="mainBody">
 		
 			<!-- Nav tabs -->
@@ -120,41 +87,41 @@
 					<div id = "main-content">
 						<br />
 						<br />
-						<form method="post"  style="width: 600px ; margin-left: auto; margin-right: auto;" role="form">
-							<input type="text" id = "searchReservedBooks" name ="search"  size="80"/>
-							<input class = "btn btn-primary" type="button" id = "searchReservedButton" value="Search"/> 
-							<div class="alert-container">
-								<div id = "success_notify" class = "alert alert-success">  </div>
-								<div id = "success_claim" class = "alert alert-success">  </div>
-							</div>
-                        </form>
-<table class="tablesorter" border = "1" cellspacing='5' cellpadding='5' align = 'center'>
-	<thead>
-		<tr>
-			<th width="5%"><center>ISBN</center></th>
-			<th width="5%"><center>Library Material ID</center></th>
-			<td width="5%"><center><b>Type</center></b></td>
-			<th width="45%"><center>Library Information</center></th>
-			<th width="5%"><center>Borrower</center></th>
-			<th width="8%"><center>Start Date</center></th>
-			<th width="5%"><center>Rank</center></th>
-			<th width="22%"><center>Action</center></th>
-		</tr>
-	</thead>
-	<tfoot>
-		<tr>
-			<th width="5%"><center>ISBN</center></th>
-			<th width="5%"><center>Library Material ID</center></th>
-			<td width="5%"><center><b>Type</center></b></td>
-			<th width="45%"><center>Library Information</center></th>
-			<th width="5%"><center>Borrower</center></th>
-			<th width="8%"><center>Start Date</center></th>
-			<th width="5%"><center>Rank</center></th>
-			<th width="22%"><center>Action</center></th>
-		</tr>
-	</tfoot>
-	<tbody>
-		<?php
+						<input type="text" id = "searchReservedBooks" name ="search"  size="80"/>
+						<input class = "btn btn-primary" type="button" id = "searchReservedButton" value="Search"/> 
+						<div class="alert-container">
+							<div id = "success_notify" class = "alert alert-success">  </div>
+							<div id = "success_claim" class = "alert alert-success">  </div>
+						</div>
+						<br />
+                        <br/>
+							<table class="tablesorter">
+								<thead>
+									<tr>
+										<th ><center>ISBN</center></th>
+										<th><center>Library Material ID</center></th>
+										<td><center><b>Type</center></b></td>
+										<th><center>Library Information</center></th>
+										<th><center>Borrower</center></th>
+										<th><center>Start Date</center></th>
+										<th><center>Rank</center></th>
+										<th><center>Action</center></th>
+									</tr>
+								</thead>
+								<tfoot>
+									<tr>
+										<th><center>ISBN</center></th>
+										<th><center>Library Material ID</center></th>
+										<th><center>Type</center></th>
+										<th><center>Library Information</center></th>
+										<th><center>Borrower</center></th>
+										<th><center>Start Date</center></th>
+										<th><center>Rank</center></th>
+										<th><center>Action</center></th>
+									</tr>
+								</tfoot>
+								<tbody>
+									<?php
 									$rank = 0;
 									$i = 0;
 								
@@ -179,7 +146,7 @@
 										else if($row['type'] == 'Thesis')
 											$type = "<span class='glyphicon glyphicon-bookmark'></span>";
 											
-										echo "<td class = 'type' align='center'>". $type ."</td>";
+										echo "<td class = 'type' align='center'> <br />". $type ."</td>";
 										
 
 										echo "<td>";
@@ -200,29 +167,19 @@
 												echo "<span class ='author'> ${row['edvol']}th Edition </span>" . ".";
 										}
 										echo "</td>";
-										echo "<td class = 'idnumber' ><center><span class='table-text'>${row['idnumber']}</span></center> </td>";
+										echo "<td class = 'idnumber' ><center><span class='table-text'> <br /> ${row['idnumber']}</span></center> </td>";
 										
 										if( $row['started'] == 0 ){
 											echo "<td align='center'><span class='table-text'> Not yet notified </span></td>";
 											echo "<td align='center'><span class='table-text'> ${row['queue']}/${row['total']}</span> </td>";
-<<<<<<< HEAD
-											echo "<td align='center'><button onclick='notify($(this))' class='sendNotif btn btn-primary' name='notify' value='${row['id']}'>Notify</button>";
-											echo "<button onclick='claim($(this))' class='sendClaim btn btn-primary' name='claim' value='${row['id']}'  disabled>Claim</button>";
-=======
 											echo "<td align='center'><button class='sendNotif btn btn-primary' name='notify' value='${row['id']}'>Notify</button>";
 											echo "<button class='sendClaim btn btn-primary' name='claim' value='${row['id']}'  disabled>Claim</button>";
->>>>>>> 5fd38ac4c3936aaa9fac9514aa9af01f2f8cbe62
 											echo "</td>";
 										} else {
 											echo "<td><span class='table-text'> ${row['startdate']}</span> </td>";
 											echo "<td><span class='table-text'>${row['queue']}/${row['total']}</span> </td>";
-<<<<<<< HEAD
-											echo "<td><button onclick= 'notify($(this))' class='sendNotif btn btn-primary' name='notify' value='${row['id']}' disabled>Notify</button>";
-											echo "<button onclick='claim($(this))' class='sendClaim btn btn-primary' name='claim' value='${row['id']}'>Claim</button>";
-=======
 											echo "<td><button class='sendNotif btn btn-primary' name='notify' value='${row['id']}' disabled>Notify</button>";
 											echo "<button class='sendClaim btn btn-primary' name='claim' value='${row['id']}'>Claim</button>";
->>>>>>> 5fd38ac4c3936aaa9fac9514aa9af01f2f8cbe62
 											echo "</td>";
 										}
 										echo "</tr>";
@@ -230,7 +187,7 @@
 								
 								?>
 							</tbody>
-</table>
+						</table>
 						<div class="pager">
 							<!--<img src="../addons/pager/icons/first.png" class="first" alt="First" />
 							<img src="../addons/pager/icons/prev.png" class="prev" alt="Prev" />-->
@@ -257,7 +214,7 @@
 		
 		 <!-- FOOTER -->
 		<footer><a href="#" class="back-to-top"><span class='glyphicon glyphicon-chevron-up'></span></a>
-        <center><p id="small">2013 CMSC 128 AB-6L. All Rights Reserved. <a href="#">Privacy</a> | <a href="#">Terms</a> | <a href="#">About</a> | <a href="#">Contact</a></p></center>
+        	<center><p id="small">2013 CMSC 128 AB-6L. All Rights Reserved. <a href="#">Privacy</a> | <a href="#">Terms</a> | <a href="#">About</a> | <a href="#">Contact</a></p></center>
 		</footer>
 
 		<script src="<?php echo base_url();?>dist/js/jquery.js"></script>
@@ -334,7 +291,6 @@
 			// class added to arrows when at the extremes (i.e. prev/first arrows are "disabled" when on the first page)
 			cssDisabled: 'disabled', // Note there is no period "." in front of this class name
 			cssErrorRow: 'tablesorter-errorRow' // ajax error information row
-<<<<<<< HEAD
 
 			};
 
@@ -345,18 +301,6 @@
 						widgets: ['zebra']
 					})
 
-=======
-
-			};
-
-			$("table")
-				.tablesorter({
-						theme: 'blue',
-						widthFixed: true,
-						widgets: ['zebra']
-					})
-
->>>>>>> 5fd38ac4c3936aaa9fac9514aa9af01f2f8cbe62
 			.bind('pagerChange pagerComplete pagerInitialized pageMoved', function(e, c){
 				var msg = '"</span> event triggered, ' + (e.type === 'pagerChange' ? 'going to' : 'now on') + ' page <span class="typ">' + (c.page + 1) + '/' + c.totalPages + '</span>';
 				$('#display')
@@ -379,17 +323,6 @@
 			$(document).ready(function(){		
 				var currentData = <?php echo json_encode($reservations); ?>;
 
-			
-				function printAuthor( data ){
-					var ret = "";
-					for( var i = 0; i < data.length; i++ ){
-						ret += "<span>" + data[i].lname +  ",";
-						ret += data[i].fname;
-						ret += data[i].mname +  " </span> <br />";
-					}
-
-					return ret;
-				}
 
 				function printAuthor( data ){
 					var ret = "";
@@ -417,23 +350,18 @@
 
 				function printDate( data, date ){
 					if( data == 0 ){
-						return "<td>Not yet notified </td>";
+						return "<td class='table-text' align = 'center' >Not yet notified </td>";
 					} else {
-						return "<td>" + date + "</td>";
+						return "<td class='table-text' align = 'center' >" + date + "</td>";
 					}
 				}
 
 				function printButton( condition ){
 					if( condition == 0 ){
-						return "<td><button  onclick='notify($(this))' class='sendNotif btn btn-primary' name='notify' value='${row['id']}'>Notify</button> <button  onclick='claim($(this))' class='sendClaim btn btn-primary' name='claim' value='${row['id']}' disabled>Claim</button> </td>";
+						return "<td><button click class='sendNotif btn btn-primary' name='notify' value='${row['id']}'>Notify</button> <button click class='sendClaim btn btn-primary' name='claim' value='${row['id']}' disabled>Claim</button> </td>";
 					} else {
-<<<<<<< HEAD
-						return "<td><button  onclick='notify($(this))' class='sendNotif btn btn-primary' name='notify' value='${row['id']}' disabled>Notify</button> <button  onclick='claim($(this))' class='sendClaim btn btn-primary' name='claim' value='${row['id']}'>Claim</button> </td>";
-					}				
-=======
 						return "<td><button click class='sendNotif btn btn-primary' name='notify' value='${row['id']}' disabled>Notify</button> <button click class='sendClaim btn btn-primary' name='claim' value='${row['id']}'>Claim</button> </td>";
 					}					
->>>>>>> 5fd38ac4c3936aaa9fac9514aa9af01f2f8cbe62
 				}
 
 
@@ -456,26 +384,17 @@
 						},
 
 						success: function( result ){
-<<<<<<< HEAD
-=======
 								
 							$('#error').html(result);
->>>>>>> 5fd38ac4c3936aaa9fac9514aa9af01f2f8cbe62
 							if( result != "" ){
 								$('tbody').html("");
 								//alert(result.length);
+
 								for( i = 0; i < result.length; i++ ){
-<<<<<<< HEAD
-									$('tbody').append("<tr id ='" + result[i].materialid + "-" + result[i].idnumber + "' > <td class = 'materialid' > " + result[i].materialid + "  </td> <td class = 'isbn' > " + result[i].isbn + "  </td><td class = 'type' > " + result[i].type + " </td> <td class = 'idnumber' > " + result[i].idnumber + "  </td> <td>" + "<span class = 'name' > <strong> " + result[i].name + " </strong> </span>" + printAuthor(result[i].author) + "<span class = 'year' > " + result[i].year + " </span>." + printEdition( result[i].edvol ) + "<span>  <br /> ( " + result[i].type + " )</span> </td>" + printDate( result[i].started, result[i].claimdate ) + "<td> " + result[i].queue + " </td> " + printButton( result[i].started ) + "</tr>");
-									
-								}
-							//	$('table').trigger('update');
-=======
-									$('tbody').append("<tr id ='" + result[i].materialid + "' > <td class = 'materialid' > " + result[i].materialid + "  </td> <td class = 'isbn' > " + result[i].isbn + "  </td><td class = 'type' > " + result[i].type + " </td> <td class = 'idnumber' > " + result[i].idnumber + "  </td> <td>" + "<span class = 'name' > <strong> " + result[i].name + " </strong> </span>" + printAuthor(result[i].author) + "<span class = 'year' > " + result[i].year + " </span>." + printEdition( result[i].edvol ) + "<span>  <br /> ( " + result[i].type + " )</span> </td>" + printDate( result[i].started, result[i].claimdate ) + "<td> " + result[i].queue + " </td> " + printButton( result[i].started ) + "</tr>");
+									$('tbody').append("<tr id ='" + result[i].materialid + "-" + result[i].isbn + "' > <td class = 'isbn' class='table-text' align = 'center' > " + result[i].isbn + "  </td><td class = 'materialid' class='table-text' align = 'center'> " + result[i].materialid + "  </td> <td class = 'type' class='table-text' align = 'center' > " + result[i].type + " </td> <td class='table-text'>" + "<span class = 'name' > <strong> " + result[i].name + " </strong> </span>" + printAuthor(result[i].author) + "<span class = 'year' > " + result[i].year + " </span>." + printEdition( result[i].edvol ) + "</td> <td class = 'idnumber' class='table-text' align = 'center' > " + result[i].idnumber + "  </td> " + printDate( result[i].started, result[i].claimdate ) + "<td class='table-text' align = 'center' > " + result[i].queue + " </td> " + printButton( result[i].started ) + "</tr>");
 									
 								}
 								$('table').trigger('update');
->>>>>>> 5fd38ac4c3936aaa9fac9514aa9af01f2f8cbe62
 							} else {
 								$('tbody').html(" no result ");
 								//alert("Failed to notify");
@@ -483,7 +402,7 @@
 
 
 							}
-							//$('table').trigger('update');
+							$('table').trigger('update');
 							
 						}
 					});
@@ -493,9 +412,49 @@
 					window.location.href = "<?php echo site_url('admin/logout'); ?>";
 				});
 				
+				$(".sendClaim").click( function(){
+					var thisButton = $(this);
+					var parent = $(this).parent();
+					var idnumber = $.trim(parent.siblings('.idnumber').text());
+					var materialid = $.trim(parent.siblings('.materialid').text());
+					var isbn = $.trim(parent.siblings('.isbn').text());
+			
+					$.ajax({
+						type: "POST",
+						url: "<?php echo base_url();?>admin/claim_reservation",
+						data: { materialid : materialid, idnumber : idnumber, isbn : isbn }, 
+
+						beforeSend: function() {
+							//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
+							$("#error_message").html("loading...");
+						},
+
+						error: function(xhr, textStatus, errorThrown) {
+								$('#error_message').html(textStatus);
+						},
+
+						success: function( result ){
+							// show that notification is successful
+							//$('#error').html(result);
+							if( result != "1" ){
+								thisButton.attr('disabled', 'disabled');
+								// remove row
+								//alert("Student has been notified");
+								document.getElementById("success_notify").style.display='none';
+
+								$("#success_claim").show();
+								$("#success_claim").html("Successfully claimed!");
+								$("#success_claim").fadeIn('slow');
+								document.body.scrollTop = document.documentElement.scrollTop = 0;
+								setTimeout(function() { $('#success_claim').fadeOut('slow') }, 5000);
+								$("#"+materialid+"-"+isbn).html("");	
+							} else {
+								//alert("Failed to notify");
+							}
+						}
+					});
+				});
 				
-<<<<<<< HEAD
-=======
 				$(".sendNotif").click( function(){
 					var thisButton = $(this);
 					var parent = $(this).parent();
@@ -539,7 +498,6 @@
 						}
 					});
 				});
->>>>>>> 5fd38ac4c3936aaa9fac9514aa9af01f2f8cbe62
 			});
 		</script>
 	</body>

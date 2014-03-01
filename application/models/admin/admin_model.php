@@ -330,12 +330,16 @@
 		return $query->result();
 	}
 	
-	public function book_update($data, $data1, $data2){
+	public function book_update($data, $data1){
 		$this->load->database();
 		$id = $this->db->escape_like_str($data['materialid']);
-		$this->db->update("librarymaterial",$data1,"materialid = '". $id."'"); 
-		$this->db->delete("author","materialid = '". $id."'");
-		$this->db->insert_batch("author",$data2);	
+		$this->db->update("librarymaterial",$data1,"materialid = '". $id."'"); 	
+	}
+	
+	public function author_update($data,$data2){
+		$this->load->database();
+		$id = $this->db->escape_like_str($data['materialid']); 
+		$this->db->update("author",$data2,"materialid = '". $id."'"); 	
 	}
 	public function book_delete($data){
 		$this->load->database();

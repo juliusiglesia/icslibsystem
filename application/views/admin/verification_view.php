@@ -5,7 +5,7 @@
 		<title> ICSLibrarySystem : Verification </title>
 	</head>
 	<body>
-		<?php echo form_open('register/registration'); ?>
+		<?php echo form_open('admin/verification'); ?>
 			  <label>Email</label>
 			  <?php echo form_error('email'); ?>
 			  <input type="text" name="email" value="<?php echo set_value('email'); ?>"/>

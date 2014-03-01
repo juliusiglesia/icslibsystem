@@ -112,7 +112,7 @@ class Admin extends CI_Controller {
 		$user_count = $this->check_admin_model->check_username();
 		
 		if( $user_count != 1 ){
-			echo "Username doergtaes not exist!";
+			echo "Username does not exist!";
 		} else {
 			$pass_count = $this->check_admin_model->check_password();
 			
@@ -252,8 +252,6 @@ class Admin extends CI_Controller {
 		if( !$is_logged_in ){
 			redirect('/admin/login', 'refresh');
 		} else {
-			$this->no_cache();
-			$data['user'] = $is_logged_in;
 			$this->load->model('admin/borrowed_books_model'); 
 			if($this->input->post('search_borrowed_books')){
 				$word = $this->db->escape_str($this->input->post('search'));
@@ -286,7 +284,7 @@ class Admin extends CI_Controller {
 		$idnumber = $this->input->post('idnumber');
 		$isbn = $this->input->post('isbn');
 		$fine = $this->input->post('fine');
-		$this->material_returned_model->update_status($isbn, $materialid, $fine);
+		$this->material_returned_model->update_status($isbn, $fine);
 
 		redirect('/admin/borrowed_books', 'refresh');
 		//$message = $this->input->post('message');
@@ -295,12 +293,6 @@ class Admin extends CI_Controller {
 
 	public function admin_search() {
 
-		$is_logged_in = $this->is_logged_in();
-		if( !$is_logged_in ){
-			redirect('/admin/login', 'refresh');
-		} else {
-			$this->no_cache();
-			$data['user'] = $is_logged_in;
 		$this->load->model('admin/admin_model');
 		$this->load->library('javascript');
 		
@@ -309,7 +301,7 @@ class Admin extends CI_Controller {
 			$type = $this->input->post('type');
 			$access = $this->input->post('access');
 			$avail = $this->input->post('avail');
-			$word = $this->db->escape_str($this->input->post('search'));
+			$word = $this->input->post('search');
 
 			$data['sql2'] = $this->admin_model->search($filter,$type,$word,$access,$avail);
 			$this->load->view('admin/admin_search',$data);
@@ -326,7 +318,6 @@ class Admin extends CI_Controller {
 				$materialid = $this->input->post('materialid');
 				$course = $this->input->post('course');
 				$type = $this->input->post('type');
-				$isbn = $this->input->post('isbn');
 				$name = $this->input->post('name');
 				$year = $this->input->post('year');
 				$edvol = $this->input->post('edvol');
@@ -344,7 +335,6 @@ class Admin extends CI_Controller {
 						'materialid' => $materialid,
 						'course' => $course,
 						'type' => $type,
-						'isbn' => $isbn,
 						'name' => $name,
 						'year' => $year,
 						'edvol' => $edvol,
@@ -377,7 +367,6 @@ class Admin extends CI_Controller {
 						'fname' => $fname,
 						'mname' => $mname,
 						'lname' => $lname,
-						'isbn' => $isbn,
 					);	
 					
 					$this->load->model('admin/add_material_model');
@@ -388,7 +377,6 @@ class Admin extends CI_Controller {
 				$materialid = $this->input->post('materialid');
 				$course = $this->input->post('course');
 				$type = $this->input->post('type');
-				$isbn = $this->input->post('isbn');
 				$name = $this->input->post('name');
 				$year = $this->input->post('year');
 				$edvol = $this->input->post('edvol');
@@ -410,7 +398,6 @@ class Admin extends CI_Controller {
 						'materialid' => $materialid,
 						'course' => $course,
 						'type' => $type,
-						'isbn' => $isbn,
 						'name' => $name,
 						'year' => $year,
 						'edvol' => $edvol,
@@ -427,14 +414,12 @@ class Admin extends CI_Controller {
 						'fname' => $fname,
 						'mname' => $mname,
 						'lname' => $lname,
-						'isbn' => $isbn,
 					);	
 					
 					$this->load->model('admin/add_material_model');
 					$this->add_material_model->insert_author($data_author);
 				}
 			}	
-		}
 		}
 	}
 	
@@ -458,20 +443,15 @@ class Admin extends CI_Controller {
 			$name = $this->input->post('name');
 			$type = $this->input->post('type');
 			$course = $this->input->post('course');
-			$lname = $this->input->post('lnameOfAuthors');
-			$fname = $this->input->post('fnameOfAuthors');
-			$mname = $this->input->post('mnameOfAuthors');
-			$num_authors = $this->input->post('numberOfAuthors');
+			$lname = $this->input->post('lname');
+			$fname = $this->input->post('fname');
+			$mname = $this->input->post('mname');
 			$available = $this->input->post('available');
 			$access = $this->input->post('access');
 			$year = $this->input->post('year');
 			$requirement = $this->input->post('requirement');
 			$quantity = $this->input->post('quantity');
 			
-			$lname = explode(",",$lname);
-			$fname = explode(",",$fname);
-			$mname = explode(",",$mname);
-
 			$data1 = array(
             'name' => $name,
 			'type' => $type,
@@ -482,17 +462,15 @@ class Admin extends CI_Controller {
 			'requirement' => $requirement,
 			'quantity' => $quantity,
 			);
+							
+			$data2 = array(
+			'lname' => $lname,
+			'fname' => $fname,
+			'mname' => $mname,
+			);
 			
-			$data2 = array();
-			for($i=0;$i<$num_authors;$i++){
-				$data2[] = array(
-				'materialid' => $materialid,
-				'lname' => $lname[$i],
-				'fname' => $fname[$i],
-				'mname' => $mname[$i],
-				);	
-			}
-			$this->admin_model->book_update($data,$data1,$data2);
+			$this->admin_model->book_update($data,$data1);
+			$this->admin_model->author_update($data,$data2);
 		}
 		header('location:/icslibsystem/admin/admin_search');		
 	}
@@ -505,14 +483,8 @@ class Admin extends CI_Controller {
 	}
 	
 	public function add_material() {
-	$is_logged_in = $this->is_logged_in();
-		if( !$is_logged_in ){
-			redirect('/admin/login', 'refresh');
-		} else {
-			$this->no_cache();
-			$data['user'] = $is_logged_in;
 		$this->load->view('admin/add_material_view');
-		}
+		
 	}
 	
 	public function claim_reservation(){
@@ -533,7 +505,7 @@ class Admin extends CI_Controller {
 	
 	public function settings(){
 	
-<<<<<<< HEAD
+		$this->load->helper('url');
 		$this->load->view('admin/settings');
 	
 	}
@@ -551,13 +523,6 @@ class Admin extends CI_Controller {
 		
 		
 	}
-	
-=======
-		$this->load->helper('url');
-		$this->load->view('admin/settings');
-	
-	}
->>>>>>> 5fd38ac4c3936aaa9fac9514aa9af01f2f8cbe62
 }
 
 ?>

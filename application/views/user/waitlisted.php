@@ -23,9 +23,8 @@
 						echo "<td> ${row['year']} </td>";
 						echo "<td> ${row['type']} </td>";
 						foreach($rank as $q_rank){
-							
 							if($q_rank['materialid']==$row['materialid']){
-								$rrank=$q_rank['queue'];
+								$rank=$q_rank['queue'];
 							}
 						}
 						foreach($total as $t_queue){
@@ -33,7 +32,7 @@
 							$t_q=$t_queue['tq'];
 						}
 						}
-						echo "<td> $rrank of $t_q </td>";
+						echo "<td> $rank of $t_q </td>";
 					
 					
 						

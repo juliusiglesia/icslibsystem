@@ -12,6 +12,7 @@
         <div class="col-md-3">
             <ul class="nav nav-pills nav-stacked">
                 <li><a href="<?php echo base_url(); ?>profile"><i class="fa fa-home fa-fw"></i>Profile</a></li>
+                <li class="active"><a href="<?php echo base_url(); ?>borrowed_materials"><i class="fa fa-list-alt fa-fw"></i>Books on Hand</a></li>
                 <li><a href="<?php echo base_url(); ?>reserved_materials"><i class="fa fa-file-o fa-fw"></i>Reserved Books</a></li>
                 <li><a href="<?php echo base_url(); ?>user_search"><i class="fa fa-bar-chart-o fa-fw"></i>Search Library</a></li>
             </ul>
@@ -30,8 +31,7 @@
 								<thead>
 								  <tr>
 									<th style="width:100px;" abbr="lmID" scope="col" title="Libary Material ID">Material ID</th>
-									<th style="width:100px;" abbr="CourseClassification" scope="col" title="Course Classification">Title . Author . Year . (Type)</th>
-								  	<th style="width:100px;" abbr="fine" scope="col" title="Course Classification">Fine</th>
+									<th style="width:100px;" abbr="CourseClassification" scope="col" title="Course Classification">infoooooo!</th>
 								  </tr>
 								</thead>
 									<?php
@@ -39,14 +39,6 @@
 									echo "<tr>";
 									echo "<td> ${row['materialid']} </td>";
 									echo "<td> ${row['fname']} ${row['mname']} ${row['lname']}. ${row['name']}. ${row['year']}. (${row['type']}) </td>";
-									echo "<td>";
-									if("${row['DATEDIFF((SELECT sysdate()),borrowedmaterial.expectedreturn)*fine']}" > 0){
-										echo "${row['DATEDIFF((SELECT sysdate()),borrowedmaterial.expectedreturn)*fine']}";
-									}
-									else{
-										echo "0";
-									}
-									echo "</td>";
 									echo "</tr>";
 									}
 									?>

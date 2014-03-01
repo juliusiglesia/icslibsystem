@@ -1,13 +1,4 @@
-<?php 
-
-	if($this->session->userdata('email'))
-		include 'logout_header.php'; 
-	else
-		include 'home_header.php';
-
-
-
-?>
+<?php include 'logout_header.php'; ?>
 
 	<!--
 	
@@ -20,29 +11,22 @@
     <div class="row">
         <div class="col-md-3">
             <ul class="nav nav-pills nav-stacked">
-                <li><a href="<?php echo base_url(); ?>reserved_materials"><span class="glyphicon glyphicon-folder-close"></span><i class="fa fa-home fa-fw"></i>Library Inventory</a></li>
-                <li class="active"><a href="#"><span class="glyphicon glyphicon-user"></span><i class="fa fa-file-o fa-fw"></i>Manage Profile</a></li>
-                <li><a href="<?php echo base_url(); ?>user_search"><span class="glyphicon glyphicon-search"></span><i class="fa fa-bar-chart-o fa-fw"></i>Search Library</a></li>
+                <li class="active"><a href="<?php echo base_url(); ?>profile"><i class="fa fa-home fa-fw"></i>Profile</a></li>
+                <li><a href="<?php echo base_url(); ?>borrowed_materials"><i class="fa fa-list-alt fa-fw"></i>Books on Hand</a></li>
+                <li><a href="<?php echo base_url(); ?>reserved_materials"><i class="fa fa-file-o fa-fw"></i>Reserved Books</a></li>
+                <li><a href="<?php echo base_url(); ?>user_search"><i class="fa fa-bar-chart-o fa-fw"></i>Search Library</a></li>
             </ul>
         </div>
 		
-        <div class="col-md-8.5 well1">
+        <div class="col-md-8.5 well">
 		
 			<div class="container">
 				<div class="row">
 					<div class="col-md-9">
-						<div class="well2 well-sm">
+						<div class="well well-sm">
 							<div class="row">
-								<div class="col-xs-6 col-sm-3">
-									<?php 
-										base_url();
-										if($this->session->userdata('sex') == 'F'){
-											echo "<img src='dist/images/derpina.png' alt='' class='img-rounded img-responsive' />";
-										}
-									 	else{
-											echo "<img src='dist/images/derp.png' alt='' class='img-rounded img-responsive' />";
-										}
-									?>
+								<div class="col-xs-6 col-sm-3 "">
+									<img src="<?php echo base_url();?>images/derpina.png" alt="" class="img-rounded img-responsive" />
 								</div>
 								
 								<div class="col-sm-6 col-md-8">
@@ -65,27 +49,10 @@
 									<div class="profile_overview">
 										<h3>Profile Summary:</h3>
 										<ul>
-											<li><b>Overdue books: 
-												<?php
-												foreach($overdueCount as $row)
-												echo "${row['COUNT(librarymaterial.materialid)']}";
-												?> 
-												</b>
-											</li>
-											<li><b>Borrowed books:
-												<?php
-												foreach($borrowedCount as $row)
-												echo "${row['COUNT(librarymaterial.materialid)']}";
-												?> 
-												</b>
-											</li>
-											<li><b>Reserved books:
-												<?php
-												foreach($reservedCount as $row)
-												echo "${row['COUNT(author.materialid)']}";
-												?> 
-												</b>
-											</li>
+										
+											<li><b>Overdue books:</b> </li>
+											<li><b>Borrowed books:</b> </li>
+											<li><b>Reserved books:</b> </li>
 										
 										</ul>
 									

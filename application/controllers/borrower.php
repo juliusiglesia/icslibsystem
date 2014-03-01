@@ -22,122 +22,79 @@ class Borrower extends CI_Controller {
 		$this->load->helper('url');
 		$email = $this->session->userdata('email');
 		if($email)
-			$this->borrowed_materials();
+		$this->load->view('user/profile.php');
 		else
-			$this->load->view('user/index.php');
+		$this->load->view('user/index.php');
 	}
-
 
 	public function outside_search(){
 		$this->load->helper('url');
 		
-		
-		$search = 	$this->db->escape_str($this->input->post('search'));
+		$search =  $this->input->post('search');
 		$filter =  $this->input->post('filter');
 		
-		$this->load->model('user/basic_search_model');
-
-		if($search=='')
-			$result_info['value'] = NULL;
-		else	
-			$result_info['value'] = $this->basic_search_model->get_search_res($search, $filter);
-		$this->load->view('user/outside_search.php', $result_info);
+		$result_info['value'] = $this->basic_search_model->get_search_res($search, $filter);
+		
+		
 	}
 	
 	public function user_search(){
-		$this->load->helper('url');
 		$this->load->library("session");
+		$this->load->helper('url');
 		
-		$search = 	$this->db->escape_str($this->input->post('search'));
+		$search =  $this->input->post('search');
 		$filter =  $this->input->post('filter');
 		
-		$this->load->model('user/basic_search_model');
-		$this->session->set_userdata('search', $search);
-		
-
 		$materialid = $this->input->post('materialid');
 		$userid = $this->session->userdata('email');
 
-		$this->load->model('user/reservation_model');
-		
 		$this->load->model('user/basic_search_model');
+		$this->load->model('user/check_reserved_model');
+		$this->load->model('user/check_waitlisted_model');
 
-		$result_info['matid'] = $this->reservation_model->if_reserved($userid);
-		$result_info['material'] = $this->reservation_model->if_waitlisted($userid);
-		
-		$this->load->model('user/borrowed_model');
-		$result_info['borrowed'] = $this->borrowed_model->get_borrowed_material();
-		$result_info['res'] = $this->borrowed_model->get_reserved_books();
-		$result_info['overdue'] = $this->borrowed_model->get_overdue();
-		
+		$result_info['matid'] = $this->check_reserved_model->if_reserved($userid);
+		$result_info['material'] = $this->check_waitlisted_model->if_waitlisted($userid);
 		if($search=='')
 			$result_info['value'] = NULL;
 		else	
 			$result_info['value'] = $this->basic_search_model->get_search_res($search, $filter);
 		$email = $this->session->userdata('email');
+		
 		if($email)
 			$this->load->view('user/user_search', $result_info);
 		else
 			$this->load->view('user/outside_search', $result_info);
-		 
-
 	}
-	
-	public function advanced_search(){
+
+	public function register(){
 		$this->load->helper('url');
-		
-		
-		$search = 	$this->db->escape_str($this->input->post('searchbox'));
-		$userid = $this->session->userdata('email');
-		
-		$search_option = $this->input->post('category'); //array yung options
-		$type = $this->input->post('type');
-		if($type==NULL && $search!=''){
-			$this->load->model('user/basic_search_model');
-			$result_info['value'] = $this->basic_search_model->get_search_res($search,$search_option);
-		}
-		else{
-			$this->load->model('user/advance_search_model');
-			$result_info['value'] = $this->advance_search_model->get_adv_search($search,$search_option,$type);
-		}
-		$this->load->model('user/basic_search_model');
-		if($this->session->userdata('email')){
-			
-			$this->load->model('user/reservation_model');
-
-			$result_info['matid'] = $this->reservation_model->if_reserved($userid);
-			$result_info['material'] = $this->reservation_model->if_waitlisted($userid);
-			
-			$this->load->model('user/borrowed_model');
-			$result_info['borrowed'] = $this->borrowed_model->get_borrowed_material();
-			$result_info['res'] = $this->borrowed_model->get_reserved_books();
-			$result_info['overdue'] = $this->borrowed_model->get_overdue();
-		
-			$this->load->view('user/adv_search', $result_info);
-		}else
-			$this->load->view('user/outside_adv_search', $result_info);
-
+		$this->load->view('user/Register.php');
 	}
-
-	
 	public function reserve(){
 		$this->load->library("session");
 		$this->load->helper('url');
 
 		$materialid = $this->input->post('materialid');
 		$userid = $this->session->userdata('email');
+		
 
-		$this->load->model('user/reservation_model');
-		$check_borrowed = $this->reservation_model->get_borrowedcopy($materialid);		
+		
+		$this->load->model('user/reserve_waitlist_model');
+		$check_borrowed = $this->reserve_waitlist_model->get_borrowedcopy($materialid);		
 		if($check_borrowed){
-			$data['materialid']=$materialid;
-			$this->load->view('user/waitlist_book', $data);
+				$data['materialid']=$materialid;
+				$this->load->view('user/waitlist_book', $data);
 
 		}else{
-			$this->load->model('user/reservation_model');
-			$this->reservation_model->get_book($materialid, $userid);
+				$data['materialid']=$materialid;
+				$this->load->model('user/load_requirement_model');
+				$check_req = $this->load_requirement_model->get_requirement($materialid);
+				if(($check_req[0]->requirement) != 1){
+					$this->load->view('user/reserve_book', $data);
+				}else{
+					$this->load->view('user/reserve_req_book', $data);
+				}
 		}
-
 		
 	}
 	
@@ -150,24 +107,14 @@ class Borrower extends CI_Controller {
 		
 		$data['materialid']=$materialid;
 		$data['user']=$userid;
-		$data['value']=$this->input->post('search');
 
-		$this->load->model('user/reservation_model');
-		$this->reservation_model->get_book($materialid, $userid);
-		$this->load->view('user/user_search', $data);
-	}
+		$this->load->model('user/reserve_book_model');
+		//$query = $this->db->get_where('librarymaterial', array('materialid' => $materialid));
+		$this->reserve_book_model->get_book($materialid, $userid);
+		$this->load->view('user/reserved', $data);
 
-	public function cancel_reservation(){
-		$this->load->library("session");
-		$this->load->helper('url');
-		$matid = $this->input->post('materialid');
-		$this->load->model('user/reservation_model');
-		$this->reservation_model->cancel_res($matid);
-		$this->reserved_materials_view();
 	}	
-
-	//reservation with otherstudent reserved 
-	/*public function waitlist_continue(){
+	public function waitlist_continue(){
 		$this->load->library("session");
 		$this->load->helper('url');
 
@@ -176,17 +123,20 @@ class Borrower extends CI_Controller {
 		
 		$data['materialid']=$materialid;
 		$data['user']=$userid;
-
+		
 		$this->load->model('user/waitlist_book_model');
-		$this->load->model('user/reservation_model');
+		$this->load->model('user/waitlisted_matid_model');
+		$this->load->model('user/waitlist_rank_model');
+		$this->load->model('user/waitlist_queue_model');
 		
 		$this->waitlist_book_model->waitlist_book($materialid, $userid);
-		$data['list'] = $this->reservation_model->waitlisted_matid($userid);
-
+		
+		$data['list'] = $this->waitlisted_matid_model->waitlisted_matid($userid);
+		$data['rank'] = $this->waitlist_rank_model->get_rank($userid);
+		$data['total'] = $this->waitlist_queue_model->get_total($userid);
 		$this->load->view('user/waitlisted', $data);
 		
-	}*/
-
+	}
 	
 	public function login()
 	{
@@ -202,22 +152,22 @@ class Borrower extends CI_Controller {
 		
 		if($borrower_info)
 		{
+		$data['header'] = "Hello, {$borrower_info[0]->fname} ";
 		
+		$this->session->set_userdata('fname',$borrower_info[0]->fname);
+		$this->session->set_userdata('mname',$borrower_info[0]->mname);
+		$this->session->set_userdata('lname',$borrower_info[0]->lname);
 		$this->session->set_userdata('idnumber',$borrower_info[0]->idnumber);
 		$this->session->set_userdata('email',$borrower_info[0]->email);
 		$this->session->set_userdata('password',$pass);
+		$this->session->set_userdata('college',$borrower_info[0]->college);
+		$this->session->set_userdata('course',$borrower_info[0]->course);
+		$this->session->set_userdata('sex',$borrower_info[0]->sex);
+		$this->session->set_userdata('classification',$borrower_info[0]->classification);
 		$this->session->set_userdata('bookcount',$borrower_info[0]->bookcount);
-
-			$b_info = $this->log_model->get_info($borrower_info[0]->idnumber);
-				$this->session->set_userdata('college',$b_info[0]->college);
-				$this->session->set_userdata('course',$b_info[0]->course);
-				$this->session->set_userdata('sex',$b_info[0]->sex);
-				$this->session->set_userdata('classification',$b_info[0]->classification);
-				$this->session->set_userdata('fname',$b_info[0]->fname);
-				$this->session->set_userdata('mname',$b_info[0]->mname);
-				$this->session->set_userdata('lname',$b_info[0]->lname);
-			
+		//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 		$this->borrowed_materials();
+		//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 		}
 		else
 		{
@@ -232,28 +182,22 @@ class Borrower extends CI_Controller {
 		$this->load->helper('url');
 		$this->index();
 	}
-	
 
-
-
-	public function register(){
-		$this->load->helper('url');
-		$this->load->view('user/Register.php');
-	}
-
+//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 	public function borrowed_materials() { 
 		// loads the model php file which will interact with the database
 		$this->load->helper('url');
 		$this->load->model('user/borrowed_model'); 
 		// views the result by passing the data to the view php file
 		$data['borrowed'] = $this->borrowed_model->get_borrowed_material();
-		$data['borrowedCount'] = $this->borrowed_model->get_borrowed_material_count();
-		$data['reservedCount'] = $this->borrowed_model->get_reserved_material_count();
-		$data['overdueCount'] = $this->borrowed_model->get_overdue_material_count();
 		$data['res'] = $this->borrowed_model->get_reservations();
 		$data['overdue'] = $this->borrowed_model->get_overdue();
+		$data['status']="FALSE";
+		$data['passStatus']="FALSE";
+		$data['temp']="TRUE";
 		$this->load->view('user/profile', $data);
 	}
+//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 	
 	public function borrowed_materials_view(){
 	
@@ -261,89 +205,253 @@ class Borrower extends CI_Controller {
 		$this->load->helper('url');
 		$this->load->model('user/borrowed_model'); 
 		// views the result by passing the data to the view php file
-		$data['borrowedCount'] = $this->borrowed_model->get_borrowed_material_count();
-		$data['reservedCount'] = $this->borrowed_model->get_reserved_material_count();
-		$data['overdueCount'] = $this->borrowed_model->get_overdue_material_count();
-		$data['res'] = $this->borrowed_model->get_reservations();
-		$data['overdue'] = $this->borrowed_model->get_overdue();
 		$data['borrowed'] = $this->borrowed_model->get_borrowed_material();
-
 		$this->load->view('user/borrowed_books', $data);
 	
 	}
-	public function profile(){
-		$email = $this->session->userdata('email');
-		if($email)
-			//$this->borrowed_materials();
-			echo $email;
-		else
-			//$this->index();
-			echo "MAY MALI!";
-	}	
-
-
 	
 	public function reserved_materials_view(){
 	
 		// loads the model php file which will interact with the database
 		$this->load->helper('url');
 		$this->load->model('user/borrowed_model'); 
-		$userid = $this->session->userdata('email');
 		// views the result by passing the data to the view php file
-		$data['borrowed'] = $this->borrowed_model->get_borrowed_material();
-		$data['res'] = $this->borrowed_model->get_reserved_books();
-		$data['overdue'] = $this->borrowed_model->get_overdue();
-
-		//update
-		$this->load->model('user/reservation_model');
-		$data['list'] = $this->reservation_model->waitlisted_matid($userid);
-		$data['rank'] = $this->reservation_model->get_rank($userid);
-		$data['total'] = $this->reservation_model->get_total($userid); //end update
+		$data['borrowed'] = $this->borrowed_model->get_reservations();
 		$this->load->view('user/reserved_books', $data);
 	
 	}
 		
+	
 	public function load_profile(){
-		$email = $this->session->userdata('email');
-		if($email)
-			$this->borrowed_materials();
-		else
+		$this->borrowed_materials();
+		
+	}
+
+
+
+
+
+
+
+	public function registration()
+	{
+		$this->load->library('form_validation');
+		//field name, error message, validation rules
+		
+		$this->form_validation->set_rules('fname','First Name',
+			'trim|required|min_length[4]|xss_clean|alpha_dash');
+		$this->form_validation->set_rules('mname','Middle Name',
+			'trim|required|min_length[4]|xss_clean|alpha_dash');
+		$this->form_validation->set_rules('lname','Last Name',
+			'trim|required|min_length[4]|xss_clean|alpha_dash');
+		$this->form_validation->set_rules('idnumber','IDnumber',
+			'trim|required|min_length[4]|max_length[11]|xss_clean|callback_idnumber_check|callback_idnumber_exist_check|callback_check_idnum');
+		$this->form_validation->set_rules('email','Email',
+			'trim|required|valid_email|max_length[50]|callback_email_exist');
+		$this->form_validation->set_rules('password', 'Password',
+			'trim|required|min_length[4]|max_length[32]|matches[password_conf]|!matches[fname]|!matches[mname]|!matches[lname]');
+		$this->form_validation->set_rules('password_conf', 'Password Confirmation',
+			'xss_clean|required|matches[password]');
+		$this->form_validation->set_rules('course','Course',
+			'trim|required|min_length[4]|max_length[10]|xss_clean|alpha');
+
+		if($this->form_validation->run() == FALSE){
+			$temp['temp'] = "FALSE";
+			$this->load->helper('url');
+			$this->load->view('user/Register',$temp);
+		}
+		else{
+			$this->load->model('user/registration_model'); 
+			$this->registration_model->add_user();
+			//$this->verify();
 			$this->index();
-			
+		}
 	}
 
+//error validation	
+	public function check_idnum($idnumber)
+	{
+		$this->load->model('user/registration_model');
+		$result=$this->registration_model->idnumber_exist_check($idnumber);
+		if($result){
+			$this->form_validation->set_message('check_idnum','The ID number you entered is invalid.');
+			return FALSE;
+		}
+		else return TRUE;
+	}
 
-	public function registration(){
+	public function idnumber_exist_check($idnumber)
+	{
+		$this->load->model('user/registration_model');
+		$result=$this->registration_model->idnumber_borrower_check($idnumber);
+		if($result){
+			$this->form_validation->set_message('idnumber_exist_check','Already a user');
+			return FALSE;
+		}
+	}
+
+	public function idnumber_check($str)
+	{
+		if(preg_match( '/(^\d{4}-?\d{5}$|^\d{11}$)/' ,$str)){
+			return true;
+			}
+		else{
+			$this->form_validation->set_message('idnumber_check','Invalid id number.');
+			return FALSE;
+			}
+	}
+
+	function email_exist($email)
+	{
+		$this->load->model('user/registration_model');
+		$result=$this->registration_model->email_exist($email);
+		if($result){
+			$this->form_validation->set_message('email_exist','The %s already exists in our database,
+			please use a different one.');
+			return FALSE;
+		}
+	}
+	
+//account validation
+	public function validate()
+	{
+		$this->load->library("session");
+		$this->load->helper('url');
+
+		$email=$this->input->post('email');
+		$code=$this->input->post('code');
+		$password=SHA1($this->input->post('code'));
+		$pass=$password;
+		$this->load->model('user/registration_model');
+		$result=$this->registration_model->validate_account($email,$code);
+		if($result)
+		{ 
+			$this->continue_();	
+			$this->load->library("session");
+			$this->session->sess_destroy();
+			$this->load->helper('url');	
+		}
+		else $this->verify();
+	}
+
+	//update functions
+	public function update_email()
+	{
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('email','Email',
+			'trim|required|valid_email|max_length[50]|callback_email_exist');
+
+		if($this->form_validation->run() == FALSE){
+			$temp['status']="FALSE";
+			$temp['passStatus']="";
+			$temp['temp']="FALSE";
+			$this->load->view('user/profile',$temp);
+		}
+		else{
+			$temp['status']="TRUE";
+			$temp['passStatus']="";
+			$temp['temp']="TRUE";
+			$this->load->model('user/update_model');
+			$this->update_model->update_email();
+			$this->load->view('user/profile',$temp);
+		}
+	}
+	
+	public function update_password()
+	{
+		$this->load->library('form_validation');
+		
+		$this->form_validation->set_rules('password', 'password',
+			'trim|required|min_length[4]|max_length[32]');
+		$this->form_validation->set_rules('re_password', 'password2',
+			'trim|required|matches[password]');
+
+		if($this->form_validation->run() == FALSE){
+			$temp['passStatus']="FALSE";
+			$temp['status']="";
+			$temp['temp']="FALSE";
+			$this->load->view('user/profile',$temp);
+		}
+		else{
+			$temp['passStatus']="TRUE";
+			$temp['status']="";
+			$temp['temp']="TRUE";
+			$pass = $this->input->post('password');
+			$this->session->set_userdata('password',$pass);
+			$this->load->model('user/update_model');
+			$this->update_model->update_password();
+			$this->load->view('user/profile',$temp);
+		}
+	}
+
+	public function search()
+	{
+
+		$this->load->helper('url');
+		
+		$search =  $this->input->post('search');
+		$filter =  $this->input->post('filter');
+		$this->load->model('user/basic_search_model');
+		if($search=='')
+			$result_info['value'] = NULL;
+		else
+			$temp_result = $this->basic_search_model->get_search_res($search, $filter);
 
 		
-		$this->load->model('user/verification_model');
-
-		$email = $this->input->post('email');
-		$idnumber = $this->input->post('idnumber');
-		$password = SHA1($this->input->post('password'));
-
+		//if($email)
+		//	$this->load->view('user/user_search', $result_info);
+		//else
+		//	$this->load->view('user/outside_search', $result_info);
 		
-		$this->verification_model->insert_user( $email, $idnumber, $password );
-
-
-
 	}
 
-	public function validate_email($idnumber, $verification_code){
-
-			$this->load->model('user/verification_model');
-			
-			//tapos irrun nya n yung nsa verifcation_model
-			$validated = $this->verification_model->validate_email($idnumber, $verification_code);
-			
-			if($validated === true){
-				echo 'YOUR ACCOUNT HAS BEEN VERIFIED YEY';
-			}
-			else{
-				echo 'error';
-			}
+	public function verify_page()
+	{
+		$this->load->view('user/validate');
+		
 	}
 
+	public function verify(){
+	// loads the model php file to allow the access of the function verifying()
+        $this->load->model('admin/verification_model'); 
+	//if submit, process the data
+        if($this->input->post('submit')){
+			$email = $this->input->post('email');
+			$inputPw = sha1($this->input->post('password'));
+			$password = $inputPw;
+
+			/*
+			* 	the array $config is the set of configuration for the email
+			*	system.icslibrary@gmail.com is the sender
+			*	icslibraryadmin is the password of the send
+			*/
+			$config = Array(
+				'protocol' => 'smtp',
+				'smtp_host' => 'ssl://smtp.googlemail.com',
+				'smtp_port' => 465,
+				'smtp_user' => 'system.icslibrary@gmail.com',  		
+				'smtp_pass' => 'icslibraryadmin',		
+				'mailtype'  => 'html', 
+				'charset'   => 'iso-8859-1'
+			);
+			$this->load->library('email', $config);
+			$this->email->set_newline("\r\n");
+
+			/*
+			*	email->from('The sender's email', 'Name of the sender')
+			*	email->to('email to be sent to')
+			*	email->subject('The subject')
+			*	email->message('Your message')
+			*	*After the email attributes are set, then the email is ready to be sent*
+			*	email->send()
+			*/
+			$this->email->from('System.ICSLibrary@gmail.com', 'ICSLibrary Admin');
+			$this->email->to($email);
+			$this->email->subject('Email Verification');
+			$this->email->message('Hi this is your verification code: '.$password.' Good day!');
+			$this->email->send();		
+        }
+     }
 
      public function verify_account(){
 
@@ -365,293 +473,6 @@ class Borrower extends CI_Controller {
 			$this->verify_page();
 		}
      }
-
-//error validation	
-
-
-	public function idnumber_check($str)
-	{
-		if(preg_match( '/(^\d{4}-\d{5}$|^\d{9}$)/' ,$str)){
-			return TRUE;
-			}
-		else{
-			$this->form_validation->set_message('idnumber_check','Invalid id number.');
-			return FALSE;
-			}
-	}
-
-
-
-	/**
-	* this function checks the idnumber
-	*/
-	public function checkidnumber(){
-		$idnumber = $this->input->post('idnumber');		//store the result into the variable idnumber
-		$this->load->library('form_validation');		//loads the library that validates the form
-		//field name, error message, validation rules
-		
-		$this->form_validation->set_rules('idnumber','IDnumber',
-			'trim|required|max_length[10]|xss_clean|callback_idnumber_check');		//sets the rules for the validation form
-
-		if($this->form_validation->run() == FALSE){		//something is wrong with the validation
-			echo '3';
-		}
-		else{
-			$this->load->model('user/registration_model');		//loads the model of the registration
-			$in_borrower = $this->registration_model->checkidnum($idnumber);		//store the result from the function
-			$in_sample = $this->registration_model->checkidnum_sample($idnumber);
-			if($in_borrower[0]->count == 1){
-				echo '1';
-			}
-			else if($in_sample[0]->count == 0){
-				echo '2';
-			}
-			else{
-				echo '0';
-			}
-		}
-
-		
-		
-	}
-
-	public function checkemail(){
-		$this->load->library('form_validation');
-		//field name, error message, validation rules
-		$email = $this->input->post('email');
-		$this->form_validation->set_rules('email','Email',
-			'trim|required|valid_email|max_length[50]');
-			
-			if($this->form_validation->run() == FALSE){
-				echo '1';
-			}
-			else {
-				$this->load->model('user/registration_model');
-				$in_borrower = $this->registration_model->check_email_borrower($email);
-				if($in_borrower[0]->count == 1){
-					echo '2';
-				}
-				else{
-					echo $in_borrower[0]->count;
-				}
-			}
-	}
-
-	public function checkpassword(){
-
-		$this->load->library('form_validation');
-		//field name, error message, validation rules
-		
-		$this->form_validation->set_rules('password', 'Password',
-			'trim|required|min_length[8]|max_length[32]');
-		
-		if($this->form_validation->run() == FALSE){
-			echo "1";
-		}
-		else{
-			echo "0";
-		}
-	}
-
-
-public function resend_email_verification(){
-	$this->load->library('form_validation');
-		//field name, error message, validation rules
-		$email = $this->input->post('email1');
-		$this->form_validation->set_rules('email1','Email',
-			'trim|required|valid_email|max_length[50]');
-			
-			if($this->form_validation->run() == FALSE){
-				echo '3';
-			}
-			else {
-				$this->load->model('user/registration_model');
-				$in_borrower = $this->registration_model->resend_email_verification($email);
-				if($in_borrower[0]->count == 0){
-					echo '2';
-				}
-				else{
-					echo $in_borrower[0]->count;
-				}
-			}
-}
-
-public function forgot_password()
-	{
-		$action = $this->input->post('action');
-		
-		
-		if($action == 'verify_email')
-		{
-			$email = $this->input->post('email');
-			$this->load->model('user/forgot_model');
-			$result = $this->forgot_model->verify_email($email);
-				if($result)
-				{
-					$verfied_email = $result[0]->email;
-					$verification_code = $result[0]->password;
-					$config = array(
-						'protocol' => 'smtp',
-						'smtp_host' => 'ssl://smtp.googlemail.com',
-    					'smtp_port' => 465,
-    					'smtp_user' => 'icslibsystem.dummy@gmail.com',
-    					'smtp_pass' => 'icslibraryadmin'
-					);
-					$this->load->library('email',$config);
-					$this->email->set_newline("\r\n");
-
-					$this->email->from('icslibsystem.dummy@gmail.com', 'ICS Library');
-					$this->email->to($verfied_email); 
-	
-	
-					$this->email->subject('Password Reset');
-					$this->email->message("Hello, Below is the code you need for password reset {$verification_code} ");
-	
-						if($this->email->send())
-						{
-							$ret_val = array('message'=> 'Verification code has been sent to your mail.','stat'=> 'success','verf_code' => $verification_code);
-							echo json_encode($ret_val);
-							
-						}
-
-						else
-						{
-							$ret_val = array('message'=> 'An error occured.','stat'=> 'fail');
-							echo json_encode($ret_val);
-						}
-				}
-
-				else
-				{
-					$ret_val = array('message'=> 'The email you entered is not registered.','stat'=> 'fail');
-					echo json_encode($ret_val);
-				}
-		}
-
-		else if($action == 'verify_code')
-		{
-			$code_input = $this->input->post('code_input');
-			$verification_code = $this->input->post('verf_code');
-				if($verification_code == $code_input)
-				{
-						$ret_val = array('message'=> 'Verification code accepted.','stat'=> 'success');
-						echo json_encode($ret_val);
-				}
-
-				else
-				{
-						$ret_val = array('message'=> 'Verification code denied. Please make sure you entered the code correctly.','stat'=> 'fail');
-						echo json_encode($ret_val);
-
-				}
-		}
-
-		 else if($action == 'change_pw')
-		{
-			$new_password = $this->input->post('new_password');
-			$retype_new_pw = $this->input->post('retype_new_pw');
-			$email = $this->input->post('email');
-
-			if($new_password == $retype_new_pw)
-			{
-					//put database update here update password to new password
-					$this->load->model('user/forgot_model');
-					$this->forgot_model->change_password($email,$new_password);
-					$ret_val = array('message' => 'Your password has been reset. Please do not forget it again.','stat' => 'success','email' => $email );
-					echo json_encode($ret_val);
-			}
-
-			else
-			{
-					$ret_val = array('message' => 'Error in resetting your password. Try again later.','stat' => 'fail');
-					echo json_encode($ret_val);
-			}
-
-		 }
-
-}
-
-public function checkUpdateEmail(){
-		$this->load->library('form_validation');
-		//field name, error message, validation rules
-		$email = $this->input->post('email');
-		$this->form_validation->set_rules('email','Email',
-			'trim|required|valid_email|max_length[50]');
-			
-			if($this->form_validation->run() == FALSE){
-				echo '1';
-			}
-			else {
-				$this->load->model('user/update_model');
-				$in_borrower = $this->update_model->update_email_exist($email);
-				if($in_borrower[0]->count == 1){
-					echo '2';
-				}
-				else{
-					echo '0';
-				}
-			}
-}
-
-public function checkUpdatePassword(){
-
-		$this->load->library('form_validation');
-		//field name, error message, validation rules
-		$password = $this->input->post('password');
-		//$re_password = $this->input->post('re_password');
-		$this->form_validation->set_rules('password', 'Password',
-			'trim|required|min_length[6]|max_length[32]');
-		
-		if($this->form_validation->run() == FALSE){
-			echo '1';
-		}
-		else{
-			echo '0';
-		}
-	}
-
-public function checkUpdateRe_Password(){
-
-		$this->load->library('form_validation');
-		//field name, error message, validation rules
-		$password = $this->input->post('password');
-		$re_password = $this->input->post('re_password');
-		$this->form_validation->set_rules('re_password', 'Password',
-			'trim|required|min_length[6]|max_length[32]');
-		
-		if($this->form_validation->run() == FALSE){
-			echo '1';
-		}
-		else if($password != $re_password){
-			//check if password == password_conf
-			//$this->load->model('user/update_model');
-			echo '2';
-		}
-		else{	
-			echo '0';
-		}
-	}
-
-/*new update*/
-public function updateEmail(){
-		
-		$email = $this->input->post('email');
-			
-		$this->load->model('user/update_model');
-		$this->update_model->update_email($email);
-		echo "1";
-}
-
-public function updatePassword(){
-	$password = $this->input->post('password');
-
-	$this->load->model('user/update_model');
-	$this->update_model->update_password($password);
-	
-	echo "1";
-}
-
-
 }
 
 ?> 

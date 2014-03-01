@@ -12,11 +12,66 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 ?>
 
-<<<<<<< HEAD
-<?php include 'admin_header.php';?></div>
-=======
-<?php include 'admin_header.php'?></div>
->>>>>>> 5fd38ac4c3936aaa9fac9514aa9af01f2f8cbe62
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	
+	<link rel="shortcut icon" href="<?php echo base_url();?>dist/images/favicon.png">
+
+	<title>ICS-iLS</title>
+
+	<link href="<?php echo base_url();?>dist/css/bootstrap.css" rel="stylesheet">
+	<link href="<?php echo base_url();?>dist/css/carousel.css" rel="stylesheet">
+	<link href="<?php echo base_url();?>dist/css/signin.css" rel="stylesheet">
+	<link href="<?php echo base_url();?>dist/css/style.css" rel="stylesheet">
+	<link href="<?php echo base_url();?>dist/css/style2.css" rel="stylesheet">
+	<link href="<?php echo base_url();?>dist/css/date_picker.css" rel="stylesheet">
+	<link href="<?php echo base_url();?>dist/css/styles.css" rel="stylesheet" /> <!--for chart -->
+
+	<style type="text/css" id="holderjs-style"></style></head>
+
+	<body>
+		 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand"><img src="<?php echo base_url();?>dist/images/logo4.png" height="30px"></a>
+                </div>
+				<!--<div class="alert alert-success" id="returned">
+					<a href="#" class="close" data-dismiss="alert" id="boton_cerrar">&times;</a> 
+					<strong>Successfully returned material!</strong>     
+				</div>-->
+                <form class="navbar-form navbar-right" role="form">
+                    <!-- Split button -->
+                <div class="btn-group">
+                  <button type="button" class="btn btn-default" data-toggle="dropdown">
+					<span class="glyphicon glyphicon-cog"></span>
+				  </button>
+                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="<?php echo base_url();?>admin/settings">Settings</a></li>
+                    <li><a href="#">Help</a></li>
+                    <li class="divider"></li>
+                    <li><a href="<?php echo base_url();?>admin/logout">Log-out</a></li>
+                  </ul>
+                </div>
+                </form>
+
+            </div>
+        </div>
         <div class="mainBody">
             <!-- Nav tabs -->
             <div class="sidebarMain">
@@ -56,7 +111,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 		<div class="form-group">
 			<label for="type" class="col-sm-2 control-label">Type</label>
 			<div class="col-sm-2">
-				<select name="type" id="type" class="form-control" onClick="disableISBN()">
+				<select name="type" id="type" class="form-control">
 					<option value="Book" >Book</option>
 					<option value="SP">SP</option>
 					<option value="Reference">Reference</option>
@@ -65,14 +120,6 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 					<option value="Magazines">Magazines</option>
 				</select>
 			</div>
-		</div>
-		
-		<div class="form-group">
-			<label for="type" class="col-sm-2 control-label">ISBN</label>
-			<div class="col-sm-2">
-				<input type="text" class="form-control"  name="isbn" id="isbn" pattern="[0-9]+" placeholder="ISBN" required/>
-			</div>
-			<span style="color: red;" name="helpisbn">
 		</div>
 		<div class="form-group">
 			<label for="course" class="col-sm-2 control-label">Course Classification</label>
@@ -272,13 +319,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 			
 			window.onload = function() {
 				add.materialid.onblur = validateMaterialID;
-<<<<<<< HEAD
-				add.type.onchange = disableFeatures;
-				add.isbn.onchange = validateISBN;
-=======
-				add.type.onblur = disableFeatures;
-				add.isbn.onblur = validateISBN;
->>>>>>> 5fd38ac4c3936aaa9fac9514aa9af01f2f8cbe62
+				add.type.onblur = disableClassification;
 				add.name.onblur = validateName;
 				add.fname.onblur = validateAuthorF;
 				add.mname.onblur = validateAuthorM;
@@ -392,74 +433,15 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 				}
 			}
 			
-			function disableFeatures(){
+			function disableClassification(){
 				type = add.type.value;
-				if(type == "Book"){
-					add.isbn.disabled = false;
-					add.course.disabled = false;
-					add.isbn.placeholder = "ISBN-10";
-				}
-				else if(type == "SP"){
-					add.isbn.disabled = true;
+				if(type == "SP" || type == "Journals" || type == "Magazines" ){
 					add.course.disabled = true;
-				}
-				else if(type == "Reference"){
-					add.isbn.disabled = false;
-					add.course.disabled = false;
-					add.isbn.placeholder = "ISBN-10";
-				}
-				else if(type == "CD"){
-					add.isbn.disabled = true;
-					add.course.disabled = false;
-				}
-				else if(type == "Journals"){
-					add.isbn.disabled = false;
-					add.course.disabled = true;
-					add.isbn.placeholder = "ISBN-8";
-				}
-				else if(type == "Magazines"){
-					add.isbn.disabled = false;
-					add.course.disabled = true;
-					add.isbn.placeholder = "ISBN-8";
-				}
-			}
-			
-			function validateISBN(){
-				msg = "Invalid input. ";
-				str = add.isbn.value;
-				pattern = add.isbn.pattern;
-				
-				if(add.type.value == "Book" || add.type.value == "Reference" ){
-					if (str == "") {
-						msg+="ISBN-10 is required. ";
-					}
-					if (!str.match(/^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$/)) {
-						msg+="Characters are invalid.";
-						pattern = "[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]";
-					}
-					if (msg == "Invalid input. ") msg="";
-
-					document.getElementsByName("helpisbn")[0].innerHTML = msg;
-					if (msg == ""){ 
-						return true;
-					}
 				}
 				else{
-					if (str == "") {
-						msg+="ISBN-8 is required. ";
-					}
-					if (!str.match(/^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$/)) {
-						msg+="Characters are invalid.";
-						pattern = "[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]";
-					}
-					if (msg == "Invalid input. ") msg="";
-
-					document.getElementsByName("helpisbn")[0].innerHTML = msg;
-					if (msg == ""){ 
-						return true;
-					}
+					add.course.disabled = false;
+					add.course.value = "NULL";
 				}
-				
 			}
 			
 			function validateName(){

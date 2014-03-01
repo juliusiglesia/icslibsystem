@@ -2,7 +2,7 @@
    <!--Putting it here for nonsense problem-->
  
     <br />
-	 <?php include 'search_bar_view.php'?>
+	 <?php include 'user_search_bar_view.php'?>
 
 	<tr>
 		<td align="left" valign="top" height="20" style="padding-left: 5px; padding-right: 5px; padding-bottom: 5px; padding-top: 0px" nowrap>
@@ -12,13 +12,13 @@
 
 <table style="display:none;" id="hidethis" style="padding-left: 0px; padding-right: 0px; padding-top: 2px; padding-bottom: 2px; width: 100%; bordercolor: #111111" width="100%" border="0" >
           <tr>
-				                  <td valign="middle" width="160" align="left" bgcolor="#ffffff" rowspan="2" nowrap>&nbsp; <b>Format:</b></td>
-				                  <td valign="middle" width="90" align="left" style="vertical-align: middle" bgcolor="#ffffff" nowrap><label><input type="checkbox" name="mtype" value="0" class="radio" />Book</label></td>
-								  <td valign="middle" width="90" align="left" style="vertical-align: middle" bgcolor="#ffffff" nowrap><label><input type="checkbox" name="mtype" value="4" class="radio" />Thesis</label></td>
-								  <td valign="middle" width="90" align="left" style="vertical-align: middle" bgcolor="#ffffff" nowrap><label><input type="checkbox" name="mtype" value="2" class="radio" />SP</label></td>                      
-							      <td valign="middle" width="90" align="left" style="vertical-align: middle" bgcolor="#ffffff" nowrap><label><input type="checkbox" name="mtype" value="3" class="radio" />Journal</label></td>
-							      <td valign="middle" width="90" align="left" style="vertical-align: middle" bgcolor="#ffffff" nowrap><label><input type="checkbox" name="mtype" value="8" class="radio" />CD</label></td>		
-								  <td valign="middle" width="90" align="left" style="vertical-align: middle" bgcolor="#ffffff" nowrap><label><input type="checkbox" name="mtype" value="8" class="radio" />Reference</label></td>	
+				                  <td valign="middle" width="160" align="left" bgcolor="#dedede" rowspan="2" nowrap>&nbsp; <b>Format:</b></td>
+				                  <td valign="middle" width="90" align="left" style="vertical-align: middle" bgcolor="#dedede" nowrap><label><input type="checkbox" name="mtype" value="0" class="radio" />Book</label></td>
+								  <td valign="middle" width="90" align="left" style="vertical-align: middle" bgcolor="#dedede" nowrap><label><input type="checkbox" name="mtype" value="4" class="radio" />Thesis</label></td>
+								  <td valign="middle" width="90" align="left" style="vertical-align: middle" bgcolor="#dedede" nowrap><label><input type="checkbox" name="mtype" value="2" class="radio" />SP</label></td>                      
+							      <td valign="middle" width="90" align="left" style="vertical-align: middle" bgcolor="#dedede" nowrap><label><input type="checkbox" name="mtype" value="3" class="radio" />Journal</label></td>
+							      <td valign="middle" width="90" align="left" style="vertical-align: middle" bgcolor="#dedede" nowrap><label><input type="checkbox" name="mtype" value="8" class="radio" />CD</label></td>		
+								  <td valign="middle" width="90" align="left" style="vertical-align: middle" bgcolor="#dedede" nowrap><label><input type="checkbox" name="mtype" value="8" class="radio" />Reference</label></td>	
 								</tr>
 </table>
 
@@ -46,8 +46,9 @@
             </thead>
             <tbody>
               <?php
-			
-			if($value!=NULL){
+			$reserved_flag=0;
+			$waitlist_flag=0;
+			if($value!=NULL ){
 				foreach($value as $row){
 					
 					echo "<tr>";
@@ -55,15 +56,38 @@
 					echo "<td> ${row['name']} </td>";
 					echo "<td> ${row['year']} </td>";
 					echo "<td> ${row['type']} </td>";
+					if($material!=NULL){
+						foreach ($material as $here){ 
+							if($row['materialid']==$here['materialid']){
+								$waitlist_flag=1;
+							}
+						 } 
+					}
+					if($matid!=NULL){
+						foreach ($matid as $tuples){ 
+							if($row['materialid']==$tuples['materialid']){
+								$reserved_flag=1;
+							}
+						 } 
+					}
 					
-					
-					echo "<td>" . "<form action=\"reserve\" role=\"form\" method=\"post\">";
-					$materialid=$row['materialid'];
-					echo "<button type=\"submit\" class=\"btn btn-default\" data-dismiss=\"modal\" name=\"materialid\" value=\"{$materialid}\">RESERVE</button>" . "</form>" . "</td>";
-					echo "</tr>";
-				}
+					if($waitlist_flag==1){
+						echo "<td>" . "WAITLISTED" . "</td>";
+						echo "</tr>";	
+					}
+					else if($reserved_flag==1){
+						echo "<td>" . "RESERVED" . "</td>";
+						echo "</tr>";	
+					}else{
+						echo "<td>" . "<form action=\"reserve\" role=\"form\" method=\"post\">";
+						$materialid=$row['materialid'];
+						echo "<button type=\"submit\" class=\"btn btn-default\" data-dismiss=\"modal\" name=\"materialid\" value=\"{$materialid}\">RESERVE</button>" . "</form>" . "</td>";
+						echo "</tr>";
+					}
+					$reserved_flag=0;
+					$waitlist_flag=0;
 			}
-			
+			}	
 		?>
             </tbody>
 </table>
