@@ -26,7 +26,6 @@
 		        	<h3> Add multiple materials </h3>
 					<input id="uploadFile" type="file" name = "file[]" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
 					<button id="readButton" name = "uploadButton"  disabled = "true" > Read File </button>
-					
 					<span id = "error"> </span>
 					<br />
 					<table id = "table-data-area" border = "1">
@@ -50,10 +49,12 @@
 	</footer>
 
 	<script src="<?php echo base_url();?>dist/js/jquery.js"></script>
-  	
+    <script src="<?php echo base_url();?>dist/js/bootstrap.js"></script>
+    <script src="<?php echo base_url();?>dist/js/holder.js"></script>
+  	<script src="<?php echo base_url();?>dist/js/bootbox.min.js"></script>
     <script type="text/javascript" language="javascript">
 		$(document).ready(function(){
-			var arrayGlobal;
+			var arrayGlobal = new Array();
 
 			$('#uploadFile').change( checkfile );
 			$('#add-field').attr('hidden', 'hidden');
@@ -111,7 +112,6 @@
 
 			
 			function readBlob() {
-
 				var files = document.getElementById('uploadFile').files;
 				if (!files.length) {
 					alert('Please select a file!');
@@ -153,16 +153,17 @@
 					var nAuthors = author.length/3;
 					var authorArr = split( author, nAuthors )
 					arr[i].push( authorArr );
-
+					arrayGlobal.push(arr[i]);
 				}
-					displayTable( arr );
-					arrayGlobal = arr;
+				
+				displayTable( arrayGlobal );
+				
 			}
 
 			function displayTable( array ){
 				var body = $('#table-data-area').find('tbody');
 				var head = $('#table-data-area').find('thead');
-				var headerArr = new Array('materialid', 'isbn', 'name', 'course', 'available', 'access', 'type', 'year', 'edvol', 'requirement', 'quantity', 'status');
+				var headerArr = new Array('materialid', 'isbn/issn', 'name', 'course', 'available', 'access', 'type', 'year', 'edvol', 'requirement', 'quantity', 'status');
 				var headStr = "";
 				
 				for( var i = 0; i < headerArr.length; i++ ){
@@ -170,7 +171,7 @@
 				}
 				
 				head.append("<tr>"+ headStr + "</tr>");
-				for( var i = 1; i < array.length; i+=2){
+				for( var i = 0; i < array.length; i++){
 					var str = "";
 					//	console.log( array[i] );
 					str = str + "<td class = 'materialid'> " + array[i][0] + " </td>";
@@ -187,27 +188,198 @@
 					str = str + "<td><span class = 'check-error' > </span></td>";
 					
 					body.append("<tr class = '"+ array[i][0] + "-" + array[i][1] + "' >"+ str + "</tr>");
-					
 					currentRow = $('#table-data-area tr').get($('#table-data-area tr').length-1).children;
-
 					checkDataInput( array[i] );
 				}
 			}
 
 			function checkDataInput( arr ){
-				checkISBN( arr[1] );
+				checkISBN( arr[1], arr[6] );
+				checkMatId( arr[0], arr[6], arr[7], arr[3] );
+				checkName( arr[2] );
 			}
 
-			function checkISBN( isbn ){
-				if (isbn == ""){
+			function checkISBN( isbn, type ){
+				isbn = $.trim(isbn);
+				if ( (type == 'Book' || type == 'References') && !( (isbn.match(/^[0-9]{10}$/)) ) ){
 					$('.isbn').last().attr('style', 'color : red')
-					return false;
-				} else if ( !( (isbn.match(/^[0-9]{10}$/)) ) ){
+				
+				} else if ( ( type == 'Journals' || type == 'Magazine' ) && !( (isbn.match(/^[0-9]{8}$/)) ) ){
 					$('.isbn').last().attr('style', 'color : red')
-					console.log('error');
-					return false;
+				
+				} else if ( ( type == 'SP' || type == 'Theis' ) && isbn != "" ){
+					$('.isbn').last().attr('style', 'color : red');
+				
+				} else if( type != 'SP' || type != 'Theis' ){
+					checkISBNInDB( isbn, $('.isbn').last() );
+				}
+
+				if ( !checkISBNInFile(isbn) ){
+					$('.isbn').last().attr('style', 'color : red');
+				
 				} else {
-					return true;
+				
+				}
+			}
+			
+			function checkMaterialIdInFile( materialid ){
+				var count = 0;
+				for( var i = 0; i < arrayGlobal.length; i++ ){
+					if( arrayGlobal[i][0] == materialid ){
+						count++;
+					}
+				}
+				
+				if( count == 1 ) return true;
+				else return false;
+			}
+
+			function checkMaterialIdInDB( materialid, row ){
+				$.ajax({
+					type: "POST",
+					url: "<?php echo base_url();?>admin/check_materialid",
+					dataType : "html",
+					data: { materialid : materialid }, 
+
+					beforeSend: function() {
+						//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
+						$("#error_message").html("loading...");
+					},
+
+					error: function(xhr, textStatus, errorThrown) {
+							$('#error_message').html(textStatus);
+					},
+
+					success: function( result ){
+						if( result != "0" ) {
+							row.attr('style', 'color : red');
+						
+						} else {
+						
+						}
+					}
+				});
+			}
+
+			function checkISBNInFile( isbn ){
+				var count = 0;
+				for( var i = 0; i < arrayGlobal.length; i++ ){
+					if( arrayGlobal[i][1] == isbn ){
+						count++;
+					}
+				}
+				
+				if( count == 1 ) return true;
+				else return false;
+			}
+
+			function checkISBNInDB( isbn, row ){
+				$.ajax({
+					type: "POST",
+					url: "<?php echo base_url();?>admin/check_isbn",
+					dataType : "html",
+					data: { isbn : isbn }, 
+
+					beforeSend: function() {
+						//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
+						$("#error_message").html("loading...");
+					},
+
+					error: function(xhr, textStatus, errorThrown) {
+							$('#error_message').html(textStatus);
+					},
+
+					success: function( result ){
+						if( result != "0" ) {
+							row.attr('style', 'color : red');
+						
+						} else {
+						
+						}
+					}
+				});
+			}
+
+			function checkMatId( materialid, type, year, course ){
+				if(type == "") {
+					$('.type').last().attr('style', 'color : red')
+					$('.materialid').last().attr('style', 'color : red')
+				
+				} else {
+					if (materialid == ""){
+						$('.materialid').last().attr('style', 'color : red')
+				
+					} else {
+						if(type=='Book') {
+							var index = materialid.indexOf("-");
+							var courseTemp = materialid.slice(0, index);
+							if( courseTemp != course ){
+								$('.materialid').last().attr('style', 'color : red')
+							} else if ( !materialid.match(/^(CS[0-9]{1,3})-([A-Z][0-9]{1,2})$/) ){
+								$('.materialid').last().attr('style', 'color : red')
+							} else {
+							
+							}
+						} else if(type=='Magazine') {
+							if ( !( (materialid.match(/^M-([0-9]{1,2})$/)) ) ){
+								$('.materialid').last().attr('style', 'color : red')
+							
+							}else {
+							
+							}
+						} else if(type=='Thesis') {
+							if ( !( (materialid.match(/^T-([0-9]{1,2})$/)) ) ){
+								$('.materialid').last().attr('style', 'color : red')
+							}else {
+							}
+						} else if(type=='References') {
+							if ( !( (materialid.match(/^R-([0-9]{1,2})$/)) ) ){
+								$('.materialid').last().attr('style', 'color : red')
+							}else {
+							
+							}
+						} else if(type=='Journals') {
+							if ( !( (materialid.match(/^J-([0-9]{1,2})$/)) ) ){
+								$('.materialid').last().attr('style', 'color : red')
+							
+							}else {
+							
+							}
+						} else if(type=='SP') {
+							if ( !( (materialid.match('/^SP'+year+'-([0-9]{1,2}[a-z]*)$')) ) ){
+								$('.materialid').last().attr('style', 'color : red')
+							
+							}else {
+							
+							}
+						} else {
+							$('.type').last().attr('style', 'color : red')
+							$('.materialid').last().attr('style', 'color : red')
+							
+						}
+					}
+
+					if ( !checkMaterialIdInFile(materialid) ){
+						$('.materialid').last().attr('style', 'color : red');
+						
+					} else {
+					
+					}
+				}
+				
+				
+
+			}
+			
+			function checkName( name ){
+				if (name == ""){
+					$('.name').last().attr('style', 'color : red')
+				
+				} else if ( !( (name.match(/^([A-Z][A-Za-z0-9\.\,\-\'\?\!\:]+[\s]*)+$/)) ) ){
+					$('.name').last().attr('style', 'color : red')
+				
+				} else {
+				
 				}
 			}
 
@@ -223,8 +395,5 @@
 		
 
 	</script>
-	<script src="<?php echo base_url();?>dist/js/jquery.js"></script>
-    <script src="<?php echo base_url();?>dist/js/bootstrap.js"></script>
-    <script src="<?php echo base_url();?>dist/js/holder.js"></script>
 	</body>
 </html>

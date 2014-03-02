@@ -115,7 +115,7 @@ class Reservation_queue_model extends CI_Model{
 					
 				}				
 
-				$query = $this->db->query("SELECT * FROM reservation INNER JOIN librarymaterial ON reservation.materialid=librarymaterial.materialid
+				$query = $this->db->query("SELECT *, ${total} AS total, queue-${min}+1 AS queue FROM reservation INNER JOIN librarymaterial ON reservation.materialid=librarymaterial.materialid
 											WHERE (reservation.materialid LIKE '${matid}' AND	${where} )
 												OR reservation.materialid IN ( 
 													SELECT materialid 

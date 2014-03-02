@@ -1,63 +1,4 @@
-<!DOCTYPE html>
-<html lang="en"><head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="description" content="">
-	<meta name="author" content="">
-	
-	<link rel="shortcut icon" href="<?php echo base_url();?>dist/images/favicon.png">
-
-	<title>ICS-iLS</title>
-
-	<link href="<?php echo base_url();?>dist/css/bootstrap.css" rel="stylesheet">
-	<link href="<?php echo base_url();?>dist/css/carousel.css" rel="stylesheet">
-	<link href="<?php echo base_url();?>dist/css/signin.css" rel="stylesheet">
-	<link href="<?php echo base_url();?>dist/css/style.css" rel="stylesheet">
-	<link href="<?php echo base_url();?>dist/css/style2.css" rel="stylesheet">
-	<link href="<?php echo base_url();?>dist/css/date_picker.css" rel="stylesheet">
-	<link href="<?php echo base_url();?>dist/css/styles.css" rel="stylesheet" /> <!--for chart -->
-
-	<style type="text/css" id="holderjs-style"></style></head>
-
-	<body>
-		 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand"><img src="<?php echo base_url();?>dist/images/logo4.png" height="30px"></a>
-                </div>
-				<!--<div class="alert alert-success" id="returned">
-					<a href="#" class="close" data-dismiss="alert" id="boton_cerrar">&times;</a> 
-					<strong>Successfully returned material!</strong>     
-				</div>-->
-                <form class="navbar-form navbar-right" role="form">
-                    <!-- Split button -->
-                <div class="btn-group">
-                  <button type="button" class="btn btn-default" data-toggle="dropdown">
-					<span class="glyphicon glyphicon-cog"></span>
-				  </button>
-                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    <span class="caret"></span>
-                    <span class="sr-only">Toggle Dropdown</span>
-                  </button>
-                  <ul class="dropdown-menu" role="menu">
-                    <li><a href="<?php echo base_url();?>admin/settings">Settings</a></li>
-                    <li><a href="#">Help</a></li>
-                    <li class="divider"></li>
-                    <li><a href="<?php echo base_url();?>admin/logout">Log-out</a></li>
-                  </ul>
-                </div>
-                </form>
-
-            </div>
-        </div>
+<?php include 'admin_header.php';?></div>
 		<div class="mainBody">
 			<!-- Nav tabs -->
 			<div class="sidebarMain">
@@ -92,31 +33,44 @@
 								<div class="long-title"><h3></h3></div>
 								<div id="barchartContainer" style=" display: inline-block; white-space: nowrap; width: 53%; height: auto; margin-left: -55%;"></div>
 								<div id="piechartContainer" style=" display: inline-block; white-space: nowrap; width: 10%; height: auto;"></div>
-								
-								
+								<script> var libmatcount = new Array(); var bormatcount = new Array(); var diffcount = new Array(); </script>
+								<?php
+									$row = $stats[0];
+	 								echo "<script>";
+	 								echo "libmatcount[0] = $row->libmatcount;";
+	 								echo "bormatcount[0] = $row->bormatcount;";
+	 								echo "diffcount[0] = $row->diffcount;";
+
+	 								$row = $weekstats[0];
+									echo "libmatcount[1] = $row->libmatcount;";
+	 								echo "bormatcount[1] = $row->bormatcount;";
+	 								echo "diffcount[1] = $row->diffcount;"; 								
+
+	 								$row = $laststats[0];								
+									echo "libmatcount[2] = $row->libmatcount;";
+	 								echo "bormatcount[2] = $row->bormatcount;";
+	 								echo "diffcount[2] = $row->diffcount;"; 								
+									
+									$row = $twostats[0];								
+									echo "libmatcount[3] = $row->libmatcount;";
+	 								echo "bormatcount[3] = $row->bormatcount;";
+	 								echo "diffcount[3] = $row->diffcount;"; 	
+
+	 								$row = $threestats[0];								
+									echo "libmatcount[4] = $row->libmatcount;";
+	 								echo "bormatcount[4] = $row->bormatcount;";
+	 								echo "diffcount[4] = $row->diffcount;"; 								
+									
+	 								echo "</script>";
+		 						?>
 							</div>
 							<div class="btn_container">
-								<button type="button" class="btn btn-default" onclick="clearAlert()">Clear Reservations</button>&nbsp;&nbsp;
-								<a href="<?php echo base_url();?>admin/print_inventory" target = "_blank" ><button type="button" class="btn btn-danger">Generate Report</button></a>
+								<!--<button type="button" class="btn btn-default" onclick="clearAlert()">Clear Reservations</button>&nbsp;&nbsp;-->
+								<a href="<?php echo base_url();?>admin/print_inventory"><button type="button" class="btn btn-danger">Generate Report</button></a>
 							</div>
 								
 						</div>
-						<br />
-
-						<?php 
- 							foreach ($stats as $row) {
- 								echo "Library Material Count:".$row->libmatcount." Borrowed Material Count: ".$row->bormatcount." Not Borrowed Material Count: ".$row->diffcount;
- 								echo "<br/>";
- 								echo "<script> var libmatcount = $row->libmatcount </script>";
- 								echo "<script> var bormatcount = $row->bormatcount </script>";
- 								echo "<script> var diffcount = $row->diffcount </script>";
- 							}
-
- 							foreach ($weekstats as $row) {
- 								echo "Library Material Count:".$row->libmatcount." Borrowed Material Count: ".$row->bormatcount." Not Borrowed Material Count: ".$row->diffcount;
- 								echo "<br/>";
- 							}
- 						?>
+						<br/>
 					</div>
 				</div>
 			</div>
@@ -149,14 +103,12 @@
 			}
 			
 			$(function ()
-				{
-				   //--------------------------------/
-				    //PHP CODE TO KNOW PHP CODE TO KNOW COUNT OF RESERVED BOOKS
-				   var dataSource = [
-				    { week: "WEEK 1", value1: 423,  value2: 12,  value3: 500},
-				    { week: "WEEK 2", value1: 178,  value2: 43,  value3: 30},
-				    { week: "WEEK 3", value1: 308,  value2: 123,  value3: 500},
-				    { week: "WEEK 4", value1: 348,  value2: 230,  value3: 12}
+				{				
+					var dataSource = [
+				    { week: "Current week", value1: libmatcount[4], value2 : bormatcount[4], value3: diffcount[4] },
+				    { week: "Last week", value1: libmatcount[3], value2 : bormatcount[3], value3: diffcount[3] },
+				    { week: "Last two weeks", value1: libmatcount[2], value2 : bormatcount[2], value3: diffcount[2] },
+				    { week: "Last three weeks", value1: libmatcount[1], value2 : bormatcount[1], value3: diffcount[1] }
 				];
 
 				$("#barchartContainer").dxChart({
@@ -176,11 +128,11 @@
 				    //--------------------------------/
 				    //PHP CODE TO KNOW MONTH
 				    series: [
-				        { valueField: "value1", name: "1" },
-						{ valueField: "value2", name: "2" },
-				        { valueField: "value3", name: "3" }
+				        { valueField: "value1", name: "Total Materials" },
+						{ valueField: "value2", name: "Borrowed Materials" },
+				        { valueField: "value3", name: "Availbale Materials" }
 				    ],
-				    title: "Reservations per Month",
+				    title: "Four-Week Stats",
 				    legend: {
 				        verticalAlignment: "bottom",
 				        horizontalAlignment: "center"
@@ -197,8 +149,8 @@
 			$(function ()  
 				{
 				   var dataSource = [
-				    { book: "Out", count: libmatcount },
-				    { book: "In", count: diffcount }
+				    { book: "Out", count: libmatcount[0] },
+				    { book: "In", count: bormatcount[0] }
 				];
 
 				$("#piechartContainer").dxPieChart({
@@ -219,7 +171,7 @@
 				            }
 				        }
 				    ],
-				    title: "Materials in Circulation"
+				    title: "Ciculation of Materials"
 				});
 				}
 

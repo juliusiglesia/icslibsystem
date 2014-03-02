@@ -1,63 +1,4 @@
-<!DOCTYPE html>
-<html lang="en"><head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="description" content="">
-	<meta name="author" content="">
-	
-	<link rel="shortcut icon" href="<?php echo base_url();?>dist/images/favicon.png">
-
-	<title>ICS-iLS</title>
-
-	<link href="<?php echo base_url();?>dist/css/bootstrap.css" rel="stylesheet">
-	<link href="<?php echo base_url();?>dist/css/carousel.css" rel="stylesheet">
-	<link href="<?php echo base_url();?>dist/css/signin.css" rel="stylesheet">
-	<link href="<?php echo base_url();?>dist/css/style.css" rel="stylesheet">
-	<link href="<?php echo base_url();?>dist/css/style2.css" rel="stylesheet">
-	<link href="<?php echo base_url();?>dist/css/date_picker.css" rel="stylesheet">
-	<link href="<?php echo base_url();?>dist/css/styles.css" rel="stylesheet" /> <!--for chart -->
-
-	<style type="text/css" id="holderjs-style"></style></head>
-
-	<body>
-		 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand"><img src="<?php echo base_url();?>dist/images/logo4.png" height="30px"></a>
-                </div>
-				<!--<div class="alert alert-success" id="returned">
-					<a href="#" class="close" data-dismiss="alert" id="boton_cerrar">&times;</a> 
-					<strong>Successfully returned material!</strong>     
-				</div>-->
-                <form class="navbar-form navbar-right" role="form">
-                    <!-- Split button -->
-                <div class="btn-group">
-                  <button type="button" class="btn btn-default" data-toggle="dropdown">
-					<span class="glyphicon glyphicon-cog"></span>
-				  </button>
-                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    <span class="caret"></span>
-                    <span class="sr-only">Toggle Dropdown</span>
-                  </button>
-                  <ul class="dropdown-menu" role="menu">
-                    <li><a href="<?php echo base_url();?>admin/settings">Settings</a></li>
-                    <li><a href="#">Help</a></li>
-                    <li class="divider"></li>
-                    <li><a href="<?php echo base_url();?>admin/logout">Log-out</a></li>
-                  </ul>
-                </div>
-                </form>
-
-            </div>
-        </div>
+<?php include 'admin_header.php'?>
 
 		<div class="mainBody">
 		
@@ -87,41 +28,41 @@
 					<div id = "main-content">
 						<br />
 						<br />
-						<input type="text" id = "searchReservedBooks" name ="search"  size="80"/>
-						<input class = "btn btn-primary" type="button" id = "searchReservedButton" value="Search"/> 
-						<div class="alert-container">
-							<div id = "success_notify" class = "alert alert-success">  </div>
-							<div id = "success_claim" class = "alert alert-success">  </div>
-						</div>
-						<br />
-                        <br/>
-							<table class="tablesorter">
-								<thead>
-									<tr>
-										<th ><center>ISBN</center></th>
-										<th><center>Library Material ID</center></th>
-										<td><center><b>Type</center></b></td>
-										<th><center>Library Information</center></th>
-										<th><center>Borrower</center></th>
-										<th><center>Start Date</center></th>
-										<th><center>Rank</center></th>
-										<th><center>Action</center></th>
-									</tr>
-								</thead>
-								<tfoot>
-									<tr>
-										<th><center>ISBN</center></th>
-										<th><center>Library Material ID</center></th>
-										<th><center>Type</center></th>
-										<th><center>Library Information</center></th>
-										<th><center>Borrower</center></th>
-										<th><center>Start Date</center></th>
-										<th><center>Rank</center></th>
-										<th><center>Action</center></th>
-									</tr>
-								</tfoot>
-								<tbody>
-									<?php
+						<form method="post"  style="width: 600px ; margin-left: auto; margin-right: auto;" role="form">
+							<input type="text" id = "searchReservedBooks" name ="search"  size="80"/>
+							<input class = "btn btn-primary" type="button" id = "searchReservedButton" value="Search"/> 
+							<div class="alert-container">
+								<div id = "success_notify" class = "alert alert-success">  </div>
+								<div id = "success_claim" class = "alert alert-success">  </div>
+							</div>
+                        </form>
+<table class="tablesorter" border = "1" cellspacing='5' cellpadding='5' align = 'center'>
+	<thead>
+		<tr>
+			<th width="5%"><center>ISBN</center></th>
+			<th width="5%"><center>Library Material ID</center></th>
+			<td width="5%"><center><b>Type</center></b></td>
+			<th width="45%"><center>Library Information</center></th>
+			<th width="5%"><center>Borrower</center></th>
+			<th width="8%"><center>Start Date</center></th>
+			<th width="5%"><center>Rank</center></th>
+			<th width="22%"><center>Action</center></th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<th width="5%"><center>ISBN</center></th>
+			<th width="5%"><center>Library Material ID</center></th>
+			<td width="5%"><center><b>Type</center></b></td>
+			<th width="45%"><center>Library Information</center></th>
+			<th width="5%"><center>Borrower</center></th>
+			<th width="8%"><center>Start Date</center></th>
+			<th width="5%"><center>Rank</center></th>
+			<th width="22%"><center>Action</center></th>
+		</tr>
+	</tfoot>
+	<tbody>
+		<?php
 									$rank = 0;
 									$i = 0;
 								
@@ -146,7 +87,7 @@
 										else if($row['type'] == 'Thesis')
 											$type = "<span class='glyphicon glyphicon-bookmark'></span>";
 											
-										echo "<td class = 'type' align='center'> <br />". $type ."</td>";
+										echo "<td class = 'type' align='center'>". $type ."</td>";
 										
 
 										echo "<td>";
@@ -167,19 +108,19 @@
 												echo "<span class ='author'> ${row['edvol']}th Edition </span>" . ".";
 										}
 										echo "</td>";
-										echo "<td class = 'idnumber' ><center><span class='table-text'> <br /> ${row['idnumber']}</span></center> </td>";
+										echo "<td class = 'idnumber' ><center><span class='table-text'>${row['idnumber']}</span></center> </td>";
 										
 										if( $row['started'] == 0 ){
 											echo "<td align='center'><span class='table-text'> Not yet notified </span></td>";
 											echo "<td align='center'><span class='table-text'> ${row['queue']}/${row['total']}</span> </td>";
-											echo "<td align='center'><button class='sendNotif btn btn-primary' name='notify' value='${row['id']}'>Notify</button>";
-											echo "<button class='sendClaim btn btn-primary' name='claim' value='${row['id']}'  disabled>Claim</button>";
+											echo "<td align='center'><button class='sendNotif btn btn-primary' name='notify' >Notify</button>";
+											echo "<button class='sendClaim btn btn-primary' name='claim' disabled>Claim</button>";
 											echo "</td>";
 										} else {
 											echo "<td><span class='table-text'> ${row['startdate']}</span> </td>";
-											echo "<td><span class='table-text'>${row['queue']}/${row['total']}</span> </td>";
-											echo "<td><button class='sendNotif btn btn-primary' name='notify' value='${row['id']}' disabled>Notify</button>";
-											echo "<button class='sendClaim btn btn-primary' name='claim' value='${row['id']}'>Claim</button>";
+											echo "<td align='center'><span class='table-text'>${row['queue']}/${row['total']}</span> </td>";
+											echo "<td align='center'><button class='sendNotif btn btn-primary' name='notify' disabled>Notify</button> ";
+											echo "<button class='sendClaim btn btn-primary' name='claim'>Claim</button>";
 											echo "</td>";
 										}
 										echo "</tr>";
@@ -187,7 +128,7 @@
 								
 								?>
 							</tbody>
-						</table>
+</table>
 						<div class="pager">
 							<!--<img src="../addons/pager/icons/first.png" class="first" alt="First" />
 							<img src="../addons/pager/icons/prev.png" class="prev" alt="Prev" />-->
@@ -214,7 +155,7 @@
 		
 		 <!-- FOOTER -->
 		<footer><a href="#" class="back-to-top"><span class='glyphicon glyphicon-chevron-up'></span></a>
-        	<center><p id="small">2013 CMSC 128 AB-6L. All Rights Reserved. <a href="#">Privacy</a> | <a href="#">Terms</a> | <a href="#">About</a> | <a href="#">Contact</a></p></center>
+        <center><p id="small">2013 CMSC 128 AB-6L. All Rights Reserved. <a href="#">Privacy</a> | <a href="#">Terms</a> | <a href="#">About</a> | <a href="#">Contact</a></p></center>
 		</footer>
 
 		<script src="<?php echo base_url();?>dist/js/jquery.js"></script>
@@ -323,13 +264,35 @@
 			$(document).ready(function(){		
 				var currentData = <?php echo json_encode($reservations); ?>;
 
+				//$('#reserved-materials').dataTable();
+
+				function updateContents( current, result ){
+					var exist = false;
+					if( result.length != current.length ){
+						for( var i = 0; i < result.length; i++  ){
+							for( var j = 0; j < current.length; j++  ){
+								if( result[i].id == current[j].id  ){
+									exist = true;
+								}
+							}		
+							if( !exist ) {
+								$('#reserved-materials').prepend("<tr id ='" + result[i].materialid + "' > <td class = 'materialid' ><center><span class='table-text'> " + result[i].materialid + "  </span></center></td> <td class = 'idnumber' ><center><span class='table-text'> " + result[i].idnumber + "  </span></center></td> <td>" + "<span class = 'name' > " + result[i].name + " </span>, <span class = 'year' > " + result[i].year + " </span>." + printEdition( result[i].edvol ) + "<span> <br /> ( " + result[i].type + " )</span> </td> <td> " + printDate( result[i].started, result[i].startdate ) + " </td> <td> " + result[i].queue + " </td> <td><button click class='sendNotif btn btn-primary' name='notify' value='${row['id']}'>Notify</button> <button click class='sendClaim btn btn-primary' name='claim' value='${row['id']}'>Claim</button> </td></tr>");
+								//$('#reserved-materials').dataTable().fnAddData( result[i] );
+							}
+							
+							exist = false;
+						}
+					}					
+				}
 
 				function printAuthor( data ){
 					var ret = "";
-					for( var i = 0; i < data.length; i++ ){
-						ret += "<span>" + data[i].lname +  ",";
-						ret += data[i].fname;
-						ret += data[i].mname +  " </span> <br />";
+					if( data != null){
+						for( var i = 0; i < data.length; i++ ){
+							ret += "<span class ='author'>" + data[i].lname +  ", ";
+							ret += data[i].fname + " ";
+							ret += data[i].mname +  ".</span>";
+						}
 					}
 
 					return ret;
@@ -338,30 +301,52 @@
 				function printEdition( data ){
 					if( data != null ){
 						if( data % 10 == 1 )
-							return "<span> "+ data +"st Edition </span>."; 
+							return "<span class = 'author'> "+ data +"st Edition.</span>"; 
 						if( data % 10 == 2 )
-							return "<span> "+ data +"nd Edition </span>."; 
+							return "<span class = 'author'> "+ data +"nd Edition.</span>"; 
 						if( data % 10 == 3 )
-							return "<span> "+ data +"rd Edition </span>."; 
+							return "<span class = 'author'> "+ data +"rd Edition.</span>"; 
 						else 
-							return "<span> "+ data +"th Edition </span>."; 
+							return "<span class = 'author'> "+ data +"th Edition.</span>"; 
+					}
+					else{
+						return "";
 					}
 				}
 
 				function printDate( data, date ){
 					if( data == 0 ){
-						return "<td class='table-text' align = 'center' >Not yet notified </td>";
+						return "<td><center><span class='table-text'>Not yet notified </span></center></td>";
 					} else {
-						return "<td class='table-text' align = 'center' >" + date + "</td>";
+						return "<td><center><span class='table-text'>" + date + "</span></center></td>";
 					}
 				}
-
+				
 				function printButton( condition ){
 					if( condition == 0 ){
-						return "<td><button click class='sendNotif btn btn-primary' name='notify' value='${row['id']}'>Notify</button> <button click class='sendClaim btn btn-primary' name='claim' value='${row['id']}' disabled>Claim</button> </td>";
+						return "<td align='center'><button class='sendNotif btn btn-primary' name='notify' >Notify</button><button class='sendClaim btn btn-primary' name='claim' disabled>Claim</button></td>";
 					} else {
-						return "<td><button click class='sendNotif btn btn-primary' name='notify' value='${row['id']}' disabled>Notify</button> <button click class='sendClaim btn btn-primary' name='claim' value='${row['id']}'>Claim</button> </td>";
+						return "<td align='center'><button class='sendNotif btn btn-primary' name='notify' disabled>Notify</button><button class='sendClaim btn btn-primary' name='claim' >Claim</button></td>";
 					}					
+				}
+				
+				function printType( type ){
+					if( type == 'Book')
+						type = "<center><span class='glyphicon glyphicon-book'></span></center>";
+					else if( type == 'CD')
+						type = "<center><span class='glyphicon glyphicon-headphones'></span></center>";
+ 					else if( type == 'SP')
+						type = "<center><span class='glyphicon glyphicon-file'></span></center>";
+					else if( type == 'Reference')
+						type = "<center><span class='glyphicon glyphicon-paperclip'></span></center>";
+					else if( type == 'Journals')
+						type = "<center><span class='glyphicon glyphicon-pencil'></span></center>";
+					else if( type == 'Magazines')
+						type = "<center><span class='glyphicon glyphicon-picture'></span></center>";
+					else if( type == 'Thesis')
+						type = "<center><span class='glyphicon glyphicon-bookmark'></span></center>";
+						
+					return type;
 				}
 
 
@@ -385,13 +370,11 @@
 
 						success: function( result ){
 								
-							$('#error').html(result);
 							if( result != "" ){
 								$('tbody').html("");
 								//alert(result.length);
-
 								for( i = 0; i < result.length; i++ ){
-									$('tbody').append("<tr id ='" + result[i].materialid + "-" + result[i].isbn + "' > <td class = 'isbn' class='table-text' align = 'center' > " + result[i].isbn + "  </td><td class = 'materialid' class='table-text' align = 'center'> " + result[i].materialid + "  </td> <td class = 'type' class='table-text' align = 'center' > " + result[i].type + " </td> <td class='table-text'>" + "<span class = 'name' > <strong> " + result[i].name + " </strong> </span>" + printAuthor(result[i].author) + "<span class = 'year' > " + result[i].year + " </span>." + printEdition( result[i].edvol ) + "</td> <td class = 'idnumber' class='table-text' align = 'center' > " + result[i].idnumber + "  </td> " + printDate( result[i].started, result[i].claimdate ) + "<td class='table-text' align = 'center' > " + result[i].queue + " </td> " + printButton( result[i].started ) + "</tr>");
+									$('tbody').append("<tr id ='"+ result[i].materialid + "-" + result[i].idnumber +"' > <td class = 'isbn' ><center><span class='table-text'> " + result[i].isbn + "  </span></center></td> <td class = 'materialid' ><center><span class='table-text'> " + result[i].materialid + " </span></center></td><td class = 'type' > " + printType(result[i].type) + " </td><td><span class = 'title' > <strong> " + result[i].name + ".</strong> </span><br />" + printAuthor(result[i].author) + "<span class = 'author' > " + result[i].year + ".</span>" + printEdition( result[i].edvol ) + " </td> <td class = 'idnumber' ><center><span class='table-text'> " + result[i].idnumber + " </span></center></td>" + printDate( result[i].started, result[i].claimdate ) + "<td align='center'><span class='table-text'>" + result[i].queue + "/" + result[i].total + "</span></td> " + printButton( result[i].started ) + "</tr>");
 									
 								}
 								$('table').trigger('update');
@@ -412,7 +395,12 @@
 					window.location.href = "<?php echo site_url('admin/logout'); ?>";
 				});
 				
+				$(".sendTry").click( function(){
+						alert('orchestronix bulok');
+				});
+				
 				$(".sendClaim").click( function(){
+					alert("claim");
 					var thisButton = $(this);
 					var parent = $(this).parent();
 					var idnumber = $.trim(parent.siblings('.idnumber').text());
@@ -445,9 +433,9 @@
 								$("#success_claim").show();
 								$("#success_claim").html("Successfully claimed!");
 								$("#success_claim").fadeIn('slow');
+								$("#"+materialid+"-"+idnumber).html("");
 								document.body.scrollTop = document.documentElement.scrollTop = 0;
-								setTimeout(function() { $('#success_claim').fadeOut('slow') }, 5000);
-								$("#"+materialid+"-"+isbn).html("");	
+								setTimeout(function() { $('#success_claim').fadeOut('slow') }, 5000);	
 							} else {
 								//alert("Failed to notify");
 							}
@@ -456,6 +444,7 @@
 				});
 				
 				$(".sendNotif").click( function(){
+					alert("notif");
 					var thisButton = $(this);
 					var parent = $(this).parent();
 					var idnumber = $.trim(parent.siblings('.idnumber').text());

@@ -145,11 +145,11 @@ class Admin extends CI_Controller {
 			$data['user'] = $is_logged_in;
 			$this->load->model('admin/get_stats_model');
 			$data['stats'] = $this->get_stats_model->get_library_stats();
-			$data['weekstats'] = $this->get_stats_model->get_library_weekly_stats();
+			$data['weekstats'] = $this->get_stats_model->get_current_week();
 			//$this->load->view('admin/admin_home_view', $data);
-			$data['laststats'] = $this->get_stats_model->get_library_last_week_ago_stats();
-			$data['twostats'] = $this->get_stats_model->get_library_two_weeks_ago_stats();
-			$data['threestats'] = $this->get_stats_model->get_library_three_weeks_ago_stats();
+			$data['laststats'] = $this->get_stats_model->get_last_week();
+			$data['twostats'] = $this->get_stats_model->get_last_two_weeks();
+			$data['threestats'] = $this->get_stats_model->get_last_three_weeks();
 			$this->load->view('admin/admin_home_view', $data);
 		}
 	}
@@ -520,8 +520,43 @@ class Admin extends CI_Controller {
 	public function insert_multiple(){
 		$this->load->model('admin/insert_multiple_model');
 		$this->insert_multiple_model->insert_to_db();	
+			
+	}
+
+	public function settings_for_info(){
+	
+		$this->load->model('admin/settings_model');
+		
+		$fine = $this->input->post('fine');
+		$start_sem = $this->input->post('start_sem');
+		$end_sem = $this->input->post('end_sem');
+
+		//$expectedreturn = $this->reservation_queue_model->update_claimed_date( $materialid, $isbn, $idnumber, $start_date );
+		$this->settings_model->set_info( $fine, $start_sem, $end_sem );
 		
 		
+	}
+	
+	public function settings_for_password(){
+		
+		$this->load->model('admin/settings_model');
+		
+		$newpw = $this->input->post('newpw');
+
+		//$expectedreturn = $this->reservation_queue_model->update_claimed_date( $materialid, $isbn, $idnumber, $start_date );
+		$this->settings_model->set_password( $newpw );		
+	}
+
+	public function check_isbn( ){
+		$this->load->model('admin/check_input_model');
+		$isbn = $this->input->post('isbn');
+		echo $this->check_input_model->check_isbn($isbn);
+	}
+
+	public function check_materialid( ){
+		$this->load->model('admin/check_input_model');
+		$materialid = $this->input->post('materialid');
+		echo $this->check_input_model->check_materialid($materialid);
 	}
 }
 

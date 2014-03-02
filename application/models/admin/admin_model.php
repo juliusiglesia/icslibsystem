@@ -345,22 +345,5 @@
 		$this->load->database();
 		$this->db->delete("librarymaterial",$data);
 	}
-    
-    public function get_stats_model(){
-         $this->load->database();
-         $sql = "SELECT COUNT(DISTINCT l.materialid) AS libmatcount, COUNT(DISTINCT b.id) AS bormatcount, (COUNT(DISTINCT l.materialid) - COUNT(DISTINCT b.id)) AS diffcount FROM borrowedmaterial b, librarymaterial l";
-         $query = $this->db->query($sql);
-         
-         return $query->result();
-     }	
-
-     public function get_library_weekly_stats(){
-        $this->load->database();
-        //$sql = "SELECT COUNT(DISTINCT l.materialid) AS libmatcount, COUNT(DISTINCT b.id) AS bormatcount, (COUNT(DISTINCT l.materialid) - COUNT(DISTINCT b.id)) AS diffcount FROM borrowedmaterial b, librarymaterial l WHERE b.startdate >= DATEADD(wk, DATEDIFF(wk, 0, NOW()), -1) AND b.stardate <= DATEADD(wk, DATEDIFF(wk, 0, NOW()), 5)";
-        $sql = "SELECT COUNT(DISTINCT l.materialid) AS libmatcount, COUNT(DISTINCT b.id) AS bormatcount, (COUNT(DISTINCT l.materialid) - COUNT(DISTINCT b.id)) AS diffcount FROM borrowedmaterial b, librarymaterial l WHERE b.start >= DATE_ADD(NOW(), INTERVAL(1-DAYOFWEEK(NOW())) DAY) AND b.start <= DATE_ADD(NOW(), INTERVAL(1-DAYOFWEEK(NOW())) +6 DAY)"; 
-        $query = $this->db->query($sql);
-        
-        return $query->result();
-    }
 }
 ?>

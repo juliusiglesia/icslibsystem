@@ -46,7 +46,7 @@ class Insert_multiple_model extends CI_Model{
 
 	public function insert_to_db(){
 		$file = json_decode($this->input->get('insert'));
-		for( $i = 1; $i < count($file); $i+=2){
+		for( $i = 0; $i < count($file); $i++){
 			$this->insert_material($file[$i]);
 			$this->insert_author($file[$i]);
 			echo "true";
