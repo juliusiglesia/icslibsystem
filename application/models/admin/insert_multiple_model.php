@@ -22,12 +22,18 @@ class Insert_multiple_model extends CI_Model{
 			'requirement' => trim($file[9]),
 			'quantity' => trim($file[10])
 		);
+
 		$this->db->insert('librarymaterial', $material);
+	}
+
+	public function insert_author( $file ){
 		$i = 11;
 		$j = 0;
+
 		while( $j != count($file[$i]) ){
 			$author = array(
 				'materialid' => trim($file[0]),
+				'isbn' => trim($file[1]),
 				'fname' => trim($file[$i][$j][0]),
 				'mname' => trim($file[$i][$j][1]),
 				'lname' => trim($file[$i][$j][2])
@@ -35,16 +41,16 @@ class Insert_multiple_model extends CI_Model{
 			$this->db->insert('author', $author);
 			$j++;
 		}
+
 	}
 
 	public function insert_to_db(){
-		$file = json_decode($this->input->post('insert'));
-		
+		$file = json_decode($this->input->get('insert'));
 		for( $i = 1; $i < count($file); $i+=2){
-			$this->insert_material($file[$i]);	
+			$this->insert_material($file[$i]);
+			$this->insert_author($file[$i]);
+			echo "true";
 		}
-
-		
     }
 }
 
