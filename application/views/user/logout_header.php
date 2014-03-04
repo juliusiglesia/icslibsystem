@@ -6,21 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="shortcut icon" href="<?php echo base_url(); ?>dist/images/favicon.PNG">
+    <link rel="shortcut icon" type="image/png" href="<?php echo base_url(); ?>dist/images/fav.png">
 
     <title>ICS-iLS</title>
 
-    <!-- Bootstrap core CSS -->
     <link href="<?php echo base_url(); ?>dist/css/bootstrap.css" rel="stylesheet">
-
-    <!-- Just for debugging purposes. Don't actually copy this line! -->
-    <!--[if lt IE 9]><script src="../../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-    <![endif]-->
+	<link href="<?php echo base_url(); ?>dist/css/style.css" rel="stylesheet">
 
     <script type="text/javascript">
            
@@ -36,7 +27,7 @@
     <!-- Custom styles for this template -->
     <link href="<?php echo base_url(); ?>dist/css/carousel.css" rel="stylesheet">
     <link href="<?php echo base_url(); ?>dist/css/signin.css" rel="stylesheet">
-	<script src="<?php echo base_url(); ?>dist/js/jquery.js"></script>
+  <script src="<?php echo base_url(); ?>dist/js/jquery.js"></script>
   <style type="text/css" id="holderjs-style"></style></head>
 <!-- NAVBAR
 ================================================== -->
@@ -50,44 +41,85 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#"><img src="<?php echo base_url(); ?>dist/images/logowhite.png" height="30px"></a>
+          <a class="navbar-brand" href="#"><img src="<?php echo base_url(); ?>dist/images/logo4.png" height="40px"></a>
         </div>
        <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
+            <li><a href="/icslibsystem/profile" style="font-size:17px;" onclick = "this.style.color='white';"><span class="glyphicon glyphicon-home" ></span></a></li>
             <li class="dropdown">
-              <a class = "notif" href="#" class="dropdown-toggle" data-toggle="dropdown" style="font-size:17px;" onclick = "this.style.color='white';"><span class="glyphicon glyphicon-envelope" ></span></a>
-              <ul class="dropdown-menu">
-                <!--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-->
-                <li class="dropdown-header">Overdue Books</li>
-                  <?php
-                    foreach ($overdue as $temps) {
-                      echo "<li><a>"; echo $temps['name']; echo "</a></li>"; 
-                    } 
-                  ?>
-                 </a></li>
-                 <li class="divider"></li>
-                <li class="dropdown-header">Borrowed Books</li>
+              <a class = "notif" id="notif" href="#" class="dropdown-toggle" data-toggle="dropdown" style="font-size:17px;" onclick = "this.style.color='white';"><span class="glyphicon glyphicon-envelope" ></span></a>
                 <?php
-                    foreach ($borrowed as $temps) {
-                      echo "<li><a>"; echo $temps['name']; echo "</a></li>"; 
-                    } 
-                  ?>
-                <li class="dropdown-header">Reserved Books</li>
-                  <?php
-                    foreach ($res as $temps) {
-                      echo "<li><a>"; echo $temps['name']; echo "</a></li>"; 
-                    } 
+                 // if($overdue || $res || $readytoclaim){ echo "<span class='glyphicon glyphicon-exclamation-sign'></span>"; }
+                ?>
+              <ul class="dropdown-menu">
+
+                <li class="dropdown-header">Overdue Books</li>
+                <?php
+                    if(!$overdue){  echo "<li><a><i> None </i></a></li>"; }
+                    else{
+                      foreach ($overdue as $temps) {
+                        echo "<li><a>"; 
+                        echo $temps['name']; 
+                        echo "<br/>";
+                        echo "Fine:  Php ";
+                        echo "${temps['user_fine']}";
+                        echo "</a></li>"; 
+                      }
+                    }
                   ?>
                  </a></li>
                  <li class="divider"></li>
-              <!--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-->
+                 <li class="dropdown-header">Reserved Books</li>
 
+                  <?php
+                    if(!$res){ echo "<li><a><i> None </i></a></li>"; }
+                    else{
+                      foreach ($res as $temps) {
+                        echo "<li><a>"; echo $temps['name']; echo "</a></li>"; 
+                      } 
+                    }
+                  ?>
+
+                 </a></li>
+                 <li class="divider"></li>
+                 <li class="dropdown-header">Ready to claim</li>
+                  <?php
+                    
+                    if(!$readytoclaim){  echo "<li><a><i> None </i></a></li>"; }
+                    else{
+                      foreach ($readytoclaim as $temps) {
+                        echo "<li><a>"; echo $temps['materialid'];  echo " until "; echo"<b>"; echo $temps['claimdate'];  echo"</b>"; echo "</a></li>"; 
+                      } 
+                    }
+                  ?>
+                 </a></li>
               </ul>
             </li>
-            <form class="navbar-form navbar-right" role="form" action="logout" > 
-            <button type="submit" class="btn btn-success">Log out</button>
-          </form>
+            <!--<form class="navbar-form navbar-right" role="form" action="logout" > -->
+              <!--<button type="submit" class="btn btn-success">Log out</button>-->
+              <li><a href="/icslibsystem/logout?"><span class="glyphicon glyphicon-log-out" type="submit" style="font-size:17px;" onclick = "this.style.color='white';"></span></a></li>
+            <!--</form>-->
           </ul>
         </div><!--/.nav-collapse -->
       </div>
     </div>
+
+<script src="<?php echo base_url();?>dist/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+    $('#notif').click( function(){
+        
+        $.ajax({
+          url: "<?php echo base_url();?>borrower/notification",
+          type: "POST",
+          dataType: "json",
+          data: { idnumber : idnumber, password : password, email : email },
+
+          success: function(result){
+            console.log(result);     
+          }
+          
+        });
+
+
+    });
+</script>

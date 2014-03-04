@@ -1,4 +1,4 @@
-<?php include 'admin_header.php'?></div>
+<?php include 'admin_header.php'; ?></div>
         <div class="mainBody">
             <!-- Nav tabs -->
             <div class="sidebarMain">
@@ -19,10 +19,7 @@
 						<a href="<?php echo base_url();?>admin/home">Overview</a>
 					</li>
                 </ul>
-
-
-
-				</div>   
+			</div>   
 
         <div class="leftMain">
         <div id="main-page">
@@ -69,9 +66,8 @@
 				<tr>
 						
 				</table>
-					<div class="alert alert-success alert-dismissable" id="pword_succ" style="display:none;">
-						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-						<strong>Update successful!</strong> Password successfully updated.
+					<div id = "alert" class="alert alert-success alert-dismissable">
+						
 					</div>
 				<table>
 				<tr>
@@ -94,13 +90,15 @@
 				<tr>
 				<td><br /></td>
 				</tr>
+
+
 				
 		</table>
 		<input type="submit" id="cancel_2" name="insert" class="btn" value="Cancel" style="display: none;" onclick="cancel2()">
 		<input type="button" id="save_2" name="insert" class="btn btn-primary" value="Save" style="display: none;" onclick="valPword()">
 		<input type="submit" id="upd_pword" name="insert" class="btn btn-primary" value="Update Password" onclick="update2()">
 		<br/>
-		
+		<button type="button" class="btn btn-default" id= "clearButton" >Clear Reservations</button>&nbsp;&nbsp;
 		</div>
 		</div>
 		</div>
@@ -114,7 +112,52 @@
 	<script src="<?php echo base_url();?>dist/js/jquery.js"></script>
     <script src="<?php echo base_url();?>dist/js/bootstrap.js"></script>
     <script src="<?php echo base_url();?>dist/js/holder.js"></script>
-	<script>		
+	<script>
+
+		$('#clearButton').click(function(){
+			bootbox.dialog({
+						message: "Are you sure you want to clear the reservations of materials?",
+						title: "Confirm clear reservations",
+						buttons: {
+							yes: {
+								label: "Yes, continue.",
+								className: "btn-primary",
+								callback: function() {
+									var thisButton = thisDiv;
+									var parent = thisDiv.parent();
+									var idnumber = $.trim(parent.siblings('.idnumber').text());
+									var materialid = $.trim(parent.siblings('.materialid').text());
+									var isbn = $.trim(parent.siblings('.isbn').text());
+							
+									$.ajax({
+										type: "POST",
+										url: "<?php echo base_url();?>admin/clear_reservation",
+										data: { materialid : materialid, idnumber : idnumber, isbn : isbn }, 
+
+										beforeSend: function() {
+											//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
+											$("#error_message").html("loading...");
+										},
+
+										error: function(xhr, textStatus, errorThrown) {
+												$('#error_message').html(textStatus);
+										},
+
+										success: function( result ){
+											$('#alert')
+										}
+									});
+								}
+							},
+							no: {
+								label: "No.",
+								className: "btn-default"
+							}
+						}
+					});
+
+		});
+
 		function update1(){
 		
 			var fine = document.getElementById('fine');

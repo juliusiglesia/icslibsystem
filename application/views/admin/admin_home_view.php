@@ -65,7 +65,7 @@
 		 						?>
 							</div>
 							<div class="btn_container">
-								<!--<button type="button" class="btn btn-default" onclick="clearAlert()">Clear Reservations</button>&nbsp;&nbsp;-->
+								<!---->
 								<a href="<?php echo base_url();?>admin/print_inventory"><button type="button" class="btn btn-danger">Generate Report</button></a>
 							</div>
 								

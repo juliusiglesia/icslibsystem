@@ -8,6 +8,11 @@
 	
 		public function get_search_res($search, $filter)
 		{
+			
+			if($filter==NULL){
+				$filter='keyword';
+			}
+
 			$this->load->database();
 			$return_array = array();
 			
@@ -20,20 +25,20 @@
 						OR l.year LIKE '%{$search}%')	
 						AND a.materialid = l.materialid ORDER BY l.name";
 			}
-			else if($filter=='name' || $filter =='course'){
+			else if($filter=='name' || $filter =='course' ){
 				$stmt = "SELECT * FROM author a, librarymaterial l
 						WHERE l.$filter LIKE '%{$search}%'	
 						AND a.materialid = l.materialid ORDER BY l.name";
 			
 			}
-			else{
+			else if($filter=='author'){
 				$stmt = "SELECT * FROM author a, librarymaterial l
-						WHERE (a.fname LIKE '{%{$search}%}' OR a.materialid LIKE '%{$search}%'
-						OR a.mname LIKE '%{$search}%' OR a.lname LIKE '%{$search}%')	
+						WHERE (a.fname LIKE '{%{$search}%}' OR a.mname LIKE '%{$search}%' OR a.lname LIKE '%{$search}%')	
 						AND a.materialid = l.materialid ORDER BY l.name";
 						
 				
 			}
+
 			$query = $this->db->query($stmt);
 			$query = $query->result();
 			foreach ($query as $tuple)

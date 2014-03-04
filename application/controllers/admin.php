@@ -558,6 +558,11 @@ class Admin extends CI_Controller {
 		$materialid = $this->input->post('materialid');
 		echo $this->check_input_model->check_materialid($materialid);
 	}
+
+	public function clear_reservation(){
+		$this->load->model('admin/clear_reservation_model');
+		
+	}
 }
 
 ?>
