@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en"><head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -59,6 +60,9 @@
             </div>
         </div>
         
+=======
+<?php include 'admin_header.php'; ?></div>
+>>>>>>> fd71dcc764149f492b9ca949c202642f4cd65dd0
         <div class="mainBody">
             <!-- Nav tabs -->
             <div class="sidebarMain">
@@ -75,11 +79,16 @@
 					<li id = "add-nav" >
 						<a href="<?php echo base_url();?>admin/add_material"><span class="glyphicon glyphicon-plus"></span> &nbsp;Add A New Material&nbsp;&nbsp;&nbsp;</a>
 					</li>
+<<<<<<< HEAD
 					<li id = "overview-nav">
 						<a href="<?php echo base_url();?>admin/home"><span class="glyphicon glyphicon-dashboard"></span> &nbsp;Overview</a>
 					</li>	
 				</ul>
 			</div> 
+=======
+                </ul>
+			</div>   
+>>>>>>> fd71dcc764149f492b9ca949c202642f4cd65dd0
 
         <div class="leftMain">
         <div id="main-page">
@@ -128,7 +137,17 @@
 				<hr style="border:1px dashed #A8A8FF; text-align:center;"></td>
 				
 				<tr>
+<<<<<<< HEAD
 					
+=======
+					<td><h4>Edit Password</h4><br /></td>
+				<tr>
+						
+				</table>
+					<div id = "alert" class="alert alert-success alert-dismissable">
+						
+					</div>
+>>>>>>> fd71dcc764149f492b9ca949c202642f4cd65dd0
 				<table>
 					<td><h4>Edit Password</h4></td>
 					<tr>
@@ -151,14 +170,27 @@
 					<td><br /></td>
 					</tr>
 				
+<<<<<<< HEAD
 				</table>
+=======
+				<tr>
+				<td><br /></td>
+				</tr>
+
+
+>>>>>>> fd71dcc764149f492b9ca949c202642f4cd65dd0
 				
 		<input type="submit" id="cancel_2" name="insert" class="btn" value="Cancel" style="display: none;" onclick="cancel2()">
 		<input type="submit" id="save_2" name="insert" class="btn btn-primary" value="Save" style="display: none;" onclick="valPword()">
 		<input type="submit" id="upd_pword" name="insert" class="btn btn-primary" value="Update Password" onclick="update2()">
+<<<<<<< HEAD
 		<button type="button" class="btn btn-default" onclick="clearAlert()">Clear Reservations</button>&nbsp;&nbsp;
 		<br>
 		
+=======
+		<br/>
+		<button type="button" class="btn btn-default" id= "clearButton" >Clear Reservations</button>&nbsp;&nbsp;
+>>>>>>> fd71dcc764149f492b9ca949c202642f4cd65dd0
 		</div>
 		</div>
 		</div>
@@ -172,11 +204,60 @@
 	<script src="<?php echo base_url();?>dist/js/jquery.js"></script>
     <script src="<?php echo base_url();?>dist/js/bootstrap.js"></script>
     <script src="<?php echo base_url();?>dist/js/holder.js"></script>
+<<<<<<< HEAD
 	<script>		
 	
 	/*
 			UPDATE INFORMATION VALIDATION
 	*/
+=======
+	<script>
+
+		$('#clearButton').click(function(){
+			bootbox.dialog({
+						message: "Are you sure you want to clear the reservations of materials?",
+						title: "Confirm clear reservations",
+						buttons: {
+							yes: {
+								label: "Yes, continue.",
+								className: "btn-primary",
+								callback: function() {
+									var thisButton = thisDiv;
+									var parent = thisDiv.parent();
+									var idnumber = $.trim(parent.siblings('.idnumber').text());
+									var materialid = $.trim(parent.siblings('.materialid').text());
+									var isbn = $.trim(parent.siblings('.isbn').text());
+							
+									$.ajax({
+										type: "POST",
+										url: "<?php echo base_url();?>admin/clear_reservation",
+										data: { materialid : materialid, idnumber : idnumber, isbn : isbn }, 
+
+										beforeSend: function() {
+											//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
+											$("#error_message").html("loading...");
+										},
+
+										error: function(xhr, textStatus, errorThrown) {
+												$('#error_message').html(textStatus);
+										},
+
+										success: function( result ){
+											$('#alert')
+										}
+									});
+								}
+							},
+							no: {
+								label: "No.",
+								className: "btn-default"
+							}
+						}
+					});
+
+		});
+
+>>>>>>> fd71dcc764149f492b9ca949c202642f4cd65dd0
 		function update1(){
 		
 			var fine = document.getElementById('fine');
