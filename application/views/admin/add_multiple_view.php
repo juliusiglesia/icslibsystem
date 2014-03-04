@@ -181,18 +181,29 @@
 					str = str + "<td><span class = 'check-error' > </span></td>";
 					
 					body.append("<tr class = '"+ array[i][0] + "-" + array[i][1] + "' >"+ str + "</tr>");
-					currentRow = $('#table-data-area tr').get($('#table-data-area tr').length-1).children;
-					if ((checkDataInput( array[i] ))) {
+						currentRow = $('#table-data-area tr').get($('#table-data-area tr').length-1).children;
+					if ( ( checkDataInput( array[i] ) ) ){
 						//enable
 						document.getElementById("insertButton").disabled = false; 
-					}else{
+					} else{
 						//disable
 						document.getElementById("insertButton").disabled = true; 
 					}
 				}
 			}
 
-			function checkDataInput( arr ){				
+			function checkDataInput( arr ){
+				checkISBN( arr[1], arr[6] );
+				checkMatId( arr[0], arr[6], arr[7], arr[3] );
+				checkName( arr[2] );
+				checkCourse( arr[3], arr[6] );
+				checkAvailable( arr[4] );
+				checkAccess( arr[5], arr[6] );
+				checkType( arr[6] );
+				checkYear( arr[7] );
+				checkEdvol( arr[8] );
+				checkRequirement( arr[9] );
+				checkQuantity( arr[10] );
 				if(checkISBN( arr[1], arr[6] ) && checkMatId( arr[0], arr[6], arr[7], arr[3] ) && checkName( arr[2] ) && checkCourse( arr[3], arr[6] ) && checkAvailable( arr[4] ) && checkAccess( arr[5], arr[6] ) && checkType( arr[6] ) && checkYear( arr[7] ) && checkEdvol( arr[8] ) && checkRequirement( arr[9] ) && checkQuantity( arr[10] )  ) {
 					return true;
 				}
@@ -303,7 +314,7 @@
 			function checkMatId( materialid, type, year, course ){
 				if(type == "") {
 					$('.type').last().attr('style', 'color : red')
-					$('.materialid').last().attr('style', 'color : red')
+					$('.materialid').last().attr('style', 'color : red')					
 				} else {
 					if (materialid == ""){
 						$('.materialid').last().attr('style', 'color : red')
@@ -313,60 +324,63 @@
 							var courseTemp = materialid.slice(0, index);
 							if( courseTemp != course ){
 								$('.materialid').last().attr('style', 'color : red')
-								return false;
+							
 							} else if ( !materialid.match(/^(CS[0-9]{1,3})-([A-Z][0-9]{1,2})$/) ){
 								$('.materialid').last().attr('style', 'color : red')
-							} else {
-								return true;
+							} else {								
+							
 							}
 						} else if(type=='Magazine') {
 							if ( !( (materialid.match(/^M-([0-9]{1,2})$/)) ) ){
 								$('.materialid').last().attr('style', 'color : red')
+						
+							}else {								
 							
-							}else {
-								return true;
 							}
 						} else if(type=='Thesis') {
 							if ( !( (materialid.match(/^T-([0-9]{1,2})$/)) ) ){
 								$('.materialid').last().attr('style', 'color : red')
-							}else {	
-								return true;
+							} else {	
+							
 							}
 						} else if(type=='References') {
 							if ( !( (materialid.match(/^R-([0-9]{1,2})$/)) ) ){
 								$('.materialid').last().attr('style', 'color : red')
 							}else {
-								return true;
+							
 							}
 						} else if(type=='Journals') {
 							if ( !( (materialid.match(/^J-([0-9]{1,2})$/)) ) ){
 								$('.materialid').last().attr('style', 'color : red')
 							
 							}else {
-								return true;
+							
 							}
 						} else if(type=='SP') {
 							if ( !( (materialid.match('/^SP'+year+'-([0-9]{1,2}[a-z]*)$')) ) ){
 								$('.materialid').last().attr('style', 'color : red')
 							
 							}else {
-								return true;
+								
 							}
 						} else {
 							$('.type').last().attr('style', 'color : red')
 							$('.materialid').last().attr('style', 'color : red')
 						}
 					}
-
-					if ( !checkMaterialIdInFile(materialid) ){
-						$('.materialid').last().attr('style', 'color : red');
-						
-					} else {
-						return true;
-					}
 				}
+
+				checkMaterialIdInDB( materialid, $('.materialid').last() );
+
+				if ( !checkMaterialIdInFile(materialid) ){
+					$('.materialid').last().attr('style', 'color : red');
+				
+				} else {
+				
+				}
+
 			}
-			
+		
 			function checkName( name ){
 				if (name == ""){
 					$('.name').last().attr('style', 'color : red')
@@ -375,9 +389,68 @@
 					$('.name').last().attr('style', 'color : red')
 				
 				} else {
-					return true;
+				
 				}
 			}
+
+			function checkAccess( access, type){
+				if(type=="") {
+					$('.type').last().attr('style', 'color : red');
+					$('.access').last().attr('style', 'color : red');
+				} else {
+					if (access == ""){
+						$('.access').last().attr('style', 'color : red');
+					}else {
+						if(type=='Book') {
+							if ( !( (access.match(/^4$/)) ) ){
+								$('.access').last().attr('style', 'color : red');
+ 									
+ 							}else {
+								return true;
+ 							}
+ 						} else if(type=='Magazine') {
+							if ( !( (access.match(/^3$/)) ) ){
+								$('.access').last().attr('style', 'color : red');
+									
+							}else {
+								return true;
+ 							}
+ 						} else if(type=='Thesis') {
+ 							if ( !( (access.match(/^3$/)) ) ){
+ 								$('.access').last().attr('style', 'color : red')
+ 							
+ 							} else {
+								return true;
+ 							}
+ 						} else if(type=='References') {
+ 							if ( !( (access.match(/^2$/)) ) ){
+ 								$('.access').last().attr('style', 'color : red');
+ 							
+ 							}else {
+								return true;
+ 							}
+ 						} else if(type=='Journals') {
+ 							if ( !( (access.match(/^4$/)) ) ){
+ 								$('.access').last().attr('style', 'color : red');
+ 							
+ 							}else {
+								return true;
+ 							}
+ 						} else if(type=='SP') {
+ 							if ( !( (access.match(/^3$/)) ) ){
+ 								$('.access').last().attr('style', 'color : red');
+ 							
+ 							}else {
+								return true;
+ 							}
+ 						} else {
+ 							$('.type').last().attr('style', 'color : red');
+
+							return true;
+ 							}
+ 						}
+ 					}
+ 				}
 			
 			function checkCourse( course, type ){
 				if(type=="") {
@@ -416,64 +489,7 @@
 				}
 			}
 
-			function checkAccess( access, type){
-				if(type=="") {
-					$('.type').last().attr('style', 'color : red')
-					$('.access').last().attr('style', 'color : red')
-				} else {
-					if (access == ""){
-						$('.access').last().attr('style', 'color : red')
-					}else {
-						if(type=='Book') {
-							if ( !( (access.match(/^4$/)) ) ){
-								$('.access').last().attr('style', 'color : red')
-								
-							}else {
-								return true;
-							}
-						} else if(type=='Magazine') {
-							if ( !( (access.match(/^3$/)) ) ){
-								$('.access').last().attr('style', 'color : red')
-								
-							}else {
-								return true;
-							}
-						} else if(type=='Thesis') {
-							if ( !( (access.match(/^3$/)) ) ){
-								$('.access').last().attr('style', 'color : red')
-						
-							}else {
-								return true;
-							}
-						} else if(type=='References') {
-							if ( !( (access.match(/^2$/)) ) ){
-								$('.access').last().attr('style', 'color : red')
-						
-							}else {
-								return true;
-							}
-						} else if(type=='Journals') {
-							if ( !( (access.match(/^4$/)) ) ){
-								$('.access').last().attr('style', 'color : red')
-						
-							}else {
-								return true;
-							}
-						} else if(type=='SP') {
-							if ( !( (access.match(/^3$/)) ) ){
-								$('.access').last().attr('style', 'color : red')
-						
-							}else {
-								return true;
-							}
-						} else {
-							$('.type').last().attr('style', 'color : red')
-							$('.access').last().attr('style', 'color : red')
-						}		
-					}
-				}  
-			}
-			
+
 			function checkType( type ) {
 				if (type == ""){
 					$('.type').last().attr('style', 'color : red')
@@ -481,7 +497,7 @@
 					$('.type').last().attr('style', 'color : red')
 					console.log('error');
 				} else {
-					return true;
+					//return true;
 				}
 			}
 			
@@ -498,7 +514,6 @@
 				} else {
 					return true;
 				}
-				
 			}
 			
 			function checkEdvol( edvol ) {
@@ -508,7 +523,7 @@
 					$('.edvol').last().attr('style', 'color : red')
 				
 				} else {
-					return true;
+					//return true;
 				}
 			}
 			
@@ -519,7 +534,7 @@
 					$('.requirement').last().attr('style', 'color : red')
 				
 				} else {
-					return true;
+					//return true;
 				}
 			}
 			
@@ -529,7 +544,7 @@
 				} else if ( !( (quantity.match(/^[1-9]{1,3}$/)) ) ){
 					$('.quantity').last().attr('style', 'color : red')
 				} else {
-					return true;
+					//return true;
 				}
 			}
 
@@ -540,7 +555,7 @@
 					$('.available').last().attr('style', 'color : red')
 				
 				} else {
-					return true;
+					//return true;
 				}
 			
 			}

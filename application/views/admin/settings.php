@@ -1,137 +1,48 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-<!DOCTYPE html>
-<html lang="en"><head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="description" content="">
-	<meta name="author" content="">
-	
-	<link rel="shortcut icon" href="<?php echo base_url();?>dist/images/favicon.png">
-
-	<title>ICS-iLS</title>
-
-	<link href="<?php echo base_url();?>dist/css/bootstrap.css" rel="stylesheet">
-	<link href="<?php echo base_url();?>dist/css/carousel.css" rel="stylesheet">
-	<link href="<?php echo base_url();?>dist/css/signin.css" rel="stylesheet">
-	<link href="<?php echo base_url();?>dist/css/style.css" rel="stylesheet">
-	<link href="<?php echo base_url();?>dist/css/style2.css" rel="stylesheet">
-	<link href="<?php echo base_url();?>dist/css/date_picker.css" rel="stylesheet">
-	<link href="<?php echo base_url();?>dist/css/styles.css" rel="stylesheet" /> <!--for chart -->
-
-	<style type="text/css" id="holderjs-style"></style></head>
-
-	<body>
-		 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand"><img src="<?php echo base_url();?>dist/images/logo4.png" height="30px"></a>
-                </div>
-				<!--<div class="alert alert-success" id="returned">
-					<a href="#" class="close" data-dismiss="alert" id="boton_cerrar">&times;</a> 
-					<strong>Successfully returned material!</strong>     
-				</div>-->
-                <form class="navbar-form navbar-right" role="form">
-                    <!-- Split button -->
-                <div class="btn-group">
-                  <button type="button" class="btn btn-default" data-toggle="dropdown">
-					<span class="glyphicon glyphicon-cog"></span>
-				  </button>
-                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    <span class="caret"></span>
-                    <span class="sr-only">Toggle Dropdown</span>
-                  </button>
-                  <ul class="dropdown-menu" role="menu">
-                    <li><a href="<?php echo base_url();?>admin/settings">Settings</a></li>
-                    <li><a href="#">Help</a></li>
-                    <li class="divider"></li>
-                    <li><a href="<?php echo base_url();?>admin/logout">Log-out</a></li>
-                  </ul>
-                </div>
-                </form>
-
-            </div>
-        </div>
-        
-=======
 <?php include 'admin_header.php'; ?></div>
->>>>>>> fd71dcc764149f492b9ca949c202642f4cd65dd0
-=======
-<?php include 'admin_header.php'?></div>
->>>>>>> parent of fd71dcc... Update of pages
         <div class="mainBody">
             <!-- Nav tabs -->
             <div class="sidebarMain">
-				<ul class="nav nav-pills nav-stacked">
-					<li id = "reserved-nav" >
-						<a href="<?php echo base_url();?>admin/reservation"><span class="glyphicon glyphicon-import"></span> &nbsp;Reserved Books</a>
+                <ul class="nav nav-pills nav-stacked">
+                    <li id = "reserved-nav" >
+						<a href="<?php echo base_url();?>admin/reservation">Reserved Books</a>
 					</li>
-					<li id = "borrowed-nav" >
-						<a href="<?php echo base_url();?>admin/borrowed_books"><span class="glyphicon glyphicon-export"></span> &nbsp;Borrowed Books</a>
+					<li id = "borrowed-nav">
+						<a href="<?php echo base_url();?>admin/borrowed_books">Borrowed Books</a>
 					</li>
-					<li id = "view-nav" >
-						<a href="<?php echo base_url();?>admin/admin_search"><span class="glyphicon glyphicon-search"></span> &nbsp;View All Materials</a>
+					<li id = "view-nav">
+						<a href="<?php echo base_url();?>admin/admin_search">View All Library Materials</a>
 					</li>
-					<li id = "add-nav" >
-						<a href="<?php echo base_url();?>admin/add_material"><span class="glyphicon glyphicon-plus"></span> &nbsp;Add A New Material&nbsp;&nbsp;&nbsp;</a>
+					<li id = "add-nav">
+						<a href="<?php echo base_url();?>admin/add_material">Add A New Material</a>
 					</li>
-<<<<<<< HEAD
-					<li id = "overview-nav">
-						<a href="<?php echo base_url();?>admin/home"><span class="glyphicon glyphicon-dashboard"></span> &nbsp;Overview</a>
-					</li>	
-				</ul>
-			</div> 
-=======
+					<li id = "overview-nav"  class="active">
+						<a href="<?php echo base_url();?>admin/home">Overview</a>
+					</li>
                 </ul>
-<<<<<<< HEAD
 			</div>   
->>>>>>> fd71dcc764149f492b9ca949c202642f4cd65dd0
-=======
-
-
-
-				</div>   
->>>>>>> parent of fd71dcc... Update of pages
 
         <div class="leftMain">
         <div id="main-page">
         <div id = "main-content">
-		<div class="alert-container">
-			<div class="alert alert-success alert-dismissable" id="info_succ" style="display:none;">
-				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-				<strong>Update successful!</strong> Information successfully updated.
-			</div>
-			
-			<div class="alert alert-success alert-dismissable" id="pword_succ" style="display:none;">
-				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-				<strong>Update successful!</strong> Password successfully updated.
-			</div>
-		</div>
 		<div id="settings_container">
 		
-		<h2>Administrator Settings</h2><br />
-		
-		
+		<h2>Admin Settings</h2><br />
+		<div class="alert alert-success alert-dismissable" id="info_succ" style="display:none;">
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+			<strong>Update successful!</strong> Information successfully updated.
+		</div>
 			<table id="settingsForm">
 				<tr>
-					<td><label>Fine: </label></td>
-					<td><input type="text" value="3.00" name="fine" pattern="[0-9]+" id="fine" disabled></td>
+					<td><label>*Fine: </label></td>
+					<td><input type="text" value="3.00" name="fine" pattern="[0-9]+" id="fine" disabled required></td>
 				</tr>
 				<tr>
-					<td><label>Start of Semester: </label></td>
-					<td><input type="date" value="2013-11-11" name="start_sem" id="start_sem" disabled></td>
+					<td><label>*Start of Semester: </label></td>
+					<td><input type="date" value="2013-11-11" name="start_sem" id="start_sem" disabled required></td>
 				</tr>
 				<tr>
-					<td><label>End of Semester: </label></td>
-					<td><input type="date" value="2014-03-29" name="end_sem" id="end_sem" disabled></td>
+					<td><label>*End of Semester: </label></td>
+					<td><input type="date" value="2014-03-29" name="end_sem" id="end_sem" disabled required></td>
 					
 				</tr>
 				
@@ -140,76 +51,53 @@
 				</tr>
 				
 				</table>
-
+					
 					<input type="submit" id="cancel_1" name="insert" class="btn" value="Cancel" style="display: none;" onclick="cancel1()">
 					<input type="button" id="save_1" name="insert" class="btn btn-primary" value="Update" onclick="validate_info()" style="display: none;">
 					<input type="submit" id="upd_info" class="btn btn-primary" align="right" value="Update Info" onclick="update1()" />
+						
+			<table>
 				
-				<hr style="border:1px dashed #A8A8FF; text-align:center;"></td>
+
+				<td><hr style="width:717%; border:1px dashed #A8A8FF; text-align:center;"></td>
 				
 				<tr>
-<<<<<<< HEAD
-					
-=======
 					<td><h4>Edit Password</h4><br /></td>
 				<tr>
 						
 				</table>
-					<div class="alert alert-success alert-dismissable" id="pword_succ" style="display:none;">
-						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-						<strong>Update successful!</strong> Password successfully updated.
-					</div>
->>>>>>> fd71dcc764149f492b9ca949c202642f4cd65dd0
-				<table>
-					<td><h4>Edit Password</h4></td>
-					<tr>
-
-					<tr>
-						<td><label>Current Password:</label></td>
-						<td><input type="password" id="currpw" name="currpw" value="cmsc128" disabled></td>
-					</tr>
-					<tr>
-						<td><label>New Password:</label></td>
-						<td><input type="password" id="newpw" name="newpw" value="" disabled></td>
-					</tr>
-					
-					<tr>
-						<td><label>Retype Password:</label></td>
-						<td><input type="password" id="repw" name="repw" value="" disabled></td>
-					</tr>
-					
-					<tr>
-					<td><br /></td>
-					</tr>
 				
-<<<<<<< HEAD
-				</table>
-=======
+				<div id = "alert"> </div>
+				<table>
+				<tr>
+					<td><label>Current Password:</label></td>
+					<td><input type="password" id="currpw" name="currpw" value="" pattern="\w{0,}\d{1,}\w{0,}" disabled></td>
+				</tr>
+				<tr>
+					<td><label>Retype Current Password:</label></td>
+					<td><input type="password" id="crepw" name="crepw" value="" pattern="\w{0,}\d{1,}\w{0,}" disabled></td>
+				</tr>
+				<tr>
+					<td><label>New Password:</label></td>
+					<td><input type="password" id="newpw" name="newpw" value="" pattern="\w{0,}\d{1,}\w{0,}" disabled></td>
+				</tr>
+				<tr>
+					<td><label>Retype New Password:</label></td>
+					<td><input type="password" id="nrepw" name="nrepw" value="" pattern="\w{0,}\d{1,}\w{0,}" disabled></td>
+				</tr>
+				
 				<tr>
 				<td><br /></td>
 				</tr>
-<<<<<<< HEAD
 
 
->>>>>>> fd71dcc764149f492b9ca949c202642f4cd65dd0
-=======
->>>>>>> parent of fd71dcc... Update of pages
 				
+		</table>
 		<input type="submit" id="cancel_2" name="insert" class="btn" value="Cancel" style="display: none;" onclick="cancel2()">
-		<input type="submit" id="save_2" name="insert" class="btn btn-primary" value="Save" style="display: none;" onclick="valPword()">
+		<input type="button" id="save_2" name="insert" class="btn btn-primary" value="Save" style="display: none;" onclick="valPword()">
 		<input type="submit" id="upd_pword" name="insert" class="btn btn-primary" value="Update Password" onclick="update2()">
-<<<<<<< HEAD
-		<button type="button" class="btn btn-default" onclick="clearAlert()">Clear Reservations</button>&nbsp;&nbsp;
-		<br>
-		
-=======
 		<br/>
-<<<<<<< HEAD
 		<button type="button" class="btn btn-default" id= "clearButton" >Clear Reservations</button>&nbsp;&nbsp;
->>>>>>> fd71dcc764149f492b9ca949c202642f4cd65dd0
-=======
-		
->>>>>>> parent of fd71dcc... Update of pages
 		</div>
 		</div>
 		</div>
@@ -222,15 +110,8 @@
 
 	<script src="<?php echo base_url();?>dist/js/jquery.js"></script>
     <script src="<?php echo base_url();?>dist/js/bootstrap.js"></script>
+	<script src="<?php echo base_url();?>dist/js/bootbox.min.js"></script>
     <script src="<?php echo base_url();?>dist/js/holder.js"></script>
-<<<<<<< HEAD
-<<<<<<< HEAD
-	<script>		
-	
-	/*
-			UPDATE INFORMATION VALIDATION
-	*/
-=======
 	<script>
 
 		$('#clearButton').click(function(){
@@ -263,7 +144,9 @@
 										},
 
 										success: function( result ){
-											$('#alert')
+											$('#alert').addClass("alert alert-success alert-dismissable")
+														.html("Reservations were now cleared.")
+														.fadeIn('slow');
 										}
 									});
 								}
@@ -277,10 +160,6 @@
 
 		});
 
->>>>>>> fd71dcc764149f492b9ca949c202642f4cd65dd0
-=======
-	<script>		
->>>>>>> parent of fd71dcc... Update of pages
 		function update1(){
 		
 			var fine = document.getElementById('fine');
@@ -290,16 +169,19 @@
 			var save_1 = document.getElementById('save_1');
 			var upd_info = document.getElementById('upd_info');
 			
+			//var new_start_sem = date(start_sem);
+			
+			//alert(new_start_sem);
+		
 			fine.disabled=false;
 			start_sem.disabled=false;
 			end_sem.disabled=false;
 			cancel_1.style.display='inline';
 			save_1.style.display='inline';
 			upd_info.style.display='none';
-			
 		
 		}
-		
+	
 		function cancel1(){
 		
 			var fine = document.getElementById('fine');
@@ -322,23 +204,45 @@
 		function validate_info(){
 		
 			var fine = document.getElementById('fine');
-			var filter =  /^(?:100|\d{1,2})(?:\.\d{1,2})?$/;
+			var filter = /^([0-9\.\])+(([0-9\-]{2})+$/; 
 			var upd_info = document.getElementById('upd_info');
 			var cancel1 = document.getElementById('cancel1');
 			var save1 = document.getElementById('save1');
 			var start_sem = document.getElementById('start_sem');
 			var end_sem = document.getElementById('end_sem');
+			var start_sem_date = new Date(start_sem.value);
+			var end_sem_date = new Date(end_sem.value);
+			var current_date = new Date();
 			var info_succ = document.getElementById('info_succ');
-
+			var oneDay = 24*60*60*1000;    // hours*minutes*seconds*milliseconds
+			
+			var months_difference;
+			months_difference = (end_sem_date.getFullYear() - start_sem_date.getFullYear()) * 12;
+			months_difference -= start_sem_date.getMonth();
+			months_difference += end_sem_date.getMonth();
+			if(months_difference <= 0) months_difference = 0;
+			
+			start_sem_date.setDate(start_sem_date.getDate()+1);
+			
 			if (!filter.test(fine.value)){
 				alert('Invalid fine value.');
 				fine.focus;	
 				return false;
 			}
 			
+			if (start_sem_date < current_date) {
+				alert('The input for start sem is less than the current date');
+				return false;
+			}
+			
 			else if(end_sem.value < start_sem.value){
 				
 				alert('End of semester date should occur later than the start of semester date.');
+				return false;
+			}
+			
+			else if( months_difference < 4 || months_difference > 5){
+				alert('Invalid semester length.');
 				return false;
 			}
 			
@@ -352,43 +256,68 @@
 				upd_info.style.display='inline';
 							
 			}
+			
+			var fine = document.getElementById('fine').value;
+			var start_sem = document.getElementById('start_sem').value;
+			var end_sem = document.getElementById('end_sem').value;
+			
+			$.ajax({
+						type: "POST",
+						url: "<?php echo base_url();?>admin/settings_for_info",
+						data: { fine : fine, start_sem : start_sem, end_sem : end_sem }, 
+
+						beforeSend: function() {
+							//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
+							$("#error_message").html("loading...");
+						},
+
+						error: function(xhr, textStatus, errorThrown) {
+								$('#error_message').html(textStatus);
+						},
+
+						success: function( result ){
+							// show that notification is successful
+							$('#error').html(result);
+						}
+					});
 		
 		}
 		
-		/*
-				UPDATE PASSWORD VALIDATION
-		*/
-		
 		function update2(){
 		
+			
+			var crepw = document.getElementById('crepw');
 			var newpw = document.getElementById('newpw');
 			var currpw = document.getElementById('currpw');
-			var repw = document.getElementById('repw');
+			var nrepw = document.getElementById('nrepw');
 			var cancel_2 = document.getElementById('cancel_2');
 			var save_2= document.getElementById('save_2');
 			var upd_pword= document.getElementById('upd_pword');
 			
+			crepw.disabled=false;
 			newpw.disabled=false;
 			currpw.disabled=false;
-			repw.disabled=false;
+			nrepw.disabled=false;
 			cancel_2.style.display='inline';
 			save_2.style.display='inline';
 			upd_pword.style.display='none';
-		
+			
 		}
 		
 		function cancel2(){
 		
+			var crepw = document.getElementById('crepw');
 			var newpw = document.getElementById('newpw');
 			var currpw = document.getElementById('currpw');
-			var repw = document.getElementById('repw');
+			var nrepw = document.getElementById('nrepw');
 			var cancel_2 = document.getElementById('cancel_2');
 			var save_2= document.getElementById('save_2');
 			var upd_pword= document.getElementById('upd_pword');
 			
+			crepw.disabled=true;
 			newpw.disabled=true;
 			currpw.disabled=true;
-			repw.disabled=true;
+			nrepw.disabled=true;
 			cancel_2.style.display='none';
 			save_2.style.display='none';
 			upd_pword.style.display='inline';
@@ -399,30 +328,63 @@
 			
 			var currpw=document.getElementById('currpw');
 			var newpw = document.getElementById('newpw');
-			var repw = document.getElementById('repw');
+			var crepw = document.getElementById('crepw');
+			var nrepw = document.getElementById('nrepw');
 			var upd_pword = document.getElementById('upd_pword');
 			var save_2 = document.getElementById('save_2');
 			var cancel_2 = document.getElementById('cancel_2');
 			var pword_succ = document.getElementById('pword_succ');
+			
+			if(newpw.value == currpw.value){
+				alert('Please provide a new password');
+			}
+			
+			else if(newpw.value.length < 6) {
+				alert("Password must be greater than 6 characters!");
+				return false;
+			}
 													
-			if (newpw.value!=repw.value || (newpw.value == '' || repw.value == '')) {
+			else if (newpw.value!=nrepw.value || (newpw.value == '' || nrepw.value == '')) {
 				alert('Please retype your password.');
 				newpw.focus;
 				return false;
 			}
 			else{
 				currpw.value = newpw.value;
-				newpw.value='';
-				repw.value='';
+				crepw.value='';
+				nrepw.value='';
 				newpw.disabled=true;
 				currpw.disabled=true;
-				repw.disabled=true;
+				nrepw.disabled=true;
 				cancel_2.style.display='none';
 				save_2.style.display='none';
 				upd_pword.style.display='inline';
 				pword_succ.style.display='block';
 				
 			}
+			
+			var newpw = document.getElementById('newpw').value;
+			
+			$.ajax({
+						type: "POST",
+						url: "<?php echo base_url();?>admin/settings_for_password",
+						data: { newpw: newpw },
+
+						beforeSend: function() {
+							//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
+							$("#error_message").html("loading...");
+						},
+
+						error: function(xhr, textStatus, errorThrown) {
+								$('#error_message').html(textStatus);
+						},
+
+						success: function( result ){
+							// show that notification is successful
+							$('#error_message').html(result);
+							
+						}
+					});
 		
 		}
 	</script>
