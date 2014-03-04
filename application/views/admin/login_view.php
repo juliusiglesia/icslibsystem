@@ -71,6 +71,7 @@
 				</form>
 			</div>
 			<div id = "error_message" class = "alert alert-danger">  </div>
+			<center><div style="display:none" id="dvloader"><img src="<?php echo base_url();?>dist/images/ajax-loader.gif" /></div></center>
 		</div>
 		 <script src="<?php echo base_url();?>dist/js/jquery.js"></script>
     
@@ -115,6 +116,7 @@
 							
 							}
 							else {
+								$("#dvloader").show();
 								window.location.href = "<?php echo site_url('admin/home'); ?>";
 							}
 						}
