@@ -1,7 +1,158 @@
-<?php include 'admin_header.php'?>
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	
+	<link rel="shortcut icon" href="<?php echo base_url();?>dist/images/favicon.png">
+
+	<title>ICS-iLS</title>
+
+	<link href="<?php echo base_url();?>dist/css/bootstrap.css" rel="stylesheet">
+	<link href="<?php echo base_url();?>dist/css/carousel.css" rel="stylesheet">
+	<link href="<?php echo base_url();?>dist/css/signin.css" rel="stylesheet">
+	<link href="<?php echo base_url();?>dist/css/style.css" rel="stylesheet">
+	<link href="<?php echo base_url();?>dist/css/style2.css" rel="stylesheet">
+	<link href="<?php echo base_url();?>dist/css/date_picker.css" rel="stylesheet">
+	<link href="<?php echo base_url();?>dist/css/styles.css" rel="stylesheet" /> <!--for chart -->
+
+	<style type="text/css" id="holderjs-style"></style></head>
+
+	<script src="<?php echo base_url();?>dist/js/jquery.js"></script>
+		
+	<body>
+		 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand"><img src="<?php echo base_url();?>dist/images/logo4.png" height="30px"></a>
+                </div>
+				<!--<div class="alert alert-success" id="returned">
+					<a href="#" class="close" data-dismiss="alert" id="boton_cerrar">&times;</a> 
+					<strong>Successfully returned material!</strong>     
+				</div>-->
+                <form class="navbar-form navbar-right" role="form">
+                    <!-- Split button -->
+                <div class="btn-group">
+                  <button type="button" class="btn btn-default" data-toggle="dropdown">
+					<span class="glyphicon glyphicon-cog"></span>
+				  </button>
+                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="<?php echo base_url();?>admin/settings">Settings</a></li>
+                    <li><a href="#">Help</a></li>
+                    <li class="divider"></li>
+                    <li><a href="<?php echo base_url();?>admin/logout">Log-out</a></li>
+                  </ul>
+                </div>
+                </form>
+
+            </div>
+        </div>
 
 		<div class="mainBody">
-		
+			<script>
+				$(".sendClaim").click( function(){
+					alert("claim");
+					var thisButton = $(this);
+					var parent = $(this).parent();
+					var idnumber = $.trim(parent.siblings('.idnumber').text());
+					var materialid = $.trim(parent.siblings('.materialid').text());
+					var isbn = $.trim(parent.siblings('.isbn').text());
+			
+					$.ajax({
+						type: "POST",
+						url: "<?php echo base_url();?>admin/claim_reservation",
+						data: { materialid : materialid, idnumber : idnumber, isbn : isbn }, 
+
+						beforeSend: function() {
+							//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
+							$("#error_message").html("loading...");
+						},
+
+						error: function(xhr, textStatus, errorThrown) {
+								$('#error_message').html(textStatus);
+						},
+
+						success: function( result ){
+							// show that notification is successful
+							//$('#error').html(result);
+							if( result != "1" ){
+								thisButton.attr('disabled', 'disabled');
+								// remove row
+								//alert("Student has been notified");
+								document.getElementById("success_notify").style.display='none';
+
+								$("#success_claim").show();
+								$("#success_claim").html("Successfully claimed!");
+								$("#success_claim").fadeIn('slow');
+								$("#"+materialid+"-"+idnumber).html("");
+								document.body.scrollTop = document.documentElement.scrollTop = 0;
+								setTimeout(function() { $('#success_claim').fadeOut('slow') }, 5000);	
+							} else {
+								//alert("Failed to notify");
+							}
+						}
+					});
+				});
+				
+				$(".sendNotif").click( function(){
+					alert("notif");
+					var thisButton = $(this);
+					var parent = $(this).parent();
+					var idnumber = $.trim(parent.siblings('.idnumber').text());
+					var materialid = $.trim(parent.siblings('.materialid').text());
+					var isbn = $.trim(parent.siblings('.isbn').text());
+
+					$.ajax({
+						type: "POST",
+						url: "<?php echo base_url();?>admin/notification",
+						data: { materialid : materialid, idnumber : idnumber, isbn : isbn }, 
+
+						beforeSend: function() {
+							//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
+							$("#error_message").html("loading...");
+						},
+
+						error: function(xhr, textStatus, errorThrown) {
+								$('#error_message').html(textStatus);
+						},
+
+						success: function( result ){
+							// show that notification is successful
+							$('#error').html(result);
+							if( result != "1" ){
+
+								// alert here if success
+								thisButton.attr('disabled', true);
+								thisButton.next().removeAttr('disabled');
+
+								//alert("Success!")
+								$("#success_notify").show();
+								$("#success_notify").html("Successfully notified!");
+								$("#success_notify").fadeIn('slow');
+								document.body.scrollTop = document.documentElement.scrollTop = 0;
+								setTimeout(function() { $('#success_notify').fadeOut('slow') }, 5000);
+
+							} else {
+								//alert("Fail!");
+							}
+						}
+					});
+				});
+
+			</script>
 			<!-- Nav tabs -->
 			<div class="sidebarMain">
 				<ul class="nav nav-pills nav-stacked">
@@ -36,33 +187,34 @@
 								<div id = "success_claim" class = "alert alert-success">  </div>
 							</div>
                         </form>
-<table class="tablesorter" border = "1" cellspacing='5' cellpadding='5' align = 'center'>
-	<thead>
-		<tr>
-			<th width="5%"><center>ISBN</center></th>
-			<th width="5%"><center>Library Material ID</center></th>
-			<td width="5%"><center><b>Type</center></b></td>
-			<th width="45%"><center>Library Information</center></th>
-			<th width="5%"><center>Borrower</center></th>
-			<th width="8%"><center>Start Date</center></th>
-			<th width="5%"><center>Rank</center></th>
-			<th width="22%"><center>Action</center></th>
-		</tr>
-	</thead>
-	<tfoot>
-		<tr>
-			<th width="5%"><center>ISBN</center></th>
-			<th width="5%"><center>Library Material ID</center></th>
-			<td width="5%"><center><b>Type</center></b></td>
-			<th width="45%"><center>Library Information</center></th>
-			<th width="5%"><center>Borrower</center></th>
-			<th width="8%"><center>Start Date</center></th>
-			<th width="5%"><center>Rank</center></th>
-			<th width="22%"><center>Action</center></th>
-		</tr>
-	</tfoot>
-	<tbody>
-		<?php
+						
+						<table class="tablesorter" border = "1" cellspacing='5' cellpadding='5' align = 'center'>
+							<thead>
+								<tr>
+									<th width="5%"><center>ISBN</center></th>
+									<th width="5%"><center>Library Material ID</center></th>
+									<td width="5%"><center><b>Type</center></b></td>
+									<th width="45%"><center>Library Information</center></th>
+									<th width="5%"><center>Borrower</center></th>
+									<th width="8%"><center>Start Date</center></th>
+									<th width="5%"><center>Rank</center></th>
+									<th width="22%"><center>Action</center></th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<th width="5%"><center>ISBN</center></th>
+									<th width="5%"><center>Library Material ID</center></th>
+									<td width="5%"><center><b>Type</center></b></td>
+									<th width="45%"><center>Library Information</center></th>
+									<th width="5%"><center>Borrower</center></th>
+									<th width="8%"><center>Start Date</center></th>
+									<th width="5%"><center>Rank</center></th>
+									<th width="22%"><center>Action</center></th>
+								</tr>
+							</tfoot>
+							<tbody>
+								<?php
 									$rank = 0;
 									$i = 0;
 								
@@ -128,7 +280,7 @@
 								
 								?>
 							</tbody>
-</table>
+						</table>
 						<div class="pager">
 							<!--<img src="../addons/pager/icons/first.png" class="first" alt="First" />
 							<img src="../addons/pager/icons/prev.png" class="prev" alt="Prev" />-->
@@ -158,10 +310,8 @@
         <center><p id="small">2013 CMSC 128 AB-6L. All Rights Reserved. <a href="#">Privacy</a> | <a href="#">Terms</a> | <a href="#">About</a> | <a href="#">Contact</a></p></center>
 		</footer>
 
-		<script src="<?php echo base_url();?>dist/js/jquery.js"></script>
 		<script src="<?php echo base_url();?>dist/js/bootstrap.js"></script>
 		<script src="<?php echo base_url();?>dist/js/holder.js"></script>
-		<script src="<?php echo base_url();?>js/jquery.tablesorter.js" type="text/javascript"></script>
 		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/jquery.tablesorter.js"></script>
 		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/jquery.tablesorter.pager.js"></script>
 		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/jquery.tablesorter.widgets.js"></script>
@@ -262,29 +412,6 @@
 			document.getElementById("success_notify").style.display='none';
 			document.getElementById("success_claim").style.display='none';
 			$(document).ready(function(){		
-				var currentData = <?php echo json_encode($reservations); ?>;
-
-				//$('#reserved-materials').dataTable();
-
-				function updateContents( current, result ){
-					var exist = false;
-					if( result.length != current.length ){
-						for( var i = 0; i < result.length; i++  ){
-							for( var j = 0; j < current.length; j++  ){
-								if( result[i].id == current[j].id  ){
-									exist = true;
-								}
-							}		
-							if( !exist ) {
-								$('#reserved-materials').prepend("<tr id ='" + result[i].materialid + "' > <td class = 'materialid' ><center><span class='table-text'> " + result[i].materialid + "  </span></center></td> <td class = 'idnumber' ><center><span class='table-text'> " + result[i].idnumber + "  </span></center></td> <td>" + "<span class = 'name' > " + result[i].name + " </span>, <span class = 'year' > " + result[i].year + " </span>." + printEdition( result[i].edvol ) + "<span> <br /> ( " + result[i].type + " )</span> </td> <td> " + printDate( result[i].started, result[i].startdate ) + " </td> <td> " + result[i].queue + " </td> <td><button click class='sendNotif btn btn-primary' name='notify' value='${row['id']}'>Notify</button> <button click class='sendClaim btn btn-primary' name='claim' value='${row['id']}'>Claim</button> </td></tr>");
-								//$('#reserved-materials').dataTable().fnAddData( result[i] );
-							}
-							
-							exist = false;
-						}
-					}					
-				}
-
 				function printAuthor( data ){
 					var ret = "";
 					if( data != null){
@@ -393,100 +520,7 @@
 
 				$("#logout").click(function(){
 					window.location.href = "<?php echo site_url('admin/logout'); ?>";
-				});
-				
-				$(".sendTry").click( function(){
-						alert('orchestronix bulok');
-				});
-				
-				$(".sendClaim").click( function(){
-					alert("claim");
-					var thisButton = $(this);
-					var parent = $(this).parent();
-					var idnumber = $.trim(parent.siblings('.idnumber').text());
-					var materialid = $.trim(parent.siblings('.materialid').text());
-					var isbn = $.trim(parent.siblings('.isbn').text());
-			
-					$.ajax({
-						type: "POST",
-						url: "<?php echo base_url();?>admin/claim_reservation",
-						data: { materialid : materialid, idnumber : idnumber, isbn : isbn }, 
-
-						beforeSend: function() {
-							//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
-							$("#error_message").html("loading...");
-						},
-
-						error: function(xhr, textStatus, errorThrown) {
-								$('#error_message').html(textStatus);
-						},
-
-						success: function( result ){
-							// show that notification is successful
-							//$('#error').html(result);
-							if( result != "1" ){
-								thisButton.attr('disabled', 'disabled');
-								// remove row
-								//alert("Student has been notified");
-								document.getElementById("success_notify").style.display='none';
-
-								$("#success_claim").show();
-								$("#success_claim").html("Successfully claimed!");
-								$("#success_claim").fadeIn('slow');
-								$("#"+materialid+"-"+idnumber).html("");
-								document.body.scrollTop = document.documentElement.scrollTop = 0;
-								setTimeout(function() { $('#success_claim').fadeOut('slow') }, 5000);	
-							} else {
-								//alert("Failed to notify");
-							}
-						}
-					});
-				});
-				
-				$(".sendNotif").click( function(){
-					alert("notif");
-					var thisButton = $(this);
-					var parent = $(this).parent();
-					var idnumber = $.trim(parent.siblings('.idnumber').text());
-					var materialid = $.trim(parent.siblings('.materialid').text());
-					var isbn = $.trim(parent.siblings('.isbn').text());
-
-					$.ajax({
-						type: "POST",
-						url: "<?php echo base_url();?>admin/notification",
-						data: { materialid : materialid, idnumber : idnumber, isbn : isbn }, 
-
-						beforeSend: function() {
-							//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
-							$("#error_message").html("loading...");
-						},
-
-						error: function(xhr, textStatus, errorThrown) {
-								$('#error_message').html(textStatus);
-						},
-
-						success: function( result ){
-							// show that notification is successful
-							$('#error').html(result);
-							if( result != "1" ){
-
-								// alert here if success
-								thisButton.attr('disabled', true);
-								thisButton.next().removeAttr('disabled');
-
-								//alert("Success!")
-								$("#success_notify").show();
-								$("#success_notify").html("Successfully notified!");
-								$("#success_notify").fadeIn('slow');
-								document.body.scrollTop = document.documentElement.scrollTop = 0;
-								setTimeout(function() { $('#success_notify').fadeOut('slow') }, 5000);
-
-							} else {
-								//alert("Fail!");
-							}
-						}
-					});
-				});
+				});				
 			});
 		</script>
 	</body>

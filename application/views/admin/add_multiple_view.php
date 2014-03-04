@@ -190,6 +190,13 @@
 				checkISBN( arr[1], arr[6] );
 				checkMatId( arr[0], arr[6], arr[7], arr[3] );
 				checkName( arr[2] );
+				checkAvailable( arr[4] );
+				checkAccess( arr[5], arr[6] );
+				checkType( arr[6] );
+				checkYear( arr[7] );
+				checkEdvol( arr[8] );
+				checkRequirement( arr[9] );
+				checkQuantity( arr[10] );
 			}
 
 			function checkISBN( isbn, type ){
