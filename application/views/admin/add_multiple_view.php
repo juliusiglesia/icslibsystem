@@ -182,21 +182,21 @@
 					
 					body.append("<tr class = '"+ array[i][0] + "-" + array[i][1] + "' >"+ str + "</tr>");
 					currentRow = $('#table-data-area tr').get($('#table-data-area tr').length-1).children;
-					checkDataInput( array[i] );
+					if ((checkDataInput( array[i] ))) {
+						//enable
+						document.getElementById("insertButton").disabled = false; 
+					}else{
+						//disable
+						document.getElementById("insertButton").disabled = true; 
+					}
 				}
 			}
 
-			function checkDataInput( arr ){
-				checkISBN( arr[1], arr[6] );
-				checkMatId( arr[0], arr[6], arr[7], arr[3] );
-				checkName( arr[2] );
-				checkAvailable( arr[4] );
-				checkAccess( arr[5], arr[6] );
-				checkType( arr[6] );
-				checkYear( arr[7] );
-				checkEdvol( arr[8] );
-				checkRequirement( arr[9] );
-				checkQuantity( arr[10] );
+			function checkDataInput( arr ){				
+				if(checkISBN( arr[1], arr[6] ) && checkMatId( arr[0], arr[6], arr[7], arr[3] ) && checkName( arr[2] ) && checkCourse( arr[3], arr[6] ) && checkAvailable( arr[4] ) && checkAccess( arr[5], arr[6] ) && checkType( arr[6] ) && checkYear( arr[7] ) && checkEdvol( arr[8] ) && checkRequirement( arr[9] ) && checkQuantity( arr[10] )  ) {
+					return true;
+				}
+					return false;
 			}
 
 			function checkISBN( isbn, type ){
@@ -218,7 +218,7 @@
 					$('.isbn').last().attr('style', 'color : red');
 				
 				} else {
-				
+					return true;
 				}
 			}
 			
@@ -304,58 +304,57 @@
 				if(type == "") {
 					$('.type').last().attr('style', 'color : red')
 					$('.materialid').last().attr('style', 'color : red')
-				
 				} else {
 					if (materialid == ""){
 						$('.materialid').last().attr('style', 'color : red')
-				
 					} else {
 						if(type=='Book') {
 							var index = materialid.indexOf("-");
 							var courseTemp = materialid.slice(0, index);
 							if( courseTemp != course ){
 								$('.materialid').last().attr('style', 'color : red')
+								return false;
 							} else if ( !materialid.match(/^(CS[0-9]{1,3})-([A-Z][0-9]{1,2})$/) ){
 								$('.materialid').last().attr('style', 'color : red')
 							} else {
-							
+								return true;
 							}
 						} else if(type=='Magazine') {
 							if ( !( (materialid.match(/^M-([0-9]{1,2})$/)) ) ){
 								$('.materialid').last().attr('style', 'color : red')
 							
 							}else {
-							
+								return true;
 							}
 						} else if(type=='Thesis') {
 							if ( !( (materialid.match(/^T-([0-9]{1,2})$/)) ) ){
 								$('.materialid').last().attr('style', 'color : red')
-							}else {
+							}else {	
+								return true;
 							}
 						} else if(type=='References') {
 							if ( !( (materialid.match(/^R-([0-9]{1,2})$/)) ) ){
 								$('.materialid').last().attr('style', 'color : red')
 							}else {
-							
+								return true;
 							}
 						} else if(type=='Journals') {
 							if ( !( (materialid.match(/^J-([0-9]{1,2})$/)) ) ){
 								$('.materialid').last().attr('style', 'color : red')
 							
 							}else {
-							
+								return true;
 							}
 						} else if(type=='SP') {
 							if ( !( (materialid.match('/^SP'+year+'-([0-9]{1,2}[a-z]*)$')) ) ){
 								$('.materialid').last().attr('style', 'color : red')
 							
 							}else {
-							
+								return true;
 							}
 						} else {
 							$('.type').last().attr('style', 'color : red')
 							$('.materialid').last().attr('style', 'color : red')
-							
 						}
 					}
 
@@ -363,7 +362,7 @@
 						$('.materialid').last().attr('style', 'color : red');
 						
 					} else {
-					
+						return true;
 					}
 				}
 			}
@@ -376,7 +375,44 @@
 					$('.name').last().attr('style', 'color : red')
 				
 				} else {
-				
+					return true;
+				}
+			}
+			
+			function checkCourse( course, type ){
+				if(type=="") {
+					$('.type').last().attr('style', 'color : red')
+					$('.access').last().attr('style', 'color : red')
+				} else {
+					if (course == ""){
+						$('.course').last().attr('style', 'color : red')
+					}else {
+						if(type=='Book') {
+							if ( !( (course.match(/^(CS[0-9]{1,3})$/)) ) ){
+								$('.course').last().attr('style', 'color : red')
+								
+							}else {
+								return true;
+							}
+						} else if(type=='References') {
+							if ( !( (course.match(/^(CS[0-9]{1,3})$/)) ) ){
+								$('.course').last().attr('style', 'color : red')
+								
+							}else {
+								return true;
+							}
+						}else if(type == 'Journals' || type == 'Magazine' || type == 'SP') {
+							if ( ( (course.match(/^(CS[0-9]{1,3})$/)) ) ){
+								$('.course').last().attr('style', 'color : red')
+								return false;
+							}else {
+								return true;
+							}
+						} else {
+							$('.type').last().attr('style', 'color : red')
+							$('.access').last().attr('style', 'color : red')
+						}		
+					}
 				}
 			}
 
@@ -393,42 +429,42 @@
 								$('.access').last().attr('style', 'color : red')
 								
 							}else {
-								//return true;
+								return true;
 							}
 						} else if(type=='Magazine') {
 							if ( !( (access.match(/^3$/)) ) ){
 								$('.access').last().attr('style', 'color : red')
 								
 							}else {
-								//return true;
+								return true;
 							}
 						} else if(type=='Thesis') {
 							if ( !( (access.match(/^3$/)) ) ){
 								$('.access').last().attr('style', 'color : red')
 						
 							}else {
-								//return true;
+								return true;
 							}
 						} else if(type=='References') {
 							if ( !( (access.match(/^2$/)) ) ){
 								$('.access').last().attr('style', 'color : red')
 						
 							}else {
-								//return true;
+								return true;
 							}
 						} else if(type=='Journals') {
 							if ( !( (access.match(/^4$/)) ) ){
 								$('.access').last().attr('style', 'color : red')
 						
 							}else {
-								//return true;
+								return true;
 							}
 						} else if(type=='SP') {
 							if ( !( (access.match(/^3$/)) ) ){
 								$('.access').last().attr('style', 'color : red')
 						
 							}else {
-								//return true;
+								return true;
 							}
 						} else {
 							$('.type').last().attr('style', 'color : red')
@@ -445,19 +481,24 @@
 					$('.type').last().attr('style', 'color : red')
 					console.log('error');
 				} else {
-					//return true;
+					return true;
 				}
 			}
 			
 			function checkYear( year ) {
+				var y = new Date();
+				current_year = y.getFullYear();
 				if (year == ""){
 					$('.year').last().attr('style', 'color : red')
 				} else if ( !( (year.match(/^[0-9]{4}$/)) ) ){
+					$('.year').last().attr('style', 'color : red')	
+				} else if( (year < 1950 || year > current_year) ){
 					$('.year').last().attr('style', 'color : red')
-				
+					console.log('error');
 				} else {
-					//return true;
+					return true;
 				}
+				
 			}
 			
 			function checkEdvol( edvol ) {
@@ -467,7 +508,7 @@
 					$('.edvol').last().attr('style', 'color : red')
 				
 				} else {
-					//return true;
+					return true;
 				}
 			}
 			
@@ -478,7 +519,7 @@
 					$('.requirement').last().attr('style', 'color : red')
 				
 				} else {
-					//return true;
+					return true;
 				}
 			}
 			
@@ -488,7 +529,7 @@
 				} else if ( !( (quantity.match(/^[1-9]{1,3}$/)) ) ){
 					$('.quantity').last().attr('style', 'color : red')
 				} else {
-					//return true;
+					return true;
 				}
 			}
 
@@ -499,7 +540,7 @@
 					$('.available').last().attr('style', 'color : red')
 				
 				} else {
-					//return true;
+					return true;
 				}
 			
 			}
