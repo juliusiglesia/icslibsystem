@@ -70,12 +70,8 @@
 					<button class="btn btn-lg btn-primary btn-block" type="button" id = "submit">Sign in</button>
 				</form>
 			</div>
-<<<<<<< HEAD
-			<div id = "error_message" class = "alert alert-danger">  </div>
-			<center><div style="display:none" id="dvloader"><img src="<?php echo base_url();?>dist/images/ajax-loader.gif" /></div></center>
-=======
-			<div id = "error">  </div>
->>>>>>> fd71dcc764149f492b9ca949c202642f4cd65dd0
+			<div style="display:none" id = "error_message" class = "alert alert-danger">  </div>
+			<center><div style="display:none" id="dvloader"><img src="<?php echo base_url();?>dist/images/loader.gif" /></div></center>
 		</div>
 		 <script src="<?php echo base_url();?>dist/js/jquery.js"></script>
     
@@ -101,22 +97,23 @@
 
 						beforeSend: function() {
 							//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
-							$("#error").html("Loading...");
+							//$("#error_message").html("Loading...");
 						},
 
 						error: function(xhr, textStatus, errorThrown) {
-								$('#error').html(textStatus);
+							$('#error_message').html(textStatus);
 						},
 
 						success: function( result ){
 							if ( result != "1" ){  
-								//$("#error").show();
-								$("#error").html( result );
-								$('#error').addClass("alert alert-danger");
-								$("#error").fadeIn('slow');
+								$("#error_message").show();
+								$("#error_message").html( result );
+								$('#error_message').addClass("alert alert-danger");
+								$("#error_message").fadeIn('slow');
 							
 							}
 							else {
+								$("#error_message").hide();
 								$("#dvloader").show();
 								window.location.href = "<?php echo site_url('admin/home'); ?>";
 							}
