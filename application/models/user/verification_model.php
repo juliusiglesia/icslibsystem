@@ -21,13 +21,11 @@
 			$this->send_verification_email($idnumber, $email, $password);
 				
 		}
-
 		
 		public function send_verification_email($idnumber, $email, $password){
 		 	
 		 	$sql = "SELECT fname FROM sample WHERE idnumber LIKE '{$idnumber}'";
 		 	$result = $this->db->query($sql);
-
 		 	
 			
 			$config = Array(
@@ -50,7 +48,7 @@
 			$this->email->subject('Account Verification');
 			
 			$message = '<html><head></head><body>';
-			$message .= '<p>Dearest '. $result['fname'] .',<br />';
+			$message .= '<p>Dearest '. $result .',<br />';
 			$message .= '<p>Please click the link: <strong><a href="'. base_url() .'borrower/validate_email/'. $idnumber .'/'. $password .'">CLICK ME</a></strong> for your account to verify.</p><br />';
 			$message .= '<p>Thank you, <br />';
 			$message .= 'ICSLibrary Admin Team</p>';

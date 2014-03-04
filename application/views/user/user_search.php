@@ -11,140 +11,141 @@
     <div class="row">
         <div class="col-md-3">
             <ul class="nav nav-pills nav-stacked">
-                <li><a href="<?php echo base_url(); ?>reserved_materials"><span class="glyphicon glyphicon-folder-close"></span><i class="fa fa-home fa-fw"></i>Library Inventory</a></li>
-                <li><a href="<?php echo base_url(); ?>profile"><span class="glyphicon glyphicon-user"></span><i class="fa fa-file-o fa-fw"></i>Manage Profile</a></li>
-                <li class="active"><a href="#"><span class="glyphicon glyphicon-search"></span><i class="fa fa-bar-chart-o fa-fw"></i>Search Library</a></li>
+                <li><a href="<?php echo base_url(); ?>profile"><i class="fa fa-home fa-fw"></i>Profile</a></li>
+                <li><a href="<?php echo base_url(); ?>borrowed_materials"><i class="fa fa-list-alt fa-fw"></i>Books on Hand</a></li>
+                <li><a href="<?php echo base_url(); ?>reserved_materials"><i class="fa fa-file-o fa-fw"></i>Reserved Books</a></li>
+                <li class="active"><a href="<?php echo base_url(); ?>user_search"><i class="fa fa-bar-chart-o fa-fw"></i>Search Library</a></li>
             </ul>
         </div>
         
-		<div class="col-md-8.5 well1"> 
-		
-			<div class="row">
-					<div class="user_search_area">
-						<div class="container">
+		<div class="col-md-8.5 well"> 
+		<div class="row">
+			<div class="user_search_area">
+			<div class="container">
 			
 				<br />
 				 <?php include 'user_search_bar_view.php'?>
 
-				<table width='70%' align= "center" id="result_engine" summary="Results" border="1" cellspacing="5" cellpadding="5">
+				<tr>
+					<td align="left" valign="top" height="20" style="padding-left: 5px; padding-right: 5px; padding-bottom: 5px; padding-top: 0px" nowrap>
+				<tr>
+					<td align="left" valign="top" height="20" style="padding-left: 5px; padding-right: 5px; padding-bottom: 5px; padding-top: 0px" nowrap>
+
+
+				<table style="display:none;" id="hidethis" style="padding-left: 0px; padding-right: 0px; padding-top: 2px; padding-bottom: 2px; width: 100%; bordercolor: #111111" width="100%" border="0" >
+					<tr>
+						<td valign="middle" width="160" align="left" bgcolor="#dedede" rowspan="2" nowrap>&nbsp; <b>Format:</b></td>
+						<td valign="middle" width="90" align="left" style="vertical-align: middle" bgcolor="#dedede" nowrap><label><input type="checkbox" name="mtype" value="0" class="radio" />Book</label></td>
+						<td valign="middle" width="90" align="left" style="vertical-align: middle" bgcolor="#dedede" nowrap><label><input type="checkbox" name="mtype" 	value="4" class="radio" />Thesis</label></td>
+						<td valign="middle" width="90" align="left" style="vertical-align: middle" bgcolor="#dedede" nowrap><label><input type="checkbox" name="mtype" value="2" class="radio" />SP</label></td>                      
+						<td valign="middle" width="90" align="left" style="vertical-align: middle" bgcolor="#dedede" nowrap><label><input type="checkbox" name="mtype" value="3" class="radio" />Journal</label></td>
+						<td valign="middle" width="90" align="left" style="vertical-align: middle" bgcolor="#dedede" nowrap><label><input type="checkbox" name="mtype" value="8" class="radio" />CD</label></td>		
+						<td valign="middle" width="90" align="left" style="vertical-align: middle" bgcolor="#dedede" nowrap><label><input type="checkbox" name="mtype" value="8" class="radio" />Reference</label></td>	
+					</tr>
+				</table>
+
+				<br /> 
+
+
+						</td>
+					</tr>
+				</table>
+				 
+
+				<div class="panel-heading"><h3 class="form-signin-heading">Search Results: </h3></div>
+				<br />
+				<br />
+				<table align= "center" id="result_engine" summary="Results" border="1" cellspacing="5" cellpadding="5">
 						<thead>
 							  <tr>
 							  <?php
 								if($value!=NULL)
-									echo "<br/><br/>
-									<th width='5%'title='materialid'>MaterialID</th>
-									<th width='5%' abbr='type' scope='col' title='type'>Type</th>
-									<th width='44%' title='material'>Material</th>
-									<th width='1%' title='waitlisted'>WAITLISTED</th>
-									<th width='15%' title='action'>ACTION</th>";
+									echo "<th style='width:100px;' abbr='lmID' scope='col' title='materialid'>MaterialID</th>
+									<th style='width:100px;' abbr='CourseClassification' scope='col' title='type'>Type</th>
+									<th title='material'>Material</th>
+									<th title='action'>ACTION</th>";
 								else
-									echo "<b/><br/><center>Search Library Materials</center>";
+									echo "<center>SEARCH</center>";
 								?>
 								
 							  </tr>
 							</thead>
 							<tbody>
 							  <?php
-								$reserved_flag=0;
-								$waitlist_flag=0;
-								$rowNum 	 = 0;
-								$rowNumCancel = 0;
-								if($value!=NULL){
-									foreach($value as $row){
-										echo "<tr>";
-										echo "<td class= 'matID' ><center><span class='table-text'> ${row['materialid']}</center></span></td>";
+							if($value!=NULL){
+								foreach($value as $row){
+									echo "<tr>";
+									echo "<td> ${row['materialid']}</td>";
+									echo "<td> ${row['type']} </td>";
+									echo "<td><b> ${row['name']} </b> <br/> ${row['lname']}, ${row['fname']} ${row['mname']}</td>";
+									
 										
-										if($row['type']== 'Book')
-											$type = "<a data-toggle='tooltip' class='tooltipLink' data-original-title='Book'><span class='glyphicon glyphicon-book'></span></a>";
-										else if($row['type'] == 'CD')
-											$type = "<a data-toggle='tooltip' class='tooltipLink' data-original-title='CD'><span class='glyphicon glyphicon-headphones'></span></a>";
-										else if($row['type'] == 'SP')
-											$type = "<a data-toggle='tooltip' class='tooltipLink' data-original-title='SP'><span class='glyphicon glyphicon-file'></span></a>";
-										else if($row['type'] == 'Reference')
-											$type = "<a data-toggle='tooltip' class='tooltipLink' data-original-title='Reference'><span class='glyphicon glyphicon-paperclip'></span></a>";
-										else if($row['type']== 'Journals')
-											$type = "<a data-toggle='tooltip' class='tooltipLink' data-original-title='Journal'><span class='glyphicon glyphicon-pencil'></span></a>";
-										else if($row['type']== 'Magazines')
-											$type = "<a data-toggle='tooltip' class='tooltipLink' data-original-title='Magazine'><span class='glyphicon glyphicon-picture'></span></a>";
-										else if($row['type'] == 'Thesis')
-											$type = "<a data-toggle='tooltip' class='tooltipLink' data-original-title='Thesi'><span class='glyphicon glyphicon-bookmark'></span></a>";
-										
-										echo "<td><center>".$type."</center></td>";
-										echo "<td><b> ${row['name']} </b> <br/> ${row['lname']}, ${row['fname']} ${row['mname']}</td>";
-										$t_q = 0;
-										foreach($total as $t_queue){
-											if($t_queue['materialid']==$row['materialid']){
-											  $t_q=$t_queue['tq'];
-											}
-										  }
-										echo "<td>$t_q</td>";
-										if($material!=NULL){
-											foreach ($material as $here){ 
-												if($row['materialid']==$here['materialid']){
-													$waitlist_flag=1;
-												}
-											 } 
-										}
-										if($matid!=NULL){
-											foreach ($matid as $tuples){ 
-												if($row['materialid']==$tuples['materialid']){
-													$reserved_flag=1;
-												}
-											 } 
-										}
-						
-										if($waitlist_flag==1){
-											echo "<td>";
-											echo "<span class='action'><button class='btn btn-danger cancel_button' name='reserve' value='".$materialid."' onclick = \"sendRow(".$rowNum.")\">Cancel</span></button>";
-											echo "<input type='hidden' value='". $materialid ."' class='hiddenForm'/>";
-											echo "</td>";
-											echo "</tr>";
-										}
-										else if($reserved_flag==1){
-											echo "<td>" . "<center>BORROWED</center>" . "</td>";
-											echo "<input type='hidden' value='". $materialid ."' class='hiddenForm'/>";
-											echo "</tr>";	
-										}
-										else if($row['access']==3){
-											echo "<td>" . "<center>ROOM USE</center>" . "</td>";
-											echo "<input type='hidden' value='". $materialid ."' class='hiddenForm'/>";
-											echo "</tr>";
-										}
-										else if($this->session->userdata('classification') == 'F' && $row['access']==1){
-												
-											echo "<td>" . "<center>STUDENT USE</center>" . "</td>";
-											echo "<input type='hidden' value='". $materialid ."' class='hiddenForm'/>";
-											echo "</tr>";	
-											
-										}
-										else if($this->session->userdata('classification') == 'S' && $row['access']==2){
-											
-											echo "<td>" . "<center>FACULTY USE</center>" . "</td>";
-											echo "<input type='hidden' value='". $materialid ."' class='hiddenForm'/>";
-											echo "</tr>";	
-												
-										}
-										else{							
-											echo "<td>" . "";
-											$materialid=$row['materialid'];
-											echo "<span class='action'><button class='reserve_button btn btn-primary' name='reserve' value='".$materialid."' onclick = \"sendRow(".$rowNum.")\">Reserve</button>";
-											echo "<button class='cancel_button btn btn-danger' name='reserve' value='".$materialid."' onclick = \"sendRow(".$rowNum.")\">Cancel</button></span>";
-											echo "<input type='hidden' value='". $materialid ."' class='hiddenForm'/>";
-											echo "</td></tr>";
-										}
-										$rowNum++;
-										$reserved_flag=0;
-										$waitlist_flag=0;
-									}
+									
+									echo "<td>" . "<form action=\"reserve\" role=\"form\" method=\"post\">";
+									$materialid=$row['materialid'];
+									echo "<button type=\"submit\" class=\"btn btn-default\" data-dismiss=\"modal\" name=\"materialid\" value=\"{$materialid}\">RESERVE</button>" . "</form>" . "</td>";
+									echo "</tr>";
 								}
-								
-							?>
+							}
+							
+						?>
 							</tbody>
 					</table>
 				</div> <!--for row class-->
 				</div> <!--for container class-->
 				</div> <!--for search_container class-->
 			 </div> <!--for col class-->
+					
+
+			<!-- modal for books with requirements -->
+
+			<div class="modal fade" id="reserve" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+						  <div class="modal-dialog">
+							<div class="modal-content">
+							  <div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+								<h3 class="modal-title" id="myModalLabel">REQUIREMENTS</h3>
+							  </div>
+							  <div class="modal-body">
+							  <b>Please secure the following:&nbsp&nbsp</b>
+							  <br />
+									<li> Consent of the Instructor</li>
+									<li> Consent of the Owner</li>
+							  </div>
+							  <div class="modal-footer">
+								<button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+								 </form>
+							  </div>
+							</div>
+						  </div>
+						  
+			</div>	
+
+			<!-- modal for books without requirements -->
+
+			<div class="modal fade" id="reserve1" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+						  <div class="modal-dialog">
+							<div class="modal-content">
+							  <div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+								<h3 class="modal-title" id="myModalLabel">Hi there!</h3>
+							  </div>
+							  <div class="modal-body">
+							  <b>You chose to reserve this book.</b>
+							  <br />
+							  <b>Do you wish to continue?</b>
+							  </div>
+							  <div class="modal-footer">
+								<button class="btn btn-primary" type="submit">Cancel</button>
+								<button type="button" class="btn btn-default" data-dismiss="modal">Yes</button>
+								
+							  </div>
+							</div>
+						  </div>
+						  
+			</div> <!-- MODAL -->
+			
+			
 		</div> <!-- ROW -->								
 		</div> <!-- MAINBODY -->
 		</div> <!-- CONTAINER -->
@@ -152,58 +153,3 @@
 
 		<div class="container marketing">
 <?php include 'home_footer.php'; ?>
-<script src="<?php echo base_url();?>dist/js/bootstrap.min.js"></script>
-<script src="<?php echo base_url();?>dist/js/bootbox.min.js"></script>
-<script type="text/javascript">
-	var finalRow;
-	
-	function sendRow(numrow) {
-			finalRow = numrow;
-	}
-	
-	function sendRowCancel(numrow){
-		finalRowCancel = numrow;
-	}
-		
-	$(document).ready(function()
-	{
-		//for tooltip
-		$("a.tooltipLink").tooltip();
-	
-		$('.reserve_button').click( function(){
-
-				materialid = document.getElementsByClassName("hiddenForm")[finalRow].value;
-				var thisButton = $(this);
-				var parent = $(this).parent();
-				//var materialid = $.trim(parent.siblings('.matID').text());
-			//	var isbn = $.trim(parent.siblings('.isbn').text());	
-				
-				thisButton.attr('disabled', true);
-				thisButton.next().removeAttr('disabled');
-				
-				bootbox.confirm("Reserve this material?", function(result){
-					if(result){
-					
-					$.ajax({
-  						type: "POST",
-  						url: "<?php echo site_url('borrower/reserve');?>",
-  						data: {materialid: materialid},
-  						
-						success: function(data)
-						{
-								$('.cancel_button').show();
-								$(this).hide();
-								//thisButton.attr('disabled', 'disabled');
-  						},
-  						error: function()
-  						{
-  							alert('Reservation failed. Try again.');
-  						}
-  					});
-					}//end if
-				});//end bootbox
-		});
-	});
-
-
-</script>

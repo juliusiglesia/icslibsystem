@@ -1,71 +1,75 @@
-<?php 
-
-	if($this->session->userdata('email'))
-		include 'logout_header.php'; 
-	else
-		include 'home_header.php';
-
-?>
+<?php include 'logout_header.php'; ?>
 
 	<!--
 	
-			HOME PAGE - BORROWER
-
-	-->
-	<style>
-		.sidebar{border-right: 1px solid #eee; height:700px;}
-		th{text-align: center;}
-	</style>
+			BORROWER SIDEBAR
 	
+	-->
 	<br/><br/>
 	<div class="container">
-		<div class="mainbody">
-			<div class="row">
-				<h1>Hi, <?php echo $this->session->userdata('fname'), "!"?></h1>
-				<br/>
-				<div class="col-md-3 sidebar">
-					<!--sidebar-->
-					<?php include 'sidebar.php';?>
-				</div> <!--col-md-3-->
-
-				<div class="col-md-9 section">
-					<!--search bar-->
+	<div class="mainBody">
+    <div class="row">
+        <div class="col-md-3">
+            <ul class="nav nav-pills nav-stacked">
+                <li class="active"><a href="<?php echo base_url(); ?>profile"><i class="fa fa-home fa-fw"></i>Profile</a></li>
+                <li><a href="<?php echo base_url(); ?>borrowed_materials"><i class="fa fa-list-alt fa-fw"></i>Books on Hand</a></li>
+                <li><a href="<?php echo base_url(); ?>reserved_materials"><i class="fa fa-file-o fa-fw"></i>Reserved Books</a></li>
+                <li><a href="<?php echo base_url(); ?>user_search"><i class="fa fa-bar-chart-o fa-fw"></i>Search Library</a></li>
+            </ul>
+        </div>
+		
+        <div class="col-md-8.5 well">
+		
+			<div class="container">
+				<div class="row">
+					<div class="col-md-9">
+						<div class="well well-sm">
+							<div class="row">
+								<div class="col-xs-6 col-sm-3 "">
+									<img src="<?php echo base_url();?>images/derpina.png" alt="" class="img-rounded img-responsive" />
+								</div>
+								
+								<div class="col-sm-6 col-md-8">
+									<h4>
+										Hi, <?php echo $this->session->userdata('fname'), "!"?> </h4>
+									<p>
+										<i class="glyphicon glyphicon-tag"></i>ID Number: <?php echo $this->session->userdata('idnumber')?>
+										<br />
+										<i class="glyphicon glyphicon-map-marker"></i>Course: <?php echo $this->session->userdata('course')?>
+										<br />
+										<i class="glyphicon glyphicon-briefcase"></i>College: <?php echo $this->session->userdata('college')?></p>
+									
+									<p>
+									<p><?php include 'update_email_view.php'; ?></p>
+									<p><?php include 'update_password_view.php'; ?>	</p>
+									</p>
+									
+									<br />
+									<br />
+									<div class="profile_overview">
+										<h3>Profile Summary:</h3>
+										<ul>
+										
+											<li><b>Overdue books:</b> </li>
+											<li><b>Borrowed books:</b> </li>
+											<li><b>Reserved books:</b> </li>
+										
+										</ul>
+									
+									</div> <!--profile_overview-->
+								</div> <!--col-sm-6 cod-md-8-->
+							</div> <!--row-->
+						</div> <!--well well-sm-->
+					</div> <!--col-md-9-->
+				</div> <!--row-->
 					
-					<?php include 'search_bar.php'; ?>
+		
+			</div> <!--container-->
+		</div> <!--col-md-8.5-->
+	</div>	 <!--row-->	
+	</div> <!--mainBody-->
+	</div>  <!--container-->
 
-					<!--
-
-						JOHANA, DITO ILALAGAY YUNG FILTERS PARA SA ADVANCED SEARCH :)
-
-					-->
-
-
-
-					<br/>
-					<!--library inventory tabs-->
-					<div class="nav">
-						<ul class="nav nav-tabs">
-							<li class="active"><a href="#onhand" data-toggle="tab">BOOKS ON HAND</a></li>
-							<li><a href="#reserved" data-toggle="tab">RESERVED BOOKS</a></li>
-						</ul>
-
-						<!--tab-content-->
-						<div class="tab-content">
-							<div id="onhand" class="tab-pane active">
-								<?php include 'onhand_table_view.php';?>
-							</div> <!--end of onhand tab-->
-
-							<div id="reserved" class="tab-pane">
-								<?php include 'reserved_table_view.php';?>
-							</div> <!--end of reserved tab-->
-
-						</div> <!--end of tab-content-->
-					</div> <!--end of library inventory tabs-->
-				</div> <!--col-md-9-->
-			</div> <!--row-->
-		</div> <!--mainbody-->
-	</div> <!--container-->
 
 	<div class="container marketing">
-		<?php include 'footer.php'; ?>
-	</div> <!--container marketing-->
+<?php include 'home_footer.php'; ?>

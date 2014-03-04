@@ -71,16 +71,24 @@
 				</form>
 			</div>
 <<<<<<< HEAD
+<<<<<<< HEAD
 			<div id = "error_message" class = "alert alert-danger">  </div>
 			<center><div style="display:none" id="dvloader"><img src="<?php echo base_url();?>dist/images/ajax-loader.gif" /></div></center>
 =======
 			<div id = "error">  </div>
 >>>>>>> fd71dcc764149f492b9ca949c202642f4cd65dd0
+=======
+			<div id = "error_message" class = "alert alert-danger">  </div>
+>>>>>>> parent of fd71dcc... Update of pages
 		</div>
 		 <script src="<?php echo base_url();?>dist/js/jquery.js"></script>
     
 		<script type="text/javascript">
 			
+			function preventBack(){window.history.forward();}
+			window.onunload=function(){null};			
+			
+			document.getElementById("error_message").style.display='none';
 			$("#login_form").keypress(function(event){
 				if(event.keyCode == 13){
 					event.preventDefault();
@@ -101,19 +109,18 @@
 
 						beforeSend: function() {
 							//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
-							$("#error").html("Loading...");
+							$("#error_message").html("Loading...");
 						},
 
 						error: function(xhr, textStatus, errorThrown) {
-								$('#error').html(textStatus);
+								$('#error_message').html(textStatus);
 						},
 
 						success: function( result ){
 							if ( result != "1" ){  
-								//$("#error").show();
-								$("#error").html( result );
-								$('#error').addClass("alert alert-danger");
-								$("#error").fadeIn('slow');
+								$("#error_message").show();
+								$("#error_message").html( result );
+								$("#error_message").fadeIn('slow');
 							
 							}
 							else {

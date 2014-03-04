@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en"><head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -63,6 +64,9 @@
 =======
 <?php include 'admin_header.php'; ?></div>
 >>>>>>> fd71dcc764149f492b9ca949c202642f4cd65dd0
+=======
+<?php include 'admin_header.php'?></div>
+>>>>>>> parent of fd71dcc... Update of pages
         <div class="mainBody">
             <!-- Nav tabs -->
             <div class="sidebarMain">
@@ -87,8 +91,15 @@
 			</div> 
 =======
                 </ul>
+<<<<<<< HEAD
 			</div>   
 >>>>>>> fd71dcc764149f492b9ca949c202642f4cd65dd0
+=======
+
+
+
+				</div>   
+>>>>>>> parent of fd71dcc... Update of pages
 
         <div class="leftMain">
         <div id="main-page">
@@ -144,8 +155,9 @@
 				<tr>
 						
 				</table>
-					<div id = "alert" class="alert alert-success alert-dismissable">
-						
+					<div class="alert alert-success alert-dismissable" id="pword_succ" style="display:none;">
+						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+						<strong>Update successful!</strong> Password successfully updated.
 					</div>
 >>>>>>> fd71dcc764149f492b9ca949c202642f4cd65dd0
 				<table>
@@ -176,9 +188,12 @@
 				<tr>
 				<td><br /></td>
 				</tr>
+<<<<<<< HEAD
 
 
 >>>>>>> fd71dcc764149f492b9ca949c202642f4cd65dd0
+=======
+>>>>>>> parent of fd71dcc... Update of pages
 				
 		<input type="submit" id="cancel_2" name="insert" class="btn" value="Cancel" style="display: none;" onclick="cancel2()">
 		<input type="submit" id="save_2" name="insert" class="btn btn-primary" value="Save" style="display: none;" onclick="valPword()">
@@ -189,8 +204,12 @@
 		
 =======
 		<br/>
+<<<<<<< HEAD
 		<button type="button" class="btn btn-default" id= "clearButton" >Clear Reservations</button>&nbsp;&nbsp;
 >>>>>>> fd71dcc764149f492b9ca949c202642f4cd65dd0
+=======
+		
+>>>>>>> parent of fd71dcc... Update of pages
 		</div>
 		</div>
 		</div>
@@ -204,6 +223,7 @@
 	<script src="<?php echo base_url();?>dist/js/jquery.js"></script>
     <script src="<?php echo base_url();?>dist/js/bootstrap.js"></script>
     <script src="<?php echo base_url();?>dist/js/holder.js"></script>
+<<<<<<< HEAD
 <<<<<<< HEAD
 	<script>		
 	
@@ -258,6 +278,9 @@
 		});
 
 >>>>>>> fd71dcc764149f492b9ca949c202642f4cd65dd0
+=======
+	<script>		
+>>>>>>> parent of fd71dcc... Update of pages
 		function update1(){
 		
 			var fine = document.getElementById('fine');
