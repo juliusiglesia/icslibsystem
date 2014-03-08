@@ -36,10 +36,15 @@
 					$conditions[] = "l.year LIKE '%{$search}'";
 				}
 
-				$stmt = "SELECT * FROM author a, librarymaterial l WHERE "
+				//@@@@@@@@@@@@@@@@@@@@@@
+				$stmt = "SELECT DISTINCT l.materialid, l.isbn, l.name, l.course, l.available, l.access, l.type, l.year, l.edvol, l.borrowedcount, l.requirement, l.quantity, l.borrowedcopy,
+						GROUP_CONCAT(a.lname, ', ', a.fname, ' ', a.mname, '\n') as authorname
+						FROM author a, librarymaterial l WHERE "
 										. "(" . implode(' OR ', $conditions) .")". "AND" ."(" . implode(' OR ', $types) .")" . " AND a.materialid = l.materialid
+										GROUP BY l.materialid
 										ORDER BY l.name";
-					
+				//@@@@@@@@@@@@@@@@@@@@@@
+										
 				//echo $stmt;
 				$query = $this->db->query($stmt);
 //-----				return $query->result();	
@@ -52,7 +57,7 @@
 			
 			}else{
 				//pag walang pinili sa checkboxes = general search
-				echo "ERROR!";
+				//echo "ERROR!";
 				//$this->load->controller('borrower');
 				//$this->borrower->outside_search();
 			}			

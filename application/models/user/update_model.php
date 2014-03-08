@@ -86,6 +86,16 @@ class Update_model extends CI_Model{
 		return $result;
 	}
 
+	public function get_password($idnumber)
+	{
+		$this->load->database();
+		
+			$stmt = "SELECT password FROM `borrower` WHERE idnumber LIKE '{$idnumber}'";
+			$query = $this->db->query($stmt);
+			$result = $query->result();
+			return $result;
+	}
+
 
 
 

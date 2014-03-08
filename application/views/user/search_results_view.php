@@ -1,6 +1,6 @@
 <?php 
-
-	if($this->session->userdata('email'))
+	$email = $this->session->userdata('email');
+	if($email)
 		include 'logout_header.php'; 
 	else
 		include 'home_header.php';
@@ -21,14 +21,27 @@
 	<div class="container">
 		<div class="mainbody">
 			<div class="row">
-				<h1>Hi, <?php echo $this->session->userdata('fname'), "!"?></h1>
-				<br/>
-				<div class="col-md-3 sidebar">
-					<!--sidebar-->
-					<?php include 'sidebar.php';?>
+				<?php
+					if($this->session->userdata('email')){ 
+						echo "<h1>Hi,"; 
+						echo $this->session->userdata('fname');
+						echo "!</h1><br/>";
+				
+						echo "<div class='col-md-3 sidebar'>";
+						//<!--sidebar-->
+						 include 'sidebar.php';
+						}
+					?>
 				</div> <!--col-md-3-->
 
-				<div class="col-md-9 section">
+				<?php
+					if($email){
+						echo "<div class='col-md-9 section'>"; //if logged in
+					}else{
+						echo "<div class='col-md-12 section'>"; //if not logged in
+						echo "<br/>";
+					}
+				?>
 					<!--search bar-->
 					
 					<?php include 'search_bar.php'; ?>
@@ -39,10 +52,14 @@
 					-->
 										
 					<br />
-					<div class="alert-container">
-							<div id = "success_reserve" class = "alert alert-success">  </div>
-							<div id = "success_cancel" class = "alert alert-success">  </div>
-					</div>
+					<?php
+						if($email){
+							echo "<div class='alert-container'>";
+							echo "<div style = 'display:none' id = 'success_reserve' class = 'alert alert-success'>  </div>";
+							echo "<div style = 'display:none' id = 'success_cancel' class = 'alert alert-success'>  </div>";
+							echo "</div>";
+						}
+					?>
 					<div>
 						<table class="table table-hover tablesorter" id="myTable" summary="Results" border="1" cellspacing="5" cellpadding="5" align = "center">
 						<thead>
@@ -51,8 +68,12 @@
 								<th width="10%" abbr="lmID" scope="col" title="Library Material ID">Material ID</th>
 								<th width="1%" abbr="Type" scope="col" title="Type">Type</th>
 								<th width="50%" abbr="Library Information" scope="col" title="Description">Library Information</th>
-								<th width="1%" abbr="Queue" scope="col" title="Queue">Queue</th>
-								<th width="28%" abbr="Act" scope="col" title="Action">Action</th>
+								<?php
+									if($email){
+										echo "<th width='1%' abbr='Queue' scope='col' title='Queue'>Queue</th>";
+										echo "<th width='28%' abbr='Act' scope='col' title='Action'>Action</th>";
+									}
+								?>
 							</tr>
 						</thead>
 						<tfoot>
@@ -61,8 +82,12 @@
 								<th width="10%" abbr="lmID" scope="col" title="Library Material ID">Material ID</th>
 								<th width="1%" abbr="Type" scope="col" title="Type">Type</th>
 								<th width="50%" abbr="Library Information" scope="col" title="Description">Library Information</th>
-								<th width="1%" abbr="Queue" scope="col" title="Queue">Queue</th>
-								<th width="28%" abbr="Act" scope="col" title="Action">Action</th>
+								<?php
+									if($email){
+										echo "<th width='1%' abbr='Queue' scope='col' title='Queue'>Queue</th>";
+										echo "<th width='28%' abbr='Act' scope='col' title='Action'>Action</th>";
+									}
+								?>
 							</tr>
 						</tfoot>
 
@@ -98,68 +123,86 @@
 											$type = "<a data-toggle='tooltip' class='tooltipLink' data-original-title='Thesi'><span class='glyphicon glyphicon-bookmark'></span></a>";
 											
 										echo "<td class = 'type' align='center'>". $type ."</td>";
-										echo "<td><span class='table-text'><b> ${row['name']} </b></span> <br/><span class='author'> ${row['lname']}, ${row['fname']} ${row['mname']}</span></td>";
-										$t_q = 0;
-										foreach($total as $t_queue){
-											if($t_queue['materialid']==$row['materialid']){
-											  $t_q=$t_queue['tq'];
+										//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+										echo "<td><span class='table-text'><b> ${row['name']} </b></span> <br/><span class='author'> ${row['authorname']}</span><br />";
+										echo "Ratings: <select class = 'btn btn-default btn-sm rating'>
+										  <option value='1'>1</option>
+										  <option value='2'>2</option>
+										  <option value='3'>3</option>
+										  <option value='4'>4</option>
+										  <option value='5'>5</option>
+										</select></td>";
+										
+										//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+										if($email){
+											$t_q = 0;
+											foreach($total as $t_queue){
+												if($t_queue['materialid']==$row['materialid']){
+												  $t_q=$t_queue['tq'];
+												}
+											  }
+											echo "<td><span class='table-text'><center>".$t_q."</center></span></td>";
+											if($material!=NULL){
+												foreach ($material as $here){ 
+													if($row['materialid']==$here['materialid']){
+														$waitlist_flag=1;
+													}
+												 } 
 											}
-										  }
-										echo "<td><span class='table-text'><center>".$t_q."</center></span></td>";
-										if($material!=NULL){
-											foreach ($material as $here){ 
-												if($row['materialid']==$here['materialid']){
-													$waitlist_flag=1;
-												}
-											 } 
-										}
-										if($matid!=NULL){
-											foreach ($matid as $tuples){ 
-												if($row['materialid']==$tuples['materialid']){
-													$reserved_flag=1;
-												}
-											 } 
-										}
-						
-										if($waitlist_flag==1){
-											$materialid=$row['materialid'];
-											echo "<td><center>";
-											echo "<span><button class='btn btn-primary reserve_button' name='reserve'  value='".$materialid."' disabled>Reserve</button>";
-											echo "<button class='btn btn-danger cancel_button' name='reserve' value='".$materialid."' onclick = \"sendRow(".$rowNum.")\">Cancel</button></span></td></tr>";	
-										}
-										else if($reserved_flag==1){
-											echo "<td><span class='table-text'><center>" . "BORROWED" . "</span></center></td>";
-											echo "</tr>";	
-										}
-										else if($row['access']==3){
-											echo "<td><span class='table-text'><center>" . "ROOM USE" . "</span></center></td>";
-											echo "</tr>";
-										}
-										else if($this->session->userdata('classification') == 'F' && $row['access']==1){
-												
-												echo "<td><span class='table-text'><center>" . "STUDENT USE" . "</span></center></td>";
+											if($matid!=NULL){
+												foreach ($matid as $tuples){ 
+													if($row['materialid']==$tuples['materialid']){
+														$reserved_flag=1;
+													}
+												 } 
+											}
+							
+											if($waitlist_flag==1){
+												$materialid=$row['materialid'];
+												echo "<td><center>";
+												echo "<span><button class='btn btn-primary reserve_button' name='reserve'  value='".$materialid."' disabled>Reserve</button>";
+												echo "<button class='btn btn-danger cancel_button' name='reserve' value='".$materialid."' onclick = \"sendRow(".$rowNum.")\">Cancel</button></span></td></tr>";	
+											}
+											else if($reserved_flag==1){
+												echo "<td><span class='table-text'><center>" . "BORROWED" . "</span></center></td>";
 												echo "</tr>";	
-											
-										}
-										else if($this->session->userdata('classification') == 'S' && $row['access']==2){
-											
-											echo "<td><span class='table-text'><center>" . "FACULTY USE" . "</span></center></td>";
-											echo "</tr>";	
+											}
+											else if($row['access']==3){
+												echo "<td><span class='table-text'><center>" . "ROOM USE" . "</span></center></td>";
+												echo "</tr>";
+											}
+											else if($this->session->userdata('classification') == 'F' && $row['access']==1){
+													
+													echo "<td><span class='table-text'><center>" . "STUDENT USE" . "</span></center></td>";
+													echo "</tr>";	
 												
-										}
-										else{							
-											echo "<td><center>" . "";
-											$materialid=$row['materialid'];
-											//$rowVal = $rowNum . "|" . $materialid;
-											echo "<span><button class='btn btn-primary reserve_button' name='reserve'  value='".$materialid."'>Reserve</button>";
-											echo "<button class='btn btn-danger cancel_button' name='reserve' value='".$materialid."' onclick = \"sendRow(".$rowNum.")\" disabled>Cancel</button></span>";
-											//echo "<input type='hidden' value='". $materialid ."' class='hiddenForm'/>";
-											echo "</center></td></tr>";
-											$rowNum++;
-										}
+											}
+											else if($this->session->userdata('classification') == 'S' && $row['access']==2){
+												
+												echo "<td><span class='table-text'><center>" . "FACULTY USE" . "</span></center></td>";
+												echo "</tr>";	
+													
+											}
+											else{							
+												echo "<td><center>" . "";
+												$materialid=$row['materialid'];
+												//$rowVal = $rowNum . "|" . $materialid;
+												$borrowed_count = 0;
+												foreach($borrowedCount as $row)
+													$borrowed_count = $row['COUNT(librarymaterial.materialid)'];
+												if($borrowed_count>=3)
+													$reserve = "cannot_reserve";
+												else $reserve= "reserve_button";
+												echo "<span><button class='btn btn-primary ". $reserve. "' name='reserve'  value='".$materialid."'>Reserve</button>";
+												echo "<button class='btn btn-danger cancel_button' name='reserve' value='".$materialid."' onclick = \"sendRow(".$rowNum.")\" disabled>Cancel</button></span>";
+												//echo "<input type='hidden' value='". $materialid ."' class='hiddenForm'/>";
+												echo "</center></td></tr>";
+												$rowNum++;
+											}
 
-										$reserved_flag=0;
-										$waitlist_flag=0;
+											$reserved_flag=0;
+											$waitlist_flag=0;
+										}
 									}
 								}
 								
@@ -207,7 +250,6 @@
 
 <script id="js">
 			$(function(){
-
 			var pagerOptions = {
 
 			// target the pager markup - see the HTML block below
@@ -299,20 +341,38 @@
 
 	document.getElementById("success_cancel").style.display='none';
 	document.getElementById("success_reserve").style.display='none';
-	
-	function sendRow(numrow) {
-			finalRow = numrow;
-	}	
+	$(".cannot_reserve").attr('disabled','true');
+
 	$(document).ready(function()
 	{
 		$("a.tooltipLink").tooltip();
 		
+		$(".rating").change( function(){
+			var rating = $(this).val();
+			var materialid = $(this).parent().siblings('.matID').text().trim();
+			var isbn = $(this).parent().siblings('.isbn').text().trim();
+			if( isbn == "---" ) isbn = "+" + materialid.trim();	
+					
+			$.ajax({
+				type: "post",
+				url: "<?php echo base_url();?>borrower/insert_rating",
+				data: { materialid: materialid, isbn: isbn, rating: rating },
+				success: function(data){
+
+				},
+				error: function()
+				{
+					alert('Reservation failed. Try again.');
+				}
+			});
+		});
+
 		$(".reserve_button").click( function(){
 				materialid = $(this).val();
 				var thisButton = $(this);
 				var parent = $(this).parent();
-				
-				bootbox.confirm("Reserve this material?", function(result){
+				var str = "Reserve " + materialid + "?";
+				bootbox.confirm(str, function(result){
 					if(result){
 				
 						$.ajax({
@@ -338,9 +398,8 @@
 						});
 					};
 				});
-		});
-		
-		
+		});		
+
 		$(".cancel_button").click( function(){
 			var thisButton = $(this);
 			materialid = $(this).val();

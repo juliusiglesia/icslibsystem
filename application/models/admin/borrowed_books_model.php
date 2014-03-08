@@ -22,8 +22,9 @@ class Borrowed_books_model extends CI_Model{
 
 		$return_array = array();
 		$this->load->database();
-		$query = $this->db->query("SELECT * 
-									FROM librarymaterial INNER JOIN borrowedmaterial ON librarymaterial.materialid = borrowedmaterial.materialid AND borrowedmaterial.status LIKE 'BORROWED' ORDER BY expectedreturn");
+		$query = $this->db->query("SELECT l.materialid, b.idnumber, l.isbn, l.type, l.name, b.start, b.expectedreturn,
+									GROUP_CONCAT(a.lname, ', ', a.fname, ' ', a.mname, '; ') as authorname
+									FROM librarymaterial l, borrowedmaterial b, author a WHERE l.materialid = b.materialid AND b.materialid = a.materialid AND b.status LIKE 'BORROWED' GROUP BY a.materialid ORDER BY b.expectedreturn");
 		/*
 		$result = $query->result();
 
@@ -31,6 +32,7 @@ class Borrowed_books_model extends CI_Model{
 				$return_array[count($return_array)] = (array)$row;
 		}
 		*/
+		//echo count($query->result());
 		return $query;
 	}
 
@@ -46,15 +48,13 @@ class Borrowed_books_model extends CI_Model{
 		$return_array = array();
 		$this->load->database();
 		if($word!=''){
-			$query = $this->db->query("SELECT * 
-										FROM librarymaterial INNER JOIN borrowedmaterial ON librarymaterial.materialid = borrowedmaterial.materialid 
-										AND (borrowedmaterial.materialid LIKE '%$word%' OR librarymaterial.course LIKE '%$word%' OR librarymaterial.name LIKE '%$word%')
-										AND borrowedmaterial.status LIKE 'BORROWED' ORDER BY expectedreturn");
+			$query = $this->db->query("SELECT l.materialid, b.idnumber, l.isbn, l.type, l.name, b.start, b.expectedreturn,
+									GROUP_CONCAT(a.lname, ', ', a.fname, ' ', a.mname, '; ') as authorname
+									FROM librarymaterial l, borrowedmaterial b, author a WHERE l.materialid = b.materialid AND b.materialid = a.materialid AND b.status LIKE 'BORROWED' AND (b.materialid LIKE '%$word%' OR l.course LIKE '%$word%' OR l.name LIKE '%$word%' OR b.idnumber LIKE '%$word%') GROUP BY a.materialid ORDER BY b.expectedreturn");
 		}else{
-			$query = $this->db->query("SELECT * 
-										FROM librarymaterial INNER JOIN borrowedmaterial ON librarymaterial.materialid = borrowedmaterial.materialid 
-										AND borrowedmaterial.status LIKE 'BORROWED' ORDER BY expectedreturn");
-
+			$query = $this->db->query("SELECT l.materialid, b.idnumber, l.isbn, l.type, l.name, b.start, b.expectedreturn,
+									GROUP_CONCAT(a.lname, ', ', a.fname, ' ', a.mname, '; ') as authorname
+									FROM librarymaterial l, borrowedmaterial b, author a WHERE l.materialid = b.materialid AND b.materialid = a.materialid AND b.status LIKE 'BORROWED' GROUP BY a.materialid ORDER BY b.expectedreturn");
 		}
 
 		return $query;

@@ -44,3 +44,5 @@ background-color: #8dbdd8;
 .author{
 	font-size:12px;
 }
+
+a.tooltipLink { color: inherit; } 

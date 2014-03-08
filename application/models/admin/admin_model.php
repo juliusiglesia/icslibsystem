@@ -5,323 +5,63 @@
 	public function viewAll(){
 		$this->load->database();
 
-		$query = $this->db->query("SELECT DISTINCT * FROM librarymaterial l,author a where l.materialid=a.materialid ORDER BY l.name");
+		$query = $this->db->query("SELECT l.materialid, l.isbn, l.name, l.course, l.available, l.access, l.type, l.year, l.edvol, l.borrowedcount,
+									l.requirement, l.quantity, l.borrowedcopy, GROUP_CONCAT(a.lname, ', ', a.fname, ' ', a.mname,'; ') as authorname FROM librarymaterial l, author a WHERE l.materialid = a.materialid GROUP BY a.materialid ORDER BY l.name");
 		return $query; 
 
 	}
 
 	public function search($filter, $type, $word, $access, $avail){
 		$this->load->database();
-		$access2=0;
+		 $access2=0;
         if($access==1 || $access==2) {$access2=4;}
-		if($filter=="author"){
-                    if($type!="allTypes"){
-                        if($access=="allAccess" && $avail=="allAvail"){
-                                $sql = "SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            (a.fname like '%$word%'
-                                            OR a.mname like '%$word%'
-                                            OR a.lname like '%$word%')
-                                            AND l.type='$type'
-                                            ORDER BY l.name";
-                        }else if($access!="allAccess" && $avail=="allAvail"){
-                                $sql = "SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            (a.fname like '%$word%'
-                                            OR a.mname like '%$word%'
-                                            OR a.lname like '%$word%')
-                                            AND l.type='$type'
-                                            AND (l.access='$access' OR l.access='$access2')
-                                            ORDER BY l.name";
-                        }else if($access=="allAccess" && $avail!="allAvail"){
-                                $sql = "SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            (a.fname like '%$word%'
-                                            OR a.mname like '%$word%'
-                                            OR a.lname like '%$word%')
-                                            AND l.type='$type'
-                                            AND l.available='$avail'
-                                            ORDER BY l.name";
-                        }else{
-                                $sql = "SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            (a.fname like '%$word%'
-                                            OR a.mname like '%$word%'
-                                            OR a.lname like '%$word%')
-                                            AND l.type='$type'
-                                            AND (l.access='$access' OR l.access='$access2')
-                                            AND l.available='$avail'
-                                            ORDER BY l.name";
-                        }
-                        
-                    }else if($type=="allTypes"){
-                        if($access=="allAccess" && $avail=="allAvail"){
-                                $sql = "SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            (a.fname like '%$word%'
-                                            OR a.mname like '%$word%'
-                                            OR a.lname like '%$word%')
-                                            ORDER BY l.name";
-                        }else if($access!="allAccess" && $avail=="allAvail"){
-                                $sql ="SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            (a.fname like '%$word%'
-                                            OR a.mname like '%$word%'
-                                            OR a.lname like '%$word%')
-                                            AND (l.access='$access' OR l.access='$access2')
-                                            ORDER BY l.name";
-                        }else if($access=="allAccess" && $avail!="allAvail"){
-                                $sql = "SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            (a.fname like '%$word%'
-                                            OR a.mname like '%$word%'
-                                            OR a.lname like '%$word%')
-                                            AND l.available='$avail'
-                                            ORDER BY l.name";
-                        }else{
-                                $sql = "SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            (a.fname like '%$word%'
-                                            OR a.mname like '%$word%'
-                                            OR a.lname like '%$word%')
-                                            AND (l.access='$access' OR l.access='$access2')
-                                            AND l.available='$avail'
-                                            ORDER BY l.name";
-                        }
+        $sql = "SELECT l.materialid, l.isbn, l.name, l.course, l.available, l.access, l.type, l.year, l.edvol, l.borrowedcount, l.requirement,
+				l.quantity, l.borrowedcopy, GROUP_CONCAT(a.lname, ', ', a.fname, ' ', a.mname, '; ') as authorname FROM librarymaterial l, author a WHERE l.materialid = a.materialid";
 
-            		}
-        }else if($filter=="title"){
-                    if($type!="allTypes"){
-                        if($access=="allAccess" && $avail=="allAvail"){
-                                $sql = "SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            l.name like '%$word%'
-                                            AND l.type='$type'
-                                            ORDER BY l.name";
-                        }else if($access!="allAccess" && $avail=="allAvail"){
-                                $sql = "SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            l.name like '%$word%'
-                                            AND l.type='$type'
-                                            AND (l.access='$access' OR l.access='$access2')
-                                            ORDER BY l.name";
-                        }else if($access=="allAccess" && $avail!="allAvail"){
-                                $sql = "SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            l.name like '%$word%'
-                                            AND l.type='$type'
-                                            AND l.available='$avail'
-                                            ORDER BY l.name";
-                        }else{
-                                $sql = "SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            l.name like '%$word%'
-                                            AND l.type='$type'
-                                            AND (l.access='$access' OR l.access='$access2')
-                                            AND l.available='$avail'
-                                            ORDER BY l.name";
-                        }
-                    }else if($type=="allTypes"){
-                        if($access=="allAccess" && $avail=="allAvail"){
-                                $sql ="SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            l.name like '%$word%'
-                                            ORDER BY l.name";
-                        }else if($access!="allAccess" && $avail=="allAvail"){
-                                $sql = "SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                           l.name like '%$word%'
-                                            AND (l.access='$access' OR l.access='$access2')
-                                            ORDER BY l.name";
-                        }else if($access=="allAccess" && $avail!="allAvail"){
-                                $sql = "SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            l.name like '%$word%'
-                                            AND l.available='$avail'
-                                            ORDER BY l.name";
-                        }else{
-                                $sql ="SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            l.name like '%$word%'
-                                            AND (l.access='$access' OR l.access='$access2')
-                                            AND l.available='$avail'
-                                            ORDER BY l.name";
-                        }
+        //$sql = "SELECT DISTINCT * FROM librarymaterial l,author a where l.materialid=a.materialid";
 
-                    }
+        if($filter!="none"){
+            if($filter=="author"){
+                
+                 $sql = $sql." AND
+                         (a.fname like '%$word%'
+                         OR a.mname like '%$word%'
+                         OR a.lname like '%$word%')";
 
-                }else if($filter=="subject"){
-                    if($type!="allTypes"){
-                       if($access=="allAccess" && $avail=="allAvail"){
-                                $sql = "SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            l.course like '%$word%'
-                                            AND l.type='$type'
-                                            ORDER BY l.name";
-                        }else if($access!="allAccess" && $avail=="allAvail"){
-                                $sql = "SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            l.course like '%$word%'
-                                            AND l.type='$type'
-                                            AND (l.access='$access' OR l.access='$access2')
-                                            ORDER BY l.name";
-                        }else if($access=="allAccess" && $avail!="allAvail"){
-                                $sql = "SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            l.course like '%$word%'
-                                            AND l.type='$type'
-                                            AND l.available='$avail'
-                                            ORDER BY l.name";
-                        }else{
-                                $sql = "SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            l.course like '%$word%'
-                                            AND l.type='$type'
-                                            AND (l.access='$access' OR l.access='$access2')
-                                            AND l.available='$avail'
-                                            ORDER BY l.name";
-                        }
-                    }else if($type=="allTypes"){
-                        if($access=="allAccess" && $avail=="allAvail"){
-                                $sql ="SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            l.course like '%$word%'
-                                            ORDER BY l.name";
-                        }else if($access!="allAccess" && $avail=="allAvail"){
-                                $sql = "SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            l.course like '%$word%'
-                                            AND (l.access='$access' OR l.access='$access2')
-                                            ORDER BY l.name";
-                        }else if($access=="allAccess" && $avail!="allAvail"){
-                                $sql = "SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            l.course like '%$word%'
-                                            AND l.available='$avail'
-                                            ORDER BY l.name";
-                        }else{
-                                $sql = "SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            l.course like '%$word%'
-                                            AND (l.access='$access' OR l.access='$access2')
-                                            AND l.available='$avail'
-                                            ORDER BY l.name";
-                        }
-
-                    }
-                }else{//none
-                    if($type!="allTypes"){
-                       if($access=="allAccess" && $avail=="allAvail"){
-                                $sql = "SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            (l.materialid like '%$word%'
-                                            OR l.name like '%$word%'
-                                            OR l.course like '%$word%'
-                                            OR a.fname like '%$word%'
-                                            OR a.mname like '%$word%'
-                                            OR a.lname like '%$word%'
-                                            OR l.year like '%$word%')
-                                            AND l.type='$type'
-                                            ORDER BY l.name";
-                        }else if($access!="allAccess" && $avail=="allAvail"){
-                                $sql ="SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            (l.materialid like '%$word%'
-                                            OR l.name like '%$word%'
-                                            OR l.course like '%$word%'
-                                            OR a.fname like '%$word%'
-                                            OR a.mname like '%$word%'
-                                            OR a.lname like '%$word%'
-                                            OR l.year like '%$word%')
-                                            AND l.type='$type'
-                                            AND (l.access='$access' OR l.access='$access2')
-                                            ORDER BY l.name";
-                        }else if($access=="allAccess" && $avail!="allAvail"){
-                                $sql = "SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            (l.materialid like '%$word%'
-                                            OR l.name like '%$word%'
-                                            OR l.course like '%$word%'
-                                            OR a.fname like '%$word%'
-                                            OR a.mname like '%$word%'
-                                            OR a.lname like '%$word%'
-                                            OR l.year like '%$word%')
-                                            AND l.type='$type'
-                                            AND l.available='$avail'
-                                            ORDER BY l.name";
-                        }else{
-                                $sql = "SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            (l.materialid like '%$word%'
-                                            OR l.name like '%$word%'
-                                            OR l.course like '%$word%'
-                                            OR a.fname like '%$word%'
-                                            OR a.mname like '%$word%'
-                                            OR a.lname like '%$word%'
-                                            OR l.year like '%$word%')
-                                            AND l.type='$type'
-                                            AND (l.access='$access' OR l.access='$access2')
-                                            AND l.available='$avail'
-                                            ORDER BY l.name";
-                        }
-                    }else if($type=="allTypes"){
-                        if($access=="allAccess" && $avail=="allAvail"){
-                                $sql = "SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            (l.materialid like '%$word%'
-                                            OR l.name like '%$word%'
-                                            OR l.course like '%$word%'
-                                            OR a.fname like '%$word%'
-                                            OR a.mname like '%$word%'
-                                            OR a.lname like '%$word%'
-                                            OR l.year like '%$word%'
-                                            OR l.type='%$word%')
-                                            ORDER BY l.name";
-                        }else if($access!="allAccess" && $avail=="allAvail"){
-                                $sql = "SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            (l.materialid like '%$word%'
-                                            OR l.name like '%$word%'
-                                            OR l.course like '%$word%'
-                                            OR a.fname like '%$word%'
-                                            OR a.mname like '%$word%'
-                                            OR a.lname like '%$word%'
-                                            OR l.year like '%$word%'
-                                            OR l.type='%$word%')
-                                            AND (l.access='$access' OR l.access='$access2')
-                                            ORDER BY l.name";
-                        }else if($access=="allAccess" && $avail!="allAvail"){
-                                $sql = "SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            (l.materialid like '%$word%'
-                                            OR l.name like '%$word%'
-                                            OR l.course like '%$word%'
-                                            OR a.fname like '%$word%'
-                                            OR a.mname like '%$word%'
-                                            OR a.lname like '%$word%'
-                                            OR l.year like '%$word%'
-                                            OR l.type='%$word%')
-                                            AND l.available='$avail'
-                                            ORDER BY l.name";
-                        }else{
-                                $sql = "SELECT DISTINCT * FROM librarymaterial l,author a 
-                                            where l.materialid=a.materialid AND
-                                            (l.materialid like '%$word%'
-                                            OR l.name like '%$word%'
-                                            OR l.course like '%$word%'
-                                            OR a.fname like '%$word%'
-                                            OR a.mname like '%$word%'
-                                            OR a.lname like '%$word%'
-                                            OR l.year like '%$word%'
-                                            OR l.type='%$word%')
-                                            AND (l.access='$access' OR l.access='$access2')
-                                            AND l.available='$avail'
-                                            ORDER BY l.name";
-                        }
-                }
+            }else if($filter=="course" || $filter=="name"){
+                
+                $sql = $sql." AND l.$filter like '%$word%'";
             }
-            $query = $this->db->query($sql);
-			return $query;
+         }
+
+        if($type!="allTypes"){
+
+            $sql = $sql." AND l.type like '%$type%'";
+        }
+
+        if($access!="allAccess"){
+            $sql = $sql." AND (l.access='$access' OR l.access='$access2')";
+        }
+
+        if($avail!="allAvail"){
+            $sql = $sql." AND l.available='$avail'";
+        }
+
+        if($word!='' && $filter=="none"){
+            
+            $sql=$sql." AND (l.materialid like '%$word%'
+                            OR l.name like '%$word%'
+                            OR l.course like '%$word%'
+                            OR a.fname like '%$word%'
+                            OR a.mname like '%$word%'
+                            OR a.lname like '%$word%'
+                            OR l.year like '%$word%')";
+        }
+        $sql = $sql." GROUP BY a.materialid ORDER BY l.name";
+        $query = $this->db->query($sql);
+        return $query;
+
+
 	}
 			
 	public function get_book_info($name){
@@ -330,20 +70,44 @@
 		return $query->result();
 	}
 	
-	public function book_update($data, $data1){
+	public function book_update($library_material_data, $all_authors, $previous_matID){
 		$this->load->database();
-		$id = $this->db->escape_like_str($data['materialid']);
-		$this->db->update("librarymaterial",$data1,"materialid = '". $id."'"); 	
+		$materialid = $this->db->escape_like_str($previous_matID);
+		$this->db->update("librarymaterial",$library_material_data,"materialid = '". $materialid."'"); 
+
+		$this->db->delete("author","materialid = '". $library_material_data['materialid']."'");
+		for ($i=0; $i<count($all_authors); $i++) {
+			$all_authors[$i]['materialid'] = $library_material_data['materialid'];
+			$all_authors[$i]['isbn'] = $library_material_data['isbn'];
+		}
+		$this->db->insert_batch("author",$all_authors);	
+		/*materialid = $this->db->query("SELECT fname FROM author WHERE materialid = '{$library_material_data['materialid']}'");
+		$materialid = $materialid->result();
+		var_dump($materialid);*/
+		
 	}
 	
-	public function author_update($data,$data2){
-		$this->load->database();
-		$id = $this->db->escape_like_str($data['materialid']); 
-		$this->db->update("author",$data2,"materialid = '". $id."'"); 	
-	}
 	public function book_delete($data){
 		$this->load->database();
-		$this->db->delete("librarymaterial",$data);
+		//$this->db->delete("librarymaterial",$data);
+		$this->db->delete("librarymaterial","materialid = '". $data."'");
 	}
+    
+    public function get_stats_model(){
+         $this->load->database();
+         $sql = "SELECT COUNT(DISTINCT l.materialid) AS libmatcount, COUNT(DISTINCT b.id) AS bormatcount, (COUNT(DISTINCT l.materialid) - COUNT(DISTINCT b.id)) AS diffcount FROM borrowedmaterial b, librarymaterial l";
+         $query = $this->db->query($sql);
+         
+         return $query->result();
+     }	
+
+     public function get_library_weekly_stats(){
+        $this->load->database();
+        //$sql = "SELECT COUNT(DISTINCT l.materialid) AS libmatcount, COUNT(DISTINCT b.id) AS bormatcount, (COUNT(DISTINCT l.materialid) - COUNT(DISTINCT b.id)) AS diffcount FROM borrowedmaterial b, librarymaterial l WHERE b.startdate >= DATEADD(wk, DATEDIFF(wk, 0, NOW()), -1) AND b.stardate <= DATEADD(wk, DATEDIFF(wk, 0, NOW()), 5)";
+        $sql = "SELECT COUNT(DISTINCT l.materialid) AS libmatcount, COUNT(DISTINCT b.id) AS bormatcount, (COUNT(DISTINCT l.materialid) - COUNT(DISTINCT b.id)) AS diffcount FROM borrowedmaterial b, librarymaterial l WHERE b.start >= DATE_ADD(NOW(), INTERVAL(1-DAYOFWEEK(NOW())) DAY) AND b.start <= DATE_ADD(NOW(), INTERVAL(1-DAYOFWEEK(NOW())) +6 DAY)"; 
+        $query = $this->db->query($sql);
+        
+        return $query->result();
+    }
 }
 ?>

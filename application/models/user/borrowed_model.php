@@ -50,7 +50,7 @@ class Borrowed_model extends CI_Model{
 		$this->load->database();
 		$idnum=$this->session->userdata('idnumber');
 		// Books on Hand
-		$query = $this->db->query("SELECT DATEDIFF((SELECT CURDATE()),borrowedmaterial.expectedreturn)*settings.fine as user_fine, author.fname, author.mname, author.materialid, author.lname,librarymaterial.name, librarymaterial.year, librarymaterial.type, librarymaterial.isbn
+		/*$query = $this->db->query("SELECT DATEDIFF((SELECT CURDATE()),borrowedmaterial.expectedreturn)*settings.fine as user_fine, author.fname, author.mname, author.materialid, author.lname,librarymaterial.name, librarymaterial.year, librarymaterial.type, librarymaterial.isbn
 									FROM librarymaterial 
 									JOIN borrowedmaterial 
 										ON librarymaterial.materialid = borrowedmaterial.materialid
@@ -58,7 +58,21 @@ class Borrowed_model extends CI_Model{
 										ON author.materialid = borrowedmaterial.materialid
 									JOIN settings
 									WHERE borrowedmaterial.idnumber = '$idnum' AND borrowedmaterial.actualreturn IS NULL
-									ORDER BY user_fine desc");
+									ORDER BY user_fine desc");*/
+
+		$query = $this->db->query("SELECT DATEDIFF((SELECT CURDATE()),bm.expectedreturn)*s.fine as user_fine, 
+									GROUP_CONCAT(ab.fname, ' ', ab.mname, ' ', ab.lname) as authorname, ab.materialid,
+									l.name, 
+									l.year, l.type, l.isbn
+									FROM librarymaterial l
+									LEFT JOIN borrowedmaterial bm
+									ON l.materialid = bm.materialid
+									LEFT JOIN author ab
+									ON ab.materialid = bm.materialid
+									JOIN settings s
+									WHERE bm.idnumber = '$idnum' AND bm.actualreturn IS NULL
+									GROUP BY ab.materialid
+									ORDER BY user_fine desc;");
 					
 		$result = $query->result();
 			foreach ($result as $tuple)
@@ -89,21 +103,17 @@ class Borrowed_model extends CI_Model{
 	
 		//Reserved Books
 		$idnum=$this->session->userdata('idnumber');
-		$query = $this->db->query("SELECT author.fname, author.mname, author.materialid, author.lname,librarymaterial.name, librarymaterial.year, librarymaterial.type, librarymaterial.isbn
-									FROM librarymaterial 
-									JOIN reservation 
-										ON librarymaterial.materialid = reservation.materialid
-									JOIN author
-										ON author.materialid = reservation.materialid
-									WHERE reservation.idnumber = '$idnum'");
-		/*$query = $this->db->query("SELECT l.materialid, l.name, l.year, l.type, l.isbn,
-									GROUP_CONCAT(ab.fname,' ', ab.lname) as authorname
-									FROM reservation b
-									LEFT JOIN librarymaterial l 
-									ON l.materialid = b.materialid
+
+		$query = $this->db->query("SELECT ab.materialid, l.name, l.year, l.type, l.isbn,
+									GROUP_CONCAT(ab.fname,' ',ab.mname,' ', ab.lname) as authorname
+									FROM librarymaterial l
+									LEFT JOIN reservation r
+									ON l.materialid = r.materialid
 									LEFT JOIN author ab
-									ON ab.materialid = b.materialid
-									WHERE b.idnumber = '$idnum' ");*/
+									ON ab.materialid = r.materialid
+									WHERE r.idnumber = '$idnum'
+									GROUP BY ab.materialid;");
+
 
 		$result = $query->result();
 		foreach ($result as $tuple)
@@ -182,6 +192,8 @@ class Borrowed_model extends CI_Model{
 									FROM librarymaterial 
 									JOIN borrowedmaterial 
 										ON librarymaterial.materialid = borrowedmaterial.materialid
+									JOIN author
+										ON author.materialid = borrowedmaterial.materialid
 									WHERE borrowedmaterial.idnumber = '$idnum'
 									AND borrowedmaterial.actualreturn IS NULL
 									AND borrowedmaterial.expectedreturn < (SELECT CURDATE())";

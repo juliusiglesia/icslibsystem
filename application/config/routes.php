@@ -51,8 +51,6 @@ $route['admin/login'] = 'admin/login';
 $route['borrower'] = 'borrower';
 $route['login'] = 'borrower/login';
 $route['logout'] = 'borrower/logout';
-$route['inside_search'] = 'borrower/inside_search';
-$route['outside_search'] = 'borrower/outside_search';
 $route['profile'] = 'borrower/load_profile';
 $route['reserve'] = 'borrower/reserve';
 $route['reserve_continue'] = 'borrower/reserve_continue';
@@ -61,6 +59,14 @@ $route['register'] = 'borrower/register';
 $route['reserved_materials'] = 'borrower/reserved_materials_view';
 $route['borrowed_materials'] = 'borrower/borrowed_materials_view';
 $route['user_search'] = 'borrower/user_search';
+$route['update_email'] = 'borrower/update_email';
+$route['update_password'] = 'borrower/update_password';
+$route['cancel_reservation'] = 'borrower/cancel_reservation';
+$route['registration'] = 'borrower/registration';
+$route['verify_account'] = 'borrower/verify_account';
+$route['advanced_search'] = 'borrower/advanced_search';
+$route['borrower/search_all'] = 'borrower/new_search';
+$route['borrower/home'] = 'borrower/home';
 
 
 /* End of file routes.php */

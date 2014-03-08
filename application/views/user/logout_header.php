@@ -11,7 +11,6 @@
     <title>ICS-iLS</title>
 
     <link href="<?php echo base_url(); ?>dist/css/bootstrap.css" rel="stylesheet">
-	<link href="<?php echo base_url(); ?>dist/css/style.css" rel="stylesheet">
 
     <script type="text/javascript">
            
@@ -24,13 +23,12 @@
       }
       </script>
 
-    <!-- Custom styles for this template -->
+    <!-- Custom styles for this template-->
     <link href="<?php echo base_url(); ?>dist/css/carousel.css" rel="stylesheet">
-    <link href="<?php echo base_url(); ?>dist/css/signin.css" rel="stylesheet">
-  <script src="<?php echo base_url(); ?>dist/js/jquery.js"></script>
+    <link href="<?php echo base_url(); ?>dist/css/modulestyle.css" rel="stylesheet">
   <style type="text/css" id="holderjs-style"></style></head>
 <!-- NAVBAR
-================================================== -->
+==================================================-->
   <body>
   <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
@@ -45,81 +43,66 @@
         </div>
        <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="/icslibsystem/profile" style="font-size:17px;" onclick = "this.style.color='white';"><span class="glyphicon glyphicon-home" ></span></a></li>
+            <li><a href="<?php echo base_url();?>borrower/profile" style="font-size:17px;" onclick = "this.style.color='white';"><span class="glyphicon glyphicon-home" ></span></a></li>
             <li class="dropdown">
-              <a class = "notif" id="notif" href="#" class="dropdown-toggle" data-toggle="dropdown" style="font-size:17px;" onclick = "this.style.color='white';"><span class="glyphicon glyphicon-envelope" ></span></a>
+              <a  id = "message" class = "notif" href="#" class="dropdown-toggle" data-toggle="dropdown" style="font-size:17px;" onclick = "this.style.color='white';"><span class="glyphicon glyphicon-envelope" ></span></a>
                 <?php
                  // if($overdue || $res || $readytoclaim){ echo "<span class='glyphicon glyphicon-exclamation-sign'></span>"; }
                 ?>
               <ul class="dropdown-menu">
-
                 <li class="dropdown-header">Overdue Books</li>
+                <li><a>
+                <div  id = "overdue">
                 <?php
-                    if(!$overdue){  echo "<li><a><i> None </i></a></li>"; }
+                    if(!$overdue){  echo "<i> None </i>"; }
                     else{
                       foreach ($overdue as $temps) {
-                        echo "<li><a>"; 
                         echo $temps['name']; 
                         echo "<br/>";
                         echo "Fine:  Php ";
                         echo "${temps['user_fine']}";
-                        echo "</a></li>"; 
                       }
                     }
                   ?>
+                </div>
                  </a></li>
                  <li class="divider"></li>
-                 <li class="dropdown-header">Reserved Books</li>
-
-                  <?php
-                    if(!$res){ echo "<li><a><i> None </i></a></li>"; }
-                    else{
-                      foreach ($res as $temps) {
-                        echo "<li><a>"; echo $temps['name']; echo "</a></li>"; 
-                      } 
-                    }
-                  ?>
-
+                 <li  class="dropdown-header">Reserved Books</li>
+                 <li><a>
+                    <div id = "reserved" >
+                      <?php
+                        if(!$res){ echo "<i> None </i>"; }
+                        else{
+                          foreach ($res as $temps) {
+                            echo $temps['name'];
+                          } 
+                        }
+                      ?>
+                    </div>
+                  </a></li>
                  </a></li>
                  <li class="divider"></li>
-                 <li class="dropdown-header">Ready to claim</li>
-                  <?php
-                    
-                    if(!$readytoclaim){  echo "<li><a><i> None </i></a></li>"; }
-                    else{
-                      foreach ($readytoclaim as $temps) {
-                        echo "<li><a>"; echo $temps['materialid'];  echo " until "; echo"<b>"; echo $temps['claimdate'];  echo"</b>"; echo "</a></li>"; 
-                      } 
-                    }
-                  ?>
+                 <li  class="dropdown-header">Ready to claim</li>
+                 <li><a>
+                  <div id="ready">
+                    <?php
+                      
+                      if(!$readytoclaim){  echo "<i> None </i>"; }
+                      else{
+                        foreach ($readytoclaim as $temps) {
+                          echo $temps['materialid'];  echo " until "; echo"<b>"; echo $temps['claimdate'];  echo"</b>";
+                        } 
+                      }
+                    ?>
+                  </div>
                  </a></li>
               </ul>
             </li>
-            <!--<form class="navbar-form navbar-right" role="form" action="logout" > -->
-              <!--<button type="submit" class="btn btn-success">Log out</button>-->
-              <li><a href="/icslibsystem/logout?"><span class="glyphicon glyphicon-log-out" type="submit" style="font-size:17px;" onclick = "this.style.color='white';"></span></a></li>
-            <!--</form>-->
+            <form class="navbar-form navbar-right" role="form" action="logout" >
+              <button type="submit" class="btn btn-link"><span class="glyphicon glyphicon-log-out" type="submit" style="font-size:17px;" onclick = "this.style.color='white';"><a href="/icslibsystem/logout?"></a></span></button>
+              <!--li><a href="/icslibsystem/logout?"><span class="glyphicon glyphicon-log-out" type="submit" style="font-size:17px;" onclick = "this.style.color='white';"></span></a></li-->
+            </form>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
     </div>
-
-<script src="<?php echo base_url();?>dist/js/jquery-2.1.0.min.js"></script>
-<script type="text/javascript">
-    $('#notif').click( function(){
-        
-        $.ajax({
-          url: "<?php echo base_url();?>borrower/notification",
-          type: "POST",
-          dataType: "json",
-          data: { idnumber : idnumber, password : password, email : email },
-
-          success: function(result){
-            console.log(result);     
-          }
-          
-        });
-
-
-    });
-</script>

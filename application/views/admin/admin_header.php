@@ -15,9 +15,6 @@
 	<link href="<?php echo base_url();?>dist/css/carousel.css" rel="stylesheet">
 	<link href="<?php echo base_url();?>dist/css/signin.css" rel="stylesheet">
 	<link href="<?php echo base_url();?>dist/css/style.css" rel="stylesheet">
-	<link href="<?php echo base_url();?>dist/css/style2.css" rel="stylesheet">
-	<link href="<?php echo base_url();?>dist/css/date_picker.css" rel="stylesheet">
-	<link href="<?php echo base_url();?>dist/css/styles.css" rel="stylesheet" /> <!--for chart -->
 
 	<style type="text/css" id="holderjs-style"></style></head>
 

@@ -1,9 +1,56 @@
-<?php include 'admin_header.php';?></div>
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	
+	<link rel="shortcut icon" href="<?php echo base_url();?>dist/images/favicon.png">
+
+	<title>ICS-iLS</title>
+
+	<link href="<?php echo base_url();?>dist/css/bootstrap.css" rel="stylesheet">
+	<link href="<?php echo base_url();?>dist/css/carousel.css" rel="stylesheet">
+	<link href="<?php echo base_url();?>dist/css/signin.css" rel="stylesheet">
+	<link href="<?php echo base_url();?>dist/css/style.css" rel="stylesheet">
+	<link href="<?php echo base_url();?>dist/css/styles.css" rel="stylesheet">
+
+	<style type="text/css" id="holderjs-style"></style></head>
+
+	<body>
+		 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand"><img src="<?php echo base_url();?>dist/images/logo4.png" height="40px"></a>
+                </div>
+			<div class="navbar-collapse collapse">
+			  <ul class="nav navbar-nav navbar-right">
+				<li class="dropdown">
+				  <a class = "notif" href="#" class="dropdown-toggle" data-toggle="dropdown" style="font-size:17px;" onclick = "this.style.color='white';"><span class="glyphicon glyphicon-cog" ></span></a>
+				  
+				  <ul class="dropdown-menu">
+					<li><a href="<?php echo base_url();?>admin/settings">Settings</a></li>
+					<li><a href="#">Help</a></li>
+					<li class="divider"></li>
+					<li><a href="<?php echo base_url();?>admin/logout">Log-out</a></li>
+				  </ul>
+            </div>
+			</div>
+			</div>
+
 		<div class="mainBody">
 			<!-- Nav tabs -->
 			<div class="sidebarMain">
 				<ul class="nav nav-pills nav-stacked">
-					<li id = "reserved-nav" >
+					<li id = "reserved-nav" ><br />
 						<a href="<?php echo base_url();?>admin/reservation"><span class="glyphicon glyphicon-import"></span> &nbsp;Reserved Books</a>
 					</li>
 					<li id = "borrowed-nav" >
@@ -24,9 +71,7 @@
 			<div class="leftMain">
 				<div id = "main-page">
 					<div id = "main-content">
-						<div class="title">
-							<h2>Statistics</h2>
-						</div>
+					<br />
 						<div class="content">
 							<div class="pane">
 							
@@ -35,6 +80,7 @@
 								<div id="piechartContainer" style=" display: inline-block; white-space: nowrap; width: 10%; height: auto;"></div>
 								<script> var libmatcount = new Array(); var bormatcount = new Array(); var diffcount = new Array(); </script>
 								<?php
+
 									$row = $stats[0];
 	 								echo "<script>";
 	 								echo "libmatcount[0] = $row->libmatcount;";
@@ -65,7 +111,6 @@
 		 						?>
 							</div>
 							<div class="btn_container">
-								<!---->
 								<a href="<?php echo base_url();?>admin/print_inventory"><button type="button" class="btn btn-danger">Generate Report</button></a>
 							</div>
 								
@@ -105,10 +150,10 @@
 			$(function ()
 				{				
 					var dataSource = [
-				    { week: "Current week", value1: libmatcount[4], value2 : bormatcount[4], value3: diffcount[4] },
-				    { week: "Last week", value1: libmatcount[3], value2 : bormatcount[3], value3: diffcount[3] },
-				    { week: "Last two weeks", value1: libmatcount[2], value2 : bormatcount[2], value3: diffcount[2] },
-				    { week: "Last three weeks", value1: libmatcount[1], value2 : bormatcount[1], value3: diffcount[1] }
+				    { week: "Current week", value1 : bormatcount[1], value2: diffcount[1] },
+				    { week: "Last week", value1 : bormatcount[2], value2: diffcount[2] },
+				    { week: "Last two weeks", value1 : bormatcount[3], value2: diffcount[3] },
+				    { week: "Last three weeks",value1 : bormatcount[4], value2: diffcount[4] }
 				];
 
 				$("#barchartContainer").dxChart({
@@ -128,9 +173,8 @@
 				    //--------------------------------/
 				    //PHP CODE TO KNOW MONTH
 				    series: [
-				        { valueField: "value1", name: "Total Materials" },
-						{ valueField: "value2", name: "Borrowed Materials" },
-				        { valueField: "value3", name: "Availbale Materials" }
+						{ valueField: "value1", name: "Borrowed Materials" },
+				        { valueField: "value2", name: "Available Materials" }
 				    ],
 				    title: "Four-Week Stats",
 				    legend: {
@@ -171,7 +215,7 @@
 				            }
 				        }
 				    ],
-				    title: "Ciculation of Materials"
+				    title: "Circulation of Materials"
 				});
 				}
 

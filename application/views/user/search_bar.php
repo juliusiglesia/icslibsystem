@@ -5,7 +5,14 @@
 			 	<!-- Begin Box 1 -->
 				<table bgcolor="#ffffff" cellspacing="0" cellpadding="2" border="0" style="width: 100%; border-collapse: collapse; bordercolor: #111111">
 					<tr>
-						<form method="post" action="search_all">
+						<?php
+							$email = $this->session->userdata('email');
+							base_url();
+							if($email)
+								echo "<form method='post' action='search_all'>";
+							else
+								echo "<form method='post' action='outside_search'>";
+						?>
 						<table bgcolor="#ffffff" cellspacing="0" cellpadding="2" border="0" style="width: 100%; border-collapse: collapse; bordercolor: #111111">
 
 								<td align="left">
@@ -16,9 +23,9 @@
 										<option value="keyword">Any Keyword</option>
 									</select>
 								</td>
-								
+															
 						<td align="left">	
-								<input type= "textbox" name="searchbox" value="<?php echo "$searchtext";?>" size="50" style="width: 360px" />
+								<input type= "textbox" name="searchbox" value="" size="50" style="width: 360px" />
 								<input type="submit" value="Search" name="eventSubmit_doSearchadvanced" id="defaultButton" />
 								<a class="btn collapse-data-btn" id="s_advance" href="#update">Advanced Search</a>
 								<a class="btn collapse-data-btn" id="s_basic" href="#update">Basic Search</a>
@@ -27,7 +34,6 @@
 						<table id="tabelTemp" bgcolor="#ffffff" cellspacing="0" cellpadding="2" border="0" style=" width:100%; border-collapse: collapse; bordercolor: #111111">
 							<tr>		
 							</tr>
-							
 							<tr>
 								<td align="left" id="s_checkbox"><b>Filter: &nbsp;&nbsp;&nbsp;</b>
 									<input type="checkbox" name="type[]" value="Book" />&nbsp;Book&nbsp;&nbsp;
@@ -38,12 +44,11 @@
 									<input type="checkbox" name="type[]" value="Magazine"/>&nbsp;Magazine&nbsp;&nbsp;
 									<input type="checkbox" name="type[]" value="Reference"/>&nbsp;Reference&nbsp;&nbsp;
 								</td>
-							</tr>
-													
+							</tr>			
 						</form>	
 						</td>
 						</table>	
-						
+
 						<!--input type="button" id="s_basic" value="basic search"-->
 						<!--input type="button" id="s_advance" value="advance search"-->
 					</tr>	

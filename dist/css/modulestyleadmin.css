@@ -1,0 +1,678 @@
+
+/* MARKETING CONTENT - For index.php to center the
+  marketing content of the page
+
+-------------------------------------------------- */
+
+/* Pad the edges of the mobile views a bit */
+.marketing {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+/* Center align the text within the three columns below the carousel */
+.marketing .col-lg-4 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.marketing h2 {
+  font-weight: normal;
+}
+.marketing .col-lg-4 p {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+/*Home page css*/
+#container{
+  margin-top:25px;
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+#move {
+  margin-right:150px; 
+}
+
+#fixheight{
+  max-height:250px;
+}
+
+#fixsize{
+  max-height:300px;
+}
+
+#body{
+  max-height:640px;
+}
+#icons{
+  width: 100px; 
+  height: 100px;
+}
+.buttonhref {
+        display: inline-block;
+        outline: none;
+        cursor: pointer;
+        text-align:center; 
+        padding: 7px 10px;
+        text-decoration : none;
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+        -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+        box-shadow: 0 1px 2px rgba(0,0,0,.2);
+}
+
+.buttonhref:hover{
+    text-decoration : none;
+}
+
+.white{
+  color:white;
+  background:#22af25;
+  text-decoration : none;
+}
+
+.white:hover{
+  color:white;
+  background:#0c8400;
+  text-decoration : none;
+}
+
+#font-edit{
+  font-size: 12px;
+}
+
+.navbar{
+  min-height: 65px;
+}
+
+#small{
+  font-size: 10px;
+}
+
+
+/*Admin side
+  Sign up page
+*/
+
+body {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  
+}
+
+.signin {
+  max-width: 400px;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.search_area {
+  max-width: 900px;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.form-signin {
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+
+
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+  margin-bottom: 10px;
+}
+.form-signin .checkbox {
+  font-weight: normal;
+}
+.form-signin .form-control {
+  position: relative;
+  font-size: 16px;
+  height: auto;
+  padding: 10px;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+/* TABLES - STYLE */
+table.tablesorter {
+  font-family:arial;
+  background-color: #e6EEEE;
+  margin:10px 0pt 15px;
+  font-size: 12pt !important;
+  width: 100%;
+  text-align: left;
+}
+table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+  background-color: #e6EEEE;
+  font-size: 12pt;
+  padding: 4px;
+}
+table.tablesorter thead tr .header {
+  background-image: url(bg.gif);
+  background-repeat: no-repeat;
+  background-position: center right;
+  cursor: pointer;
+}
+table.tablesorter tbody td {
+  color: #3D3D3D;
+  padding: 4px;
+  background-color: #FFF;
+  vertical-align: top;
+}
+table.tablesorter tbody tr.odd td {
+  background-color:#F0F0F6;
+}
+table.tablesorter thead tr .headerSortUp {
+  background-image: url(asc.gif);
+}
+table.tablesorter thead tr .headerSortDown {
+  background-image: url(desc.gif);
+}
+table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+background-color: #8dbdd8;
+}
+
+.title, .table-text{
+  font-size:13px;
+}
+
+.author{
+  font-size:12px;
+}
+
+/*For footer */
+div#page {
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px;
+}
+
+.back-to-top {
+    position: fixed;
+    bottom: 2em;
+    right: 0px;
+    text-decoration: none;
+    color: #000000;
+    background-color: rgba(235, 235, 235, 0.80);
+    font-size: 12px;
+    padding: 1em;
+    display: none;
+}
+
+.back-to-top:hover {    
+    background-color: rgba(135, 135, 135, 0.50);
+}   
+
+#foot {
+    width: 50px;
+    height: 50px;
+}
+
+/*For Chart in Overview page*/
+.header
+{
+    position: relative;
+    height: 62px;
+    background-color: #ffffff;
+    padding: 0px 40px;
+}
+
+.alert-container{
+
+  height:50px;
+
+}
+
+.line
+{
+    background-color: #707070;
+    height: 5px;
+    margin: 0 0 20px;
+}
+
+.header .content
+{
+    width: 950px;
+    margin: 0 auto;
+    padding: 0px;
+}
+
+    .header .content .button
+    {
+        float: right;
+        margin: 18px 0 0 0;
+        text-decoration: none;
+        color: #565656;
+        font-size: 14px;
+        padding: 4px 18px 5px;
+        background-color: #E8E8E8;
+        background-repeat: no-repeat;
+        background-image: linear-gradient(top, #eeeeee 0%, #e3e3e3 100%);
+        background-image: -o-linear-gradient(top, #eeeeee 0%, #e3e3e3 100%);
+        background-image: -moz-linear-gradient(top, #eeeeee 0%, #e3e3e3 100%);
+        background-image: -webkit-linear-gradient(top, #eeeeee 0%, #e3e3e3 100%);
+        background-image: -ms-linear-gradient(top, #eeeeee 0%, #e3e3e3 100%);
+        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #eeeeee), color-stop(1, #e3e3e3));
+        border-radius: 3px;
+        border: 1px solid #c3c3c3;
+        text-shadow: 1px 1px #ffffff;
+        box-shadow: 0px 1px 2px 0px #d7d7d7;
+        box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.1);
+    }
+
+    .header .content  a.logo,
+    .header .content  a.logo:link,
+    .header .content  a.logo:visited,
+    .header .content  a.logo:hover,
+    .header .content  a.logo:active
+    {
+        text-decoration: none;
+        display: block;
+        height: 62px;
+        color: #8c8c8c;
+        font-size: 24px;
+        background-image: url("images/logo.png");
+         background-repeat: no-repeat;
+     }
+      .header .content  div.logo{
+           padding:14px 0 0 0;
+      }
+
+
+.category .subcategory
+{
+    padding: 0 0 20px 0;
+}
+
+.category h5
+{
+    margin: 0px;
+}
+
+.category .subcategory h6
+{
+    margin: 0px;
+}
+
+.category .subcategory ul
+{
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+}
+
+    .category .subcategory ul li
+    {
+        line-height: 18px;
+    }
+
+        .category .subcategory ul li a
+        {
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+        }
+
+            .category .subcategory ul li.active a,
+            .category .subcategory ul li a:hover
+            {
+                background-color: #B0B0B0;
+                margin: -2px -3px;
+                padding: 2px 3px;
+            }
+
+        .category .subcategory ul li.active a
+        {
+            background-color: #ffffff;
+            color: #707070;
+        }
+    
+            .category .subcategory ul li.isnew a:after {
+                content: ' ';
+                position: relative;
+                display: inline-block;
+                background-image: url('images/newdemo.png');
+                width: 26px;
+                height: 14px;
+                top: 3px;
+                left: 5px;
+                margin: 0 5px 0 0;
+            }
+      
+#settings_container{
+
+  padding: 10px;
+  margin-top:-20px;
+
+}
+
+.title
+{
+    height: 45px;
+    margin: 0 auto;
+    width: 950px;
+}
+
+.btn_container{
+
+  text-align:center;
+
+}
+
+#small{
+  font-size: 10px;
+}
+
+    .title h1,
+    .title h2
+    {
+        display: inline;
+        font-size: 30px;
+        color: #565656;
+        text-transform: none;
+    }
+
+    .title h2
+    {
+        color: #f17f21
+    }
+
+.content
+{
+    margin: 0 auto;
+    padding: 0 40px;
+    width: 950px;
+}
+
+.pane
+{
+    position: relative;
+    background-color: #ffffff;
+    text-align: center;
+    width: 850px;
+    height: 440px;
+  padding-left:50px;
+  padding-right:50px;
+    margin: 0 auto;
+}
+
+    .pane .long-title
+    {
+        position: absolute;
+        top: 10px;
+        text-align: center;
+        width: 850px;
+        overflow: hidden;
+    }
+
+        .pane .long-title h3
+        {
+            font-size: 28px;
+        }
+
+    .pane .credits
+    {
+        color: rgba(128, 128, 128, 0.75);
+        position: absolute;
+        bottom: 20px;
+        right: 30px;
+    }
+  
+/*Sparklines demo*/
+
+.demo-table {
+    margin-top: 80px;
+    width: 100%;
+    border: 1px solid #c2c2c2;
+    color: #565656;
+    border-collapse: collapse;
+}
+
+    .demo-table th,
+    .demo-table td {
+        font-weight: 400;
+        width: 200px;
+        padding: 25px 10px 5px 10px;
+        border: 1px solid #e5e5e5;
+    }
+
+    .demo-table th {
+        padding: 25px 15px 20px 15px;
+        border: 1px solid #c2c2c2;
+    }
+
+    .demo-table tr:nth-child(2) td {
+        border-top: 1px solid #c2c2c2;
+    }
+
+    .demo-table td:first-of-type {
+        border-left: 1px solid #c2c2c2;
+    }
+
+    .demo-table .sparkline {
+        width: 200px;
+        height: 30px;
+    }
+
+    .main_block:before,.main_block:after { overflow:hidden; content:""; display:table; }
+    .main_block:after { clear:both; }
+    .inner_block {
+     display: inline-block;
+     float:left;
+   }
+
+/* GLOBAL STYLES
+-------------------------------------------------- */
+/* Padding below the footer and lighter body text */
+
+body {
+  padding-top:60px;
+  margin-top:10px;
+  color: #5a5a5a;
+}
+
+/* CUSTOMIZE THE NAVBAR
+-------------------------------------------------- */
+
+/* Special class on .container surrounding .navbar, used for positioning it into place. */
+.navbar-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+}
+
+/* Flip around the padding for proper display in narrow viewports */
+.navbar-wrapper .container {
+  padding-left: 0;
+  padding-right: 0;
+}
+.navbar-wrapper .navbar {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+/*BODY OF ADMIN*/
+.mainBody {
+  margin-right:auto;
+  margin-left:auto;
+  width:1150px;
+  margin-top:1px;
+  border:1px solid transparent;
+  min-height:500px;
+}
+
+.sidebarMain {
+  float:left; 
+}
+
+.leftMain{
+  width:950px;
+  border-top:1px solid transparent;
+  margin-left:auto;
+  margin-top:-1px;
+  min-height:300px;
+}
+
+#profileCont{
+  width:1000px;
+  border-left:1px solid #a8a8ff;
+  border-right:1px solid #a8a8ff;
+  border-bottom:1px solid #a8a8ff;
+  height:auto;
+  margin-left:0;
+}
+
+#profContent{
+  padding-left: 5%;
+  padding-right: 5%;
+  padding-bottom: 5%;
+}
+
+/* CUSTOMIZE THE CAROUSEL
+-------------------------------------------------- */
+
+/* Carousel base class */
+.carousel {
+  margin-right:auto;
+  margin-left:auto;
+  width:1150px;
+  height: 300px;
+  margin-bottom: 60px;
+}
+/* Since positioning the image, we need to help out the caption */
+.carousel-caption {
+  z-index: 10;
+  /*text color of caption here*/
+}
+
+/* Declare heights because of positioning of img element */
+.carousel .item {
+  height: 300px;
+  background-color: #777;
+}
+.carousel-inner > .item > img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  height: 500px;
+}
+
+
+
+/* MARKETING CONTENT
+-------------------------------------------------- */
+
+/* Pad the edges of the mobile views a bit */
+.marketing {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+/* Center align the text within the three columns below the carousel */
+.marketing .col-lg-4 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.marketing h2 {
+  font-weight: normal;
+}
+.marketing .col-lg-4 p {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+
+/* Featurettes
+------------------------- */
+
+.featurette-divider {
+  margin: 60px 0; /* Space out the Bootstrap <hr> more */
+}
+
+/* Thin out the marketing headings */
+.featurette-heading {
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+
+
+/* RESPONSIVE CSS
+-------------------------------------------------- */
+
+@media (min-width: 768px) {
+
+  /* Remove the edge padding needed for mobile */
+  .marketing {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  /* Navbar positioning foo */
+  .navbar-wrapper {
+    margin-top: 20px;
+  }
+  .navbar-wrapper .container {
+    padding-left:  15px;
+    padding-right: 15px;
+  }
+  .navbar-wrapper .navbar {
+    padding-left:  0;
+    padding-right: 0;
+  }
+
+  /* The navbar becomes detached from the top, so we round the corners */
+  .navbar-wrapper .navbar {
+    border-radius: 4px;
+  }
+  
+  .carousel {
+  padding-left:0;
+  padding-right:0;
+  }
+
+  /* Bump up size of carousel content */
+  .carousel-caption p {
+    margin-bottom: 20px;
+    font-size: 21px;
+    line-height: 1.4;
+  }
+
+  .featurette-heading {
+    font-size: 50px;
+  }
+
+}
+
+@media (min-width: 992px) {
+  .featurette-heading {
+    margin-top: 120px;
+  }
+}
+
+
+a.tooltipLink { color: inherit; } 

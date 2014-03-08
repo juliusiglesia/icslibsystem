@@ -19,7 +19,6 @@ class Clear_reservation_model extends CI_Model{
 		$query = "TRUNCATE TABLE reservation";
 		$this->db->query($query);
 	}
-
 }
 
 ?>

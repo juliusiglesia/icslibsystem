@@ -1,0 +1,24 @@
+.tablesearch{
+	text-align: center;
+	border-collapse: collapse;
+	background-color: #efefef;
+	width:100%; 
+	border-color: #999999;
+}
+
+td.tdsearch{
+	padding: 6px;
+	color: #222222;
+	text-align: left;
+}
+
+table.searchengine{
+	width: 100%; 
+	border-collapse: collapse; 
+	border-color: #111111;
+}
+
+input.searchbox{
+	width:360px;
+	size: 50;
+}

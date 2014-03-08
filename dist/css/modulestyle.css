@@ -1,0 +1,213 @@
+
+/* MARKETING CONTENT - For index.php to center the
+	marketing content of the page
+
+-------------------------------------------------- */
+
+/* Pad the edges of the mobile views a bit */
+.marketing {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+/* Center align the text within the three columns below the carousel */
+.marketing .col-lg-4 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.marketing h2 {
+  font-weight: normal;
+}
+.marketing .col-lg-4 p {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+/*Body CSS (from signin.css)*/
+body {
+  padding-top: 40px;
+  padding-bottom: 40px;
+} 
+/*Home page css*/
+
+#container{
+	margin-top:25px;
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+#move {
+	margin-right:150px; 
+}
+
+#fixheight{
+	max-height:250px;
+}
+
+#fixsize{
+	max-height:300px;
+}
+
+#body{
+	max-height:640px;
+}
+#icons{
+	width: 100px; 
+	height: 100px;
+}
+.buttonhref {
+        display: inline-block;
+        outline: none;
+        cursor: pointer;
+        text-align:center; 
+        padding: 7px 10px;
+        text-decoration : none;
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+        -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+        box-shadow: 0 1px 2px rgba(0,0,0,.2);
+}
+
+.buttonhref:hover{
+		text-decoration : none;
+}
+
+.white{
+	color:white;
+	background:#22af25;
+	text-decoration : none;
+}
+
+.white:hover{
+	color:white;
+	background:#0c8400;
+	text-decoration : none;
+}
+
+#font-edit{
+	font-size: 12px;
+}
+
+.navbar{
+	min-height: 65px;
+}
+
+#small{
+	font-size: 10px;
+}
+
+
+/*Search engine for borrower*/
+.tablesearch{
+	text-align: center;
+	border-collapse: collapse;
+	background-color: #efefef;
+	width:100%; 
+	border-color: #999999;
+}
+
+td.tdsearch{
+	padding: 6px;
+	color: #222222;
+	text-align: left;
+}
+
+table.searchengine{
+	width: 100%; 
+	border-collapse: collapse; 
+	border-color: #111111;
+}
+
+input.searchbox{
+	width:360px;
+	size: 50;
+}
+
+a.tooltipLink { color: inherit; } 
+
+#margin{
+	margin-top:60px;
+	background-image: url('images/contbg.png');
+	background-repeat: no-repeat;
+	height:530px;
+	width:1000px;
+}
+
+#margin2{
+	margin-left:50px;
+}
+
+#center{
+	text-align: center;
+}
+
+#imgsize{
+	height:65%;
+	width:65%;
+}
+
+#pimg{
+	 cursor:pointer;
+}
+
+#pimg:hover span{
+    display:block;
+}
+
+#pimg2{
+	 cursor:pointer;
+	-webkit-animation: cssAnimation 2.561s 11 ease;
+	-moz-animation: cssAnimation 2.561s 11 ease;
+	-o-animation: cssAnimation 2.561s 11 ease;
+}
+
+#pimg2:hover span{
+    display:block;
+}
+
+@-webkit-keyframes cssAnimation {
+	from { -webkit-transform: rotate(4deg); }
+	to { -webkit-transform: rotate(360deg); }
+}
+@-moz-keyframes cssAnimation {
+	from { -moz-transform: rotate(4deg); }
+	to { -moz-transform: rotate(360deg); }
+}
+@-o-keyframes cssAnimation {
+	from { -o-transform: rotate(4deg); }
+	to { -o-transform: rotate(360deg); }
+}
+
+#popup{
+    background: none repeat scroll 0 0 #F8F8F8;
+    border: 5px solid #DFDFDF;
+    color: black;
+    font-size: 11px;
+    letter-spacing: 1px;
+    margin: 0 auto;
+    position: relative;
+    text-align: center;
+    top: -80px;
+    left:-30px;
+    margin-bottom: -25px;
+    display:none;
+
+}
+#popup:after{
+    position: absolute;
+    color: #FFF;
+    font-weight:bold;
+    left: -66px;
+    bottom: -12px;
+    width:40px;
+    background: #97a5db;
+    -moz-border-radius: 6px;
+    -webkit-border-radius:6px;
+    -khtml-border-radius:6px;
+    visibility: hidden;
+}
+
+.error_color{
+	color:red;
+}

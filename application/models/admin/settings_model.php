@@ -32,6 +32,12 @@ class Settings_model extends CI_Model{
 		$query = "UPDATE administrator SET password = sha1('${newpw}') WHERE username LIKE 'icslibadmin'";
 		$this->db->query($query);
 	}
+
+	public function get_data(){
+		$query = "SELECT * FROM settings";
+		$sql = $this->db->query($query);
+		return $sql->result();
+	}
 }//end of class
 
 ?>

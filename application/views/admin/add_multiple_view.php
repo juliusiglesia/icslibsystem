@@ -331,14 +331,15 @@
 							
 							}
 						} else if(type=='Magazine') {
-							if ( !( (materialid.match(/^M-([0-9]{1,2})$/)) ) ){
+							if ( !materialid.match(/^M-([0-9]{1,2})$/) ){
 								$('.materialid').last().attr('style', 'color : red')
 						
-							}else {								
+						 	}else {								
 							
 							}
+						
 						} else if(type=='Thesis') {
-							if ( !( (materialid.match(/^T-([0-9]{1,2})$/)) ) ){
+							if ( !materialid.match(/^T-([0-9]{1,2})$/) ){
 								$('.materialid').last().attr('style', 'color : red')
 							} else {	
 							
@@ -363,9 +364,6 @@
 							}else {
 								
 							}
-						} else {
-							$('.type').last().attr('style', 'color : red')
-							$('.materialid').last().attr('style', 'color : red')
 						}
 					}
 				}

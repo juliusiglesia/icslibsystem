@@ -46,9 +46,6 @@ body {
 
 .leftMain{
 	width:950px;
-	border-left:1px solid #a8a8ff;
-	border-right:1px solid #a8a8ff;
-	border-bottom:1px solid #a8a8ff;
 	border-top:1px solid transparent;
 	margin-left:auto;
 	margin-top:-1px;

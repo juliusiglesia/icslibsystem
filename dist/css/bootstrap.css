@@ -355,7 +355,8 @@ img {
 }
 
 .img-rounded {
-  border-radius: 6px;
+  border-radius: 8px;
+  width: 250px;
 }
 
 .img-thumbnail {

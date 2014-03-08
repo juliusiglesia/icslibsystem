@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<html lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -70,11 +71,13 @@
 					<button class="btn btn-lg btn-primary btn-block" type="button" id = "submit">Sign in</button>
 				</form>
 			</div>
-			<div style="display:none" id = "error_message" class = "alert alert-danger">  </div>
-			<center><div style="display:none" id="dvloader"><img src="<?php echo base_url();?>dist/images/ajax-loader.gif" /></div></center>
+			<div id = "message">  </div>
 		</div>
-		 <script src="<?php echo base_url();?>dist/js/jquery.js"></script>
-    
+		
+		<script src="<?php echo base_url();?>dist/js/jquery.js"></script>
+		<script src="<?php echo base_url();?>dist/js/bootstrap.js"></script>
+		<script src="<?php echo base_url();?>dist/js/holder.js"></script>
+
 		<script type="text/javascript">
 			
 			$("#login_form").keypress(function(event){
@@ -84,8 +87,7 @@
 				}
 			});
 			
-			$("#submit").click( function(){
-				
+			$("#submit").click( function(){				
 				username = $("#login_form").find("input[name='uname']").val();
 				password = $("#login_form").find("input[name='pword']").val();
 
@@ -96,29 +98,26 @@
 						data: { uname: username, pword: password },
 
 						beforeSend: function() {
-							//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
-							//$("#error_message").html("Loading...");
+							$("#message").html("<center><img src='<?php echo base_url();?>dist/images/ajax-loader.gif' /></center>");
 						},
 
 						error: function(xhr, textStatus, errorThrown) {
-							$('#error_message').html(textStatus);
+							$('#message').html(textStatus);
 						},
 
 						success: function( result ){
 							if ( result != "1" ){  
-								$("#error_message").show();
-								$("#error_message").html( result );
-								$('#error_message').addClass("alert alert-danger");
-								$("#error_message").fadeIn('slow');
-							
+								$("#message").addClass("alert alert-danger");
+								$("#message").html( result );
+								$("#message").fadeIn('slow');							
 							}
 							else {
-								$("#error_message").hide();
-								$("#dvloader").show();
 								window.location.href = "<?php echo site_url('admin/home'); ?>";
 							}
 						}
 					});
 			});
 		</script>
-		<?php include 'footer.php'; ?>  
+		
+	</body>
+</html> 

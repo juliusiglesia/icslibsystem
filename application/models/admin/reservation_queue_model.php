@@ -47,7 +47,7 @@ class Reservation_queue_model extends CI_Model{
 										) ");
 		
 		$result = $query->result();
-		
+		$i = 0;
 		foreach($result as $row) {
 			// get the materialid, store it to a variable
 			$matid = $row->materialid;
@@ -62,7 +62,6 @@ class Reservation_queue_model extends CI_Model{
 			// get the result, store it t a variable
 			$count = $query->row();
 			$count = $count->available;
-
 			$query = $this->db->query("SELECT COUNT(*) AS total 
 										FROM reservation 
 										WHERE materialid LIKE '${matid}'
@@ -80,7 +79,7 @@ class Reservation_queue_model extends CI_Model{
 			// get the result, store it t a variable
 			$min = $query->row();
 			$min = $min->min;
-
+			
 			if( $search == "" ){
 				// get the n reservations for a library material, n = available copy of material
 				$query = $this->db->query("SELECT *, ${total} AS total, queue-${min}+1 AS queue FROM reservation INNER JOIN librarymaterial 
@@ -125,26 +124,27 @@ class Reservation_queue_model extends CI_Model{
 											ORDER BY queue ASC 
 											LIMIT 0, ${count}");	
 			}
+
 			// get the result as object
 			$query = $query->result();
-
 			// add the result of the query in the return array by typecasting the object to an array
-			foreach ($query as $tuple){
-				$id = $tuple->materialid;
-				$isbn = $tuple->isbn;
-				$query = $this->db->query("SELECT fname, mname, lname 
-											FROM author
-											WHERE materialid LIKE '${id}' AND isbn LIKE '${isbn}'");
-		
-				$result = $query->result();
-				$tuple->author = (array)$result;
+			
+				foreach ($query as $tuple){
+					$id = $tuple->materialid;
+					$isbn = $tuple->isbn;
+					$query = $this->db->query("SELECT fname, mname, lname 
+												FROM author
+												WHERE materialid LIKE '${id}' AND isbn LIKE '${isbn}'");
+			
+					$result = $query->result();
+					
+					$tuple->author = (array)$result;
 
-				// get the author depending on the tuple's library material id and isbn
-				// add it to $query variable
+					// get the author depending on the tuple's library material id and isbn
+					// add it to $query variable
+					$return_array[count($return_array)] = (array)$tuple;
+				}
 
-				$return_array[count($return_array)] = (array)$tuple;
-
-			}
 		}
 
 		return $return_array;
