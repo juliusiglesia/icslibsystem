@@ -71,13 +71,31 @@
 				<div id="main-page">
 					<div id = "main-content">
 						<br />
+							<h2> Search User </h2>
+							<ol class="breadcrumb">
+								<li><a href="<?php echo base_url()?>admin/home">Home</a></li>
+								<li class="active"> Search User </li>
+							</ol>
 						<br />
-						<div id = "search" align="center">
-						<input type="text" id = "searchUser" name ="search"  size="80"/>
-						<input class = "btn btn-primary" type="button" id = "searchUserButton" value="Search"/>
+						<div class="row">
+							<div class="col-md-6 col-md-offset-3 ">
+								<div class="alert-container" style = 'height: 50px;'>
+									<div style="height: 45px; text-align: center;" id = "alert"> </div>
+								</div>
+							</div>
 						</div>
-						<div id = "alert"> </div><br /><br />
-	                
+						<br />
+	            		<div class="row">
+								<div class="col-md-6 col-md-offset-3 ">
+									<div class="input-group">
+										<input type="text" id = "searchUser" class="form-control">
+										<span class="input-group-btn">
+											<button class="btn btn-default" id = "searchUserButton" type="button" value="Search"> Search</button>
+										</span>
+									</div><!-- /input-group -->
+								</div><!-- /.col-lg-6 -->
+							</div><!-- /.row -->
+						<br /><br />
 						<table class="table table-hover tablesorter" border = "1" cellspacing='5' cellpadding='5' align = 'center'>
 							<thead>
 								<tr>
@@ -108,41 +126,17 @@
 								?>
 							</tbody>
 						</table>
-						<div class="pager">
-							<!--<img src="../addons/pager/icons/first.png" class="first" alt="First" />
-							<img src="../addons/pager/icons/prev.png" class="prev" alt="Prev" />-->
-							<span class="first" style="cursor:pointer">First</span>
-							<span class="prev" style="cursor:pointer">Prev</span>
-							<strong> <span class="pagedisplay"></span></strong> <!--this can be any element, including an input-->
-							<span class="next" style="cursor:pointer">Next</span>
-							<span class="last" style="cursor:pointer">Last</span>
-							<br/>
-							<span>Page size: </span>
-							<select class="pagesize" title="Select page size">
-								<option value="10">10</option>
-								<option value="20">20</option>
-								<option value="30">30</option>
-								<option value="40">40</option>
-							</select>
-							<span>Go to: </span>
-							<select class="gotoPage" title="Select page number"></select>
-						</div>
+						<?php include 'includes/pager.php'; ?>
 					</div>
 				</div>
 				
 			</div>
 		</div>
 		
-		 <!-- FOOTER -->
+		<!-- Footer -->
 		<?php include 'includes/footer.php'; ?>
 
-		<script src="<?php echo base_url();?>dist/js/holder.js"></script>
-		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/jquery.tablesorter.js"></script>
-		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/jquery.tablesorter.pager.js"></script>
-		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/jquery.tablesorter.widgets.js"></script>
-		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/widget-pager.js"></script>
-		<!--script src="<?php echo base_url();?>dist/js/dynamic.js"></script-->
-		<!--script src="<?php echo base_url();?>dist/js/modernizr.js"></script-->
+		<?php include 'includes/pagination.php'; ?>	
 		
 		<script id="js">
 			$(function(){

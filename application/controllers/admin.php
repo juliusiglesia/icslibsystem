@@ -79,7 +79,7 @@ class Admin extends CI_Controller {
 		$is_logged_in = $this->is_logged_in();
 		$this->no_cache();
 		if( $is_logged_in ){
-			redirect('/admin/home', 'refresh');
+			redirect('admin/home', 'refresh');
 		} else {
 			$this->load->view('admin/login_view');
 		}
@@ -96,7 +96,7 @@ class Admin extends CI_Controller {
 
 	public function logout(){
 		$this->session->sess_destroy();
-		redirect('/admin/login', 'refresh');
+		redirect('admin/login', 'refresh');
 	}
 
 	/**
@@ -642,13 +642,22 @@ class Admin extends CI_Controller {
 	public function settings_for_info(){
 	
 		$this->load->model('admin/settings_model');
-		
-		$fine = $this->input->post('fine_value');
-		$start_sem = $this->input->post('start_sem_value');
-		$end_sem = $this->input->post('end_sem_value');
+
+		$start_sem_value = $this->input->post('start_sem_value');
+		$end_sem_value = $this->input->post('end_sem_value');
 
 		//$expectedreturn = $this->reservation_queue_model->update_claimed_date( $materialid, $isbn, $idnumber, $start_date );
-		$this->settings_model->set_info( $fine, $start_sem, $end_sem );		
+		$this->settings_model->set_info( $start_sem_value, $end_sem_value );		
+	}
+
+	public function settings_for_fine(){
+	
+		$this->load->model('admin/settings_model');
+
+		$fine = $this->input->post('fine');
+
+		//$expectedreturn = $this->reservation_queue_model->update_claimed_date( $materialid, $isbn, $idnumber, $start_date );
+		$this->settings_model->set_fine( $fine );	
 	}
 	
 	public function settings_for_password(){
@@ -661,6 +670,10 @@ class Admin extends CI_Controller {
 		$this->settings_model->set_password( $newpw );		
 	}
 
-}
+	public function check_reservation(){
+		$this->load->model('admin/reservation_queue_model');
+		echo $this->reservation_queue_model->check_reservation();
+	}
+}	
 
 ?>

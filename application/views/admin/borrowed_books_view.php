@@ -72,15 +72,34 @@
 			<div class="leftMain">
 				<div id="main-page">
 					<div id = "main-content">
-						<br /><br />
-						<form method="post"  style="width: 800px ; margin-left: auto; margin-right: auto;" role="form" align="center">
-                            <input type="text" name="search"  size="80"/>
-                            <input class = "btn btn-primary" type="submit" value="Search" name="search_borrowed_books"/> 
-                           <div class="alert-container" style = 'height: 40px; margin: 30px;'>
-								<div style="display:none" id = "success_return" class = "alert alert-success">  </div>
-							</div>   
-                        </form>	
-
+						<br />
+						<h2> Borrowed View </h2>
+						<h5> <i> You are currently viewing the borrowed material that can be provided with a library material copy. </i> </h5>
+						<ol class="breadcrumb">
+							<li><a href="<?php echo base_url()?>admin/home">Home</a></li>
+							<li class="active"> Borrowed </li>
+						</ol>
+						<div class="row">
+							<div class="col-md-6 col-md-offset-3 ">
+								<div class="alert-container" style = 'height: 40px; padding-top: 10px; margin-bottom:10px;'>
+									<div style="display:none; height: 20px; text-align: center;" id = "success_return">  </div>
+								</div>
+							</div>
+						</div>
+						<br />
+						<form method="post" role="form" align="center">
+							 <div class="row">
+								<div class="col-md-6 col-md-offset-3 ">
+									<div class="input-group">
+                            			<input type="text" name="search" class="form-control"/>
+                            			<span class="input-group-btn"> 
+	                           				<input class = "btn btn-default" type="submit" value="Search" name="search_borrowed_books"/> 
+	                           			</span>
+									</div><!-- /input-group -->  
+								</div><!-- /.col-lg-6 -->
+							</div><!-- /.row -->
+                        </form>
+                        <br />
 						<?php
 						  if($this->input->post('returnButton') != ''){
 							echo "wew";
@@ -154,24 +173,7 @@
 							echo "</tbody>";
 							echo "</table>";
 						?>
-						<div class="pager">
-							<!--<img src="../addons/pager/icons/first.png" class="first" alt="First" />
-							<img src="../addons/pager/icons/prev.png" class="prev" alt="Prev" />-->
-							<span class="first" style="cursor:pointer">First</span>
-							<span class="prev" style="cursor:pointer">Prev</span>
-							<strong> <span class="pagedisplay"></span></strong> <!--this can be any element, including an input-->
-							<span class="next" style="cursor:pointer">Next</span>
-							<span class="last" style="cursor:pointer">Last</span>
-							<br/>
-							<span>Page size: </span>
-							<select class="pagesize" title="Select page size">
-								<option value="10">10</option>
-								<option value="20">20</option>
-								<option value="30">30</option>
-								<option value="40">40</option>
-							</select>
-							<span>Go to: </span>
-							<select class="gotoPage" title="Select page number"></select>
+						<?php include 'includes/pager.php'; ?>
 						</div>
 					</div>
 				</div>
@@ -181,99 +183,16 @@
 		<!-- Footer -->
 		<?php include 'includes/footer.php'; ?>
 
+		<?php include 'includes/pagination.php'; ?>	
+
 		<script src="<?php echo base_url();?>dist/js/holder.js"></script>
 		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/jquery.tablesorter.js"></script>
 		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/jquery.tablesorter.pager.js"></script>
 		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/jquery.tablesorter.widgets.js"></script>
 		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/widget-pager.js"></script>
+		
 		<!--script src="<?php echo base_url();?>dist/js/dynamic.js"></script-->
 		<!--script src="<?php echo base_url();?>dist/js/modernizr.js"></script-->
-<script id="js">	
-			$(function(){
-
-			var pagerOptions = {
-
-			// target the pager markup - see the HTML block below
-			container: $(".pager"),
-
-			// use this url format "http:/mydatabase.com?page={page}&size={size}&{sortList:col}"
-			ajaxUrl: null,
-
-			// modify the url after all processing has been applied
-			customAjaxUrl: function(table, url) { return url; },
-
-			// process ajax so that the data object is returned along with the total number of rows
-			// example: { "data" : [{ "ID": 1, "Name": "Foo", "Last": "Bar" }], "total_rows" : 100 }
-			ajaxProcessing: function(ajax){
-			if (ajax && ajax.hasOwnProperty('data')) {
-			// return [ "data", "total_rows" ];
-			return [ ajax.total_rows, ajax.data ];
-			}
-			},
-
-			// output string - default is '{page}/{totalPages}'
-			// possible variables: {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows}
-			output: '{startRow} to {endRow} ({totalRows})',
-
-			// apply disabled classname to the pager arrows when the rows at either extreme is visible - default is true
-			updateArrows: true,
-
-			// starting page of the pager (zero based index)
-			page: 0,
-
-			// Number of visible rows - default is 10
-			size: 10,
-
-			// Save pager page & size if the storage script is loaded (requires $.tablesorter.storage in jquery.tablesorter.widgets.js)
-			savePages : true,
-
-			//defines custom storage key
-			storageKey:'tablesorter-pager',
-
-			// if true, the table will remain the same height no matter how many records are displayed. The space is made up by an empty
-			// table row set to a height to compensate; default is false
-			fixedHeight: true,
-
-			// remove rows from the table to speed up the sort of large tables.
-			// setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled.
-			removeRows: false,
-
-			// css class names of pager arrows
-			cssNext: '.next', // next page arrow
-			cssPrev: '.prev', // previous page arrow
-			cssFirst: '.first', // go to first page arrow
-			cssLast: '.last', // go to last page arrow
-			cssGoto: '.gotoPage', // select dropdown to allow choosing a page
-
-			cssPageDisplay: '.pagedisplay', // location of where the "output" is displayed
-			cssPageSize: '.pagesize', // page size selector - select dropdown that sets the "size" option
-
-			// class added to arrows when at the extremes (i.e. prev/first arrows are "disabled" when on the first page)
-			cssDisabled: 'disabled', // Note there is no period "." in front of this class name
-			cssErrorRow: 'tablesorter-errorRow' // ajax error information row
-
-			};
-
-			$("table")
-				.tablesorter({
-						theme: 'blue',
-						widthFixed: true,
-						widgets: ['zebra']
-					})
-
-			.bind('pagerChange pagerComplete pagerInitialized pageMoved', function(e, c){
-				var msg = '"</span> event triggered, ' + (e.type === 'pagerChange' ? 'going to' : 'now on') + ' page <span class="typ">' + (c.page + 1) + '/' + c.totalPages + '</span>';
-				$('#display')
-					.append('<li><span class="str">"' + e.type + msg + '</li>')
-					.find('li:first').remove();
-				document.body.scrollTop = document.documentElement.scrollTop = 0;
-			})
-
-			.tablesorterPager(pagerOptions);
-
-		});
-	
-	</script>
 	<script>
 	$('#borrowed-nav').addClass('active');
 		//For back to top javascript//

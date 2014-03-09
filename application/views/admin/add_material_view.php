@@ -26,6 +26,12 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
         		<div id = "main-content">
 					<div id="container">
 						<form name="add" id="add" method="post" action="admin_search" onsubmit="return showModal()" class="form-horizontal">
+							<br />
+							<h2> Add New Material </h2>
+							<ol class="breadcrumb">
+								<li><a href="<?php echo base_url()?>admin/home">Home</a></li>
+								<li class="active"> Add New Material </li>
+							</ol>
 							<h2 class="form-signin-heading">Fill up the necessary info: </h2>
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Library Material ID</label>
@@ -179,10 +185,9 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 							</div>
 						</div>		
 		</div></div></div></div>
-		
+
 		<!-- Footer -->
 		<?php include 'includes/footer.php'; ?>
-		
 	<script type="text/javascript">
 
 			$('#add-nav').addClass('active');

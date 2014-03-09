@@ -75,7 +75,7 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-3 control-label" id = "reNewPassLabel" > Retype New Password : </label>
+								<label class="col-sm-3 control-label" id = "reNewPassLabel" for = ""> Retype New Password : </label>
 								<div class="col-sm-3">
 									<input type="password" class="form-control" id="reNewPassInput" value = "" >
 								</div>
@@ -111,8 +111,7 @@
 			$('#passText').show();
 			$('#updatePass').show();
 			$('#newPassInput').hide();
-			$('#passInput').hide();
-			$('#reNewPassLabel').hide();				
+			$('#passInput').hide();				
 			$('#reNewPassInput').hide();				
 			$('#reNewPassLabel').hide();				
 			$('#newPassLabel').hide();
@@ -174,14 +173,20 @@
 		$('#fineEnable').click(function(){
 			$('#fineEnable').hide();
 			$('#fineDisable').show();
-			$('#fineInput').show();	
+			$('#fineInput').show();
+			enable_fine();
+
+			confirmUpdateSettings('fineDiv');	
 		});
 
 
 		$('#fineDisable').click(function(){
 			$('#fineEnable').show();
 			$('#fineDisable').hide();
-			$('#fineInput').hide();	
+			$('#fineInput').hide();
+			disable_fine();	
+
+			confirmUpdateSettings('fineDiv');
 		});
 
 		function hideInfoInput(){
@@ -208,66 +213,107 @@
 			$('#cna').hide();
 		}
 
-					
+		$('#save').click(function(){
+			if(info_check()){ 
+				confirmUpdateSettings('infoDiv'); 
+				hideInfoInput(); 
+			};
+		});
 
-		function crepw_check(){
-			var currpw = document.getElementById('currpw').value;
-			var crepw = document.getElementById('crepw').value;
-			var crepw_error = document.getElementById('crepw_error');
+		$('#reNewPassInput').blur(function(){
+			reNewPassInput_check();	
+		});
 
-			if(currpw != crepw){
-				crepw_error.innerHTML = "Not identical to current password";
+		$('#fineInput').on('change',function(){
+			confirmUpdateSettings('fineDiv');
+		});				
+
+		$('#savePass').click(function(){
+			if(valPword() && reNewPassInput_check()){ 
+				confirmUpdateSettings('passwordDiv');
+				$('#newPassInput').val('');
+				$('#passInput').val('');			
+				$('#reNewPassInput').val('');
+				hidePassword(); 
+			};	
+		});
+
+		function reNewPassInput_check(){
+			var newPassInput = document.getElementById('newPassInput').value;
+			var reNewPassInput = document.getElementById('reNewPassInput').value;
+			var reNewPassDiv = document.getElementById('reNewPassInput').parentNode;
+
+			if(newPassInput != reNewPassInput){
+				reNewPassDiv.className += " has-error";
+				return false;
 			}
 			else{
-				crepw_error.innerHTML = "";
+				reNewPassDiv.className = "col-sm-3";
+				return true;
 			}
-
-		}
-
-		function nrepw_check(){
-			var newpw = document.getElementById('newpw').value;
-			var nrepw = document.getElementById('nrepw').value;
-			var nrepw_error = document.getElementById('nrepw_error');
-
-			if(newpw != nrepw){
-				nrepw_error.innerHTML = "Not identical to new password";
-			}
-			else{
-				nrepw_error.innerHTML = "";
-			}
-
 		}
 		
-		function update1(){
-		
-			var fine = document.getElementById('fine');
-			var start_sem = document.getElementById('start_sem');
-			var end_sem = document.getElementById('end_sem');
-			var fine_data = document.getElementById('fine_value').innerHTML;
-			var start_sem_data = document.getElementById('start_sem_value').innerHTML;
-			var end_sem_data = document.getElementById('end_sem_value').innerHTML;
-			var cancel_1 = document.getElementById('cancel_1');
-			var save_1 = document.getElementById('save_1');
-			var upd_info = document.getElementById('upd_info');
-			var enable_fine = document.getElementById('enable_fine');
-			var disable_fine = document.getElementById('disable_fine');
+		function valPword(){
 			
-			start_sem.innerHTML = "<input type='text' name='start_sem' id='start_sem_value' placeholder='"+start_sem_data+"'/>";
-			end_sem.innerHTML = "<input type='text' name='end_sem' id='end_sem_value' placeholder='"+end_sem_data+"'/>";
-			cancel_1.style.display='inline';
-			save_1.style.display='inline';
-			enable_fine.style.display='inline';
-			upd_info.style.display='none';
+			var currpw = document.getElementById('passInput').value;
+			var newpw = document.getElementById('newPassInput').value;
+			var nrepw = document.getElementById('reNewPassInput').value;
+			
+			if(newpw == currpw){
+				alert('Please provide a new password');
+				return false;
+			}
+
+			else if(newpw.length < 6) {
+				alert("Password must be greater than 6 characters!");
+				return false;
+			}
+			else{
+				return true;
+			}
 		
 		}
-		
+
+		function info_check(){
+			var start_sem = document.getElementById('startDateInput').value;
+			var end_sem = document.getElementById('endDateInput').value;
+			var start_sem_date = new Date(start_sem);
+			var end_sem_date = new Date(end_sem);
+			var current_date = new Date();
+			var oneDay = 24*60*60*1000;    // hours*minutes*seconds*milliseconds
+			
+			var months_difference;
+			months_difference = (end_sem_date.getFullYear() - start_sem_date.getFullYear()) * 12;
+			months_difference -= start_sem_date.getMonth();
+			months_difference += end_sem_date.getMonth();
+			if(months_difference <= 0) months_difference = 0;
+			
+			start_sem_date.setDate(start_sem_date.getDate()+1);
+			
+			if (start_sem_date < current_date) {
+				alert('The input for start sem is less than the current date');
+				return false;
+			}
+			
+			else if(end_sem.value < start_sem.value){
+				
+				alert('End of semester date should occur later than the start of semester date.');
+				return false;
+			}
+			
+			else if( months_difference < 5 || months_difference > 6){
+				alert('Invalid semester length.');
+				return false;
+			}
+			else return true;	
+		}
+
 		function enable_fine() {
 			$('#fine-label').show();
 			$('#fine').show();
-			var fine_data = document.getElementById('fine_value').innerHTML;
-			var disable_fine = document.getElementById('disable_fine');
-			var enable_fine = document.getElementById('enable_fine');
-			fine.innerHTML = "<input type='text' name='fine' id='fine_value' placeholder='"+fine_data+"'/>";
+			var fine_data = document.getElementById('fineInput').innerHTML;
+			var disable_fine = document.getElementById('fineDisable');
+			var enable_fine = document.getElementById('fineEnable');
 			disable_fine.style.display='inline';
 			enable_fine.style.display='none';
 			
@@ -287,8 +333,8 @@
 		function disable_fine() {
 			$('#fine-label').hide();
 			$('#fine').hide();
-			var disable_fine = document.getElementById('disable_fine');
-			var enable_fine = document.getElementById('enable_fine');
+			var disable_fine = document.getElementById('fineDisable');
+			var enable_fine = document.getElementById('fineEnable');
 			disable_fine.style.display='none';
 			enable_fine.style.display='inline';
 			
@@ -302,33 +348,6 @@
 					$('table').trigger('update');
 				}
 			});
-		
-		}
-	
-		function cancel1(){
-		
-			var fine = document.getElementById('fine');
-			var start_sem = document.getElementById('start_sem');
-			var end_sem = document.getElementById('end_sem');
-			var fine_data = document.getElementById('fine_value').placeholder;
-			var start_sem_data = document.getElementById('start_sem_value').placeholder;
-			var end_sem_data = document.getElementById('end_sem_value').placeholder;
-			var cancel_1 = document.getElementById('cancel_1');
-			var save_1 = document.getElementById('save_1');
-			var upd_info = document.getElementById('upd_info');
-			var enable_fine = document.getElementById('enable_fine');
-			var disable_fine = document.getElementById('disable_fine');
-			
-			//fine.innerHTML = "<label id='fine_value'>"+fine_data+"</label>";
-			start_sem.innerHTML = "<label id='start_sem_value'>"+start_sem_data+"</label>";
-			end_sem.innerHTML = "<label id='end_sem_value'>"+end_sem_data+"</label>";
-			cancel_1.style.display='none';
-			save_1.style.display='none';
-			upd_info.style.display='inline';
-			enable_fine.style.display='none';
-			disable_fine.style.display='none';
-			$('#fine-label').hide();
-			$('#fine').hide();
 		
 		}
 		
@@ -371,163 +390,53 @@
 		}
 		
 		function updateSettings( thisDiv ){
-		
-			var fine = document.getElementById('fine_value');
-			var filter = /^([0-9\.\])+(([0-9\-]{2})+$/; 
-			var upd_info = document.getElementById('upd_info');
-			var cancel1 = document.getElementById('cancel_1');
-			var save1 = document.getElementById('save_1');
-			var start_sem = document.getElementById('start_sem_value');
-			var end_sem = document.getElementById('end_sem_value');
-			var start_sem_date = new Date(start_sem.value);
-			var end_sem_date = new Date(end_sem.value);
-			var current_date = new Date();
-			var info_succ = document.getElementById('info_succ');
-			var oneDay = 24*60*60*1000;    // hours*minutes*seconds*milliseconds
-			
-			var months_difference;
-			months_difference = (end_sem_date.getFullYear() - start_sem_date.getFullYear()) * 12;
-			months_difference -= start_sem_date.getMonth();
-			months_difference += end_sem_date.getMonth();
-			if(months_difference <= 0) months_difference = 0;
-			
-			start_sem_date.setDate(start_sem_date.getDate()+1);
-			
-			if (!filter.test(fine.value)){
-				alert('Invalid fine value.');
-				fine.focus;	
-
-				return false;
-			}
-			
-			if (start_sem_date < current_date) {
-				alert('The input for start sem is less than the current date');
-				return false;
-			}
-			
-			else if(end_sem.value < start_sem.value){
-				
-				alert('End of semester date should occur later than the start of semester date.');
-				return false;
-			}
-			
-			else if( months_difference < 4 || months_difference > 5){
-				alert('Invalid semester length.');
-				return false;
-			}
-			
-			else{
-				fine.disabled=true;
-				start_sem.disabled=true;
-				end_sem.disabled=true;
-				info_succ.style.display='block';	
-				cancel_1.style.display='none';
-				save_1.style.display='none';
-				upd_info.style.display='inline';
-							
-			}
-		
-			var fine = document.getElementById('fine_value').value;
-			var start_sem = document.getElementById('start_sem_value').value;
-			var end_sem = document.getElementById('end_sem_value').value;
-			$.ajax({
-				type : "POST",
-				url : "<?php echo base_url();?>admin/settings_for_info",
-				data: { fine_value : fine, start_sem_value : start_sem, end_sem_value : end_sem },
-				success : function( result ){
-					if( result == "" ){
-						console.log("Updated");
-					}
-
-					$('table').trigger('update');
-				}
-			});
-		}
-				
-		function update2(){
-		
-			var table = document.getElementById('edit_password_table');
-			var cancel_2 = document.getElementById('cancel_2');
-			var save_2= document.getElementById('save_2');
-			var upd_pword= document.getElementById('upd_pword');
-			
-			table.style.display='block';
-			cancel_2.style.display='inline';
-			save_2.style.display='inline';
-			upd_pword.style.display='none';
-			
-		}
-		
-		function cancel2(){
-
-			var table = document.getElementById('edit_password_table');
-			var cancel_2 = document.getElementById('cancel_2');
-			var save_2= document.getElementById('save_2');
-			var upd_pword= document.getElementById('upd_pword');
-
-			table.style.display='none';
-			cancel_2.style.display='none';
-			save_2.style.display='none';
-			upd_pword.style.display='inline';
-		
-		}
-		
-		function valPword(){
-			
-			var currpw=document.getElementById('currpw');
-			var newpw = document.getElementById('newpw');
-			var crepw = document.getElementById('crepw');
-			var nrepw = document.getElementById('nrepw');
-			var upd_pword = document.getElementById('upd_pword');
-			var save_2 = document.getElementById('save_2');
-			var cancel_2 = document.getElementById('cancel_2');
-			var pword_succ = document.getElementById('pword_succ');
-			
-			if(newpw.value == currpw.value){
-				alert('Please provide a new password');
-			}
-
-			else if(newpw.value.length < 6) {
-				alert("Password must be greater than 6 characters!");
-				return false;
-			}
-			else{
-				currpw.value = newpw.value;
-				crepw.value='';
-				nrepw.value='';
-				newpw.disabled=true;
-				currpw.disabled=true;
-				nrepw.disabled=true;
-				cancel_2.style.display='none';
-				save_2.style.display='none';
-				upd_pword.style.display='inline';
-				pword_succ.style.display='block';
-				
-			}
-			
-			var newpw = document.getElementById('newpw').value;
-			
-			$.ajax({
-						type: "POST",
-						url: "<?php echo base_url();?>admin/settings_for_password",
-						data: { newpw: newpw },
-
-						beforeSend: function() {
-							//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
-							$("#error_message").html("loading...");
-						},
-
-						error: function(xhr, textStatus, errorThrown) {
-								$('#error_message').html(textStatus);
-						},
-
-						success: function( result ){
-							// show that notification is successful
-							$('#error_message').html(result);
-							
+			if(thisDiv == 'infoDiv'){
+				var start_sem_value = document.getElementById('startDateInput').value;
+				var end_sem_value = document.getElementById('endDateInput').value;
+	
+				$.ajax({
+					type : "POST",
+					url : "<?php echo base_url();?>admin/settings_for_info",
+					data: { start_sem_value : start_sem_value, end_sem_value : end_sem_value },
+					success : function( result ){
+						if( result == "" ){
+							console.log("Updated");
 						}
-					});
-		
+	
+						$('table').trigger('update');
+					}
+				});
+			}
+			else if(thisDiv == 'fineDiv'){
+				var fine = document.getElementById('fineInput').value;
+				$.ajax({
+					type: "POST",
+					url: "<?php echo base_url();?>admin/settings_for_fine",
+					data: { fine: fine },
+					success : function( result ){
+						if( result == "" ){
+							console.log("Updated");
+						}
+	
+						$('table').trigger('update');
+					}
+				});
+			}
+			else if(thisDiv == 'passwordDiv'){
+				var newpw = document.getElementById('passInput').value;			
+				$.ajax({
+					type: "POST",
+					url: "<?php echo base_url();?>admin/settings_for_password",
+					data: { newpw: newpw },
+					success : function( result ){
+						if( result == "" ){
+							console.log("Updated");
+						}
+	
+						$('table').trigger('update');
+					}
+				});
+			}
 		}
 
 		$("#clear").click(function(){

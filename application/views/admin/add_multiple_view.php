@@ -10,18 +10,21 @@
         <div class="leftMain">
 	        <div id="main-page">
 		        <div id = "main-content">
-		        	<h3> Add multiple materials </h3>
+		        	<br />
+						<h2> Multiple Material </h2>
+						<ol class="breadcrumb">
+							<li><a href="<?php echo base_url()?>admin/home">Home</a></li>
+							<li><a href="<?php echo base_url()?>admin/update_material">Add A New Material</a></li>
+							<li class="active"> Add Multiple Material </li>
+						</ol>
 					<input id="uploadFile" type="file" name = "file[]" accept=".csv" />
 					<span id = "error"> </span>
 					<table id = "table-data-area" border = "1">
 						<thead>
-
 						</thead>
 						<tbody>
-
 						</tbody>
 					</table>
-
 					<input class = "btn btn-primary" type = "button" name = "insertButton" id = "insertButton" value = "Insert to Database"/>
 					
 					<span id = "error"> </span>
@@ -30,6 +33,8 @@
 		
     </div>
 	
+	<!-- Footer -->
+	<?php include 'includes/footer.php'; ?>
     <script type="text/javascript" language="javascript">
 		
 			$('#add-nav').addClass('active');

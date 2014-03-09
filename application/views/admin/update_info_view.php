@@ -11,9 +11,15 @@
         <div class="leftMain">
 		        <div id="main-page">
 			        <div id = "main-content">
+			        	<br />
+						<h2> Update Library Material </h2>
+						<ol class="breadcrumb">
+							<li><a href="<?php echo base_url()?>admin/home">Home</a></li>
+							<li><a href="<?php echo base_url()?>admin/update_material">View All Material</a></li>
+							<li class="active"> Update Library Material </li>
+						</ol>
 						<div id="container">
 							<form name="update" id="update" class="form-horizontal">
-								<h2 class="form-signin-heading">Update Library Material: </h2>
 								<h4><?php echo $update_details->name; ?></h4> 
 								<div class="alert-container" style = 'height: 40px; margin-bottom: 19px;'>
 									<div style="display:none" id="success_update" class = "alert alert-success"></div>
@@ -165,7 +171,6 @@
 							<div class="form-group">
 								<div class="col-sm-offset-2 col-sm-10"><br />
 									<button onclick="updateDetails()" class="btn btn-default" id="updateButton" name="update">Update</button>
-									<a href="<?php echo base_url();?>admin/add_multiple"><button type="button" class="btn btn-primary">Add Multiple Material</button></a>
 								</div>
 							</div>
 						<br /><br /><br /><br />

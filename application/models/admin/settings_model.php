@@ -22,24 +22,23 @@ class Settings_model extends CI_Model{
 	*	Gets all the idnumber in the system
 	*/
 
-	public function set_info( $fine_value, $start_sem_value, $end_sem_value){
-		$query = "UPDATE settings SET fine = '${fine_value}', start = '${start_sem_value}', end = '${end_sem_value}' WHERE id LIKE 1";
+	public function set_info( $start_sem_value, $end_sem_value){
+		$query = "UPDATE settings SET start = '${start_sem_value}', end = '${end_sem_value}' WHERE id LIKE 1";
 		$this->db->query($query);
 	}
 	
 	public function set_password( $newpw ){
-		
 		$query = "UPDATE administrator SET password = sha1('${newpw}') WHERE username LIKE 'icslibadmin'";
 		$this->db->query($query);
 	}
 	
 	public function set_enable(){
-		$query = "UPDATE settings SET enable_fine = 1 WHERE id LIKE 1";
+		$query = "UPDATE settings SET fineenable = 1 WHERE id LIKE 1";
 		$this->db->query($query);
 	}
 	
 	public function set_disable(){
-		$query = "UPDATE settings SET enable_fine = 0 WHERE id LIKE 1";
+		$query = "UPDATE settings SET fineenable = 0 WHERE id LIKE 1";
 		$this->db->query($query);
 	}
 
@@ -48,6 +47,12 @@ class Settings_model extends CI_Model{
 		$sql = $this->db->query($query);
 		return $sql->result();
 	}
+
+	public function set_fine( $fine ){
+		$query = "UPDATE settings SET fine = '${fine}' WHERE id LIKE 1";
+		$this->db->query($query);	
+	}
+
 }//end of class
 
 ?>

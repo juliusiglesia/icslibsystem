@@ -52,6 +52,8 @@ class Reservation_queue_model extends CI_Model{
 			// get the materialid, store it to a variable
 			$matid = $row->materialid;
 			$isbn = $row->isbn;
+			
+			
 
 			// make the query for determining the number of available materials
 			$query = $this->db->query("SELECT quantity-borrowedcopy AS available 
@@ -189,6 +191,23 @@ class Reservation_queue_model extends CI_Model{
 	public function search_reservations(){
 		$search = $this->input->post('search');
 		return $this->get_reservations( $search );
+	}
+
+	public function check_reservation(){
+		$idnumber = $this->input->post('idnumber');
+
+		$result = $this->db->query("SELECT COUNT(*) AS count 
+									FROM borrowedmaterial
+									WHERE status LIKE 'BORROWED'
+										AND idnumber LIKE '${idnumber}'");
+
+		$result2 = $this->db->query("SELECT COUNT(*) AS count 
+									FROM reservation
+									WHERE started = 1
+										AND idnumber LIKE '${idnumber}'");
+
+		if ( intval($result->row()->count) > intval($result2->row()->count) ) return $result->row()->count;
+		else return $result2->row()->count;
 	}
 }
 
