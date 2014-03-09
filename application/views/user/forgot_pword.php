@@ -16,7 +16,8 @@
         </form>
      </div>
  	<div class="alert-container">
-		<div id = "no_user" class = "alert alert-danger">  </div>
+		<div id = "no_user">  </div>
+		<div id = "verified"> </div>
 	</div>
    </div>
 
@@ -37,7 +38,10 @@
 				</div>
 			</div>
 <script src="<?php echo base_url();?>dist/js/jquery-2.1.0.min.js"></script>
+<script src="<?php echo base_url(); ?>dist/js/bootstrap.js"></script>
+<script src="<?php echo base_url();?>dist/js/bootbox.min.js"></script>
 
+<!-- 7:00am update -->
 <script type="text/javascript">
     
       $("#login_form").keypress(function(event){
@@ -49,53 +53,117 @@
       
       $("#sign_in").click( function(){
 
-        username = $("#login_form").find("input[name='uname']").val();
-        password = $("#login_form").find("input[name='pword']").val();
+		  username = $("#login_form").find("input[name='uname']").val();
+		  password = $("#login_form").find("input[name='pword']").val();
 
-        $.ajax({
-            url: "<?php echo base_url();?>borrower/check_user",
-            type: "POST",
-            dataType: "html",
-            data: { email: username, pword: password },
+		  $.ajax({
+			  url: "<?php echo base_url();?>borrower/check_user",
+			  type: "POST",
+			  dataType: "html",
+			  data: { email: username, pword: password },
 
-            beforeSend: function() {
+			  beforeSend: function() {
+			  },
 
-            },
+			  error: function(xhr, textStatus, errorThrown) {
+				  //$('#error_message').html(textStatus);
+			  },
 
-            error: function(xhr, textStatus, errorThrown) {
-                //$('#error_message').html(textStatus);
-            },
+			  success: function( result ){
+				//if username DNE
+				if(result == 0 ){
+				  window.location.href = "<?php echo site_url('borrower/login/dne'); ?>";
+				}
+				//username exists, but pword does not match
+				else if(result ==2){
+				  window.location.href = "<?php echo site_url('borrower/login/dnm'); ?>";
+				}
+				//username is deactivated
+				else if(result == 3){
+					window.location.href = "<?php echo site_url('borrower/login/" +username+ "'); ?>";  
+				  }
+				//if username and password exists
+				else {
+				  window.location.href = "<?php echo site_url('borrower/home'); ?>";
+				}
+			  }
 
-            success: function( result ){
-              //if username DNE
-              if(result == 0 ){
-              	displayError("Username does not exist!");
-                //window.location.href = "<?php echo site_url('borrower/login/dne'); ?>";
-              }
-              //username exists, but pword does not match
-              else if(result ==2){
-              	displayError("Password does not match with the username!");
-               // window.location.href = "<?php echo site_url('borrower/login/dnm'); ?>";
-              }
-              //if username and password exists
-              else {
-                window.location.href = "<?php echo site_url('borrower/home'); ?>";
-              }
-            }
-          });
+		  });
       });
     </script>
+<!-- 7:00am update -->
 
 
 <script type="text/javascript">
 
 document.getElementById("no_user").style.display='none';
+document.getElementById("verified").style.display='none';
 
 	function displayError(message){
-		$("#no_user").show();
-		$("#no_user").html(message);
-		$("#no_user").fadeIn('slow');
-		setTimeout(function() { $('#no_user').fadeOut('slow') }, 5000);
+		var finmessage;
+		if(message == 'verified'){
+			$("#verified").addClass("alert alert-success");
+			$("#verified").show();
+			$("#verified").html("Your acount is successfully activated.");
+			$("#verified").fadeIn('slow');
+		}
+		else{
+			if(message == 'done') finmessage = "Your acount is already activated.";
+			else if(message =='dne') finmessage = "Your account does not exist.";
+			else if(message = 'dnm') finmessage = "Password does not match username.";
+			
+			$("#no_user").addClass("alert alert-danger");
+			$("#no_user").show();
+			$("#no_user").html(finmessage);
+			$("#no_user").fadeIn('slow');
+			setTimeout(function() { $('#no_user').fadeOut('slow') }, 5000);
+		}
+	};
+
+
+	function showBootBox(){
+       bootbox.dialog({
+          message: "Your account is <strong>not yet activated</strong>.",
+          title: "Acount Deactivated",
+          buttons:{
+          	yes:{
+          	label: "Resend verification.",
+          	className: "btn-primary",
+          	callback: function() {
+          		//title: "Verification sent."
+          		//message: "Verification has been resent to your email."
+
+          		var email = <?php echo "'$email'"; ?>;
+          		var idnumber = <?php echo "'$idnumber'"; ?>;
+          		var password = <?php echo "'$password'"; ?>;
+          		$.ajax({
+						type: "POST",
+						url: "<?php echo site_url('borrower/resend_mail');?>",
+						data: {email: email, 
+								idnumber: idnumber,
+								password: password},
+								
+						beforeSend: function() {
+							$("#verified").html("<center><img src='<?php echo base_url();?>dist/images/ajax-loader.gif' /></center>");
+						},
+						success: function()
+						{
+								alert("sent");
+						},
+						error: function()
+						{
+							alert("failed");
+						}
+				});
+          	}
+          	},
+            no: {
+            label: "Cancel",
+            className: "btn-default"
+            }
+           }
+        });
+
 	};
 
 $(document).ready(function()
@@ -136,7 +204,7 @@ $(document).ready(function()
 				},
 				error: function()
 				{
-					alert('Error!');
+					alert('Fatal error!');
 				}
 
 			});
@@ -239,10 +307,20 @@ $(document).ready(function()
 </script>
 	<?php
 		if($message != 'null'){
-			echo "<script type='text/javascript'>displayError(";
-			echo "'$message'";
-			echo ")</script>";
+			if($message == 'verified'){
+				echo "<script type='text/javascript'>displayError(";
+				echo "'verified'";
+				echo ")</script>";
+			}else if($message == 'done' || $message =='dne' ||  $message =='dnm'){
+				echo "<script type='text/javascript'>displayError(";
+				echo "'$message'";
+				echo ")</script>";
+			}
+			else{
+				echo "<script type='text/javascript'>showBootBox()";
+				echo "</script>";
+			}
 		}
 	?>
- 
-<?php include 'footer.php'; ?>
+
+<?php include 'home_footer.php'; ?>

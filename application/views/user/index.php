@@ -109,6 +109,11 @@
             else if(result ==2){
               window.location.href = "<?php echo site_url('borrower/login/dnm'); ?>";
             }
+            //username is deactivated
+            else if(result == 3){
+              //  window.location.href = "<?php echo site_url('borrower/login/urlencode(" +username+ ")');?>";
+				  window.location.href = "<?php echo site_url('borrower/login/"+username+"'); ?>";
+              }
             //if username and password exists
             else {
               window.location.href = "<?php echo site_url('borrower/home'); ?>";
@@ -119,163 +124,180 @@
     });
   </script>
 
-  <script type="text/javascript">
+<script type="text/javascript">
+  $(document).ready(function()
+{   
+  var flag = 0;
+  var email;
+  var verf_code;  
+  
+  $("#submit").click(function(){
 
-    $(document).ready(function(){   
-      var flag = 0;
-      var email;
-      var verf_code;  
-    
-      $("#submit").click(function(){
-
-        if(flag ==0)
-        { //email verification
-          email = $("#email").val();
-          $.ajax({
-            type: "POST",
-            url: "<?php echo site_url('borrower/forgot_password');?>",
-            data: {'email':email,
-                   'action': 'verify_email'
-                  },
-            dataType: "JSON",
-            success: function(data){
-              
-                if(data.stat == 'success')
-                {
-                  $("#details").html('<b>'+data.message+'.</b><br><br><form id = "details_form"><input id = "code_input" type="email" class="form-control" placeholder="Enter verification code" required autofocus></form> ');
-                  verf_code = data.verf_code;
-                  flag = 1;
-                }
-
-                else
-                {
-                  $("#details").html('<b>'+data.message+' ' +data.stat+'.</b><br><br><form id = "details_form"><input id = "email" type="email" class="form-control" placeholder="Enter Email address" required autofocus></form> ');
-                  flag = 0;   
-                }
+    if(flag ==0)
+    { //email verification
+      email = $("#email").val();
+      $.ajax({
+        type: "POST",
+        url: "<?php echo site_url('borrower/forgot_password');?>",
+        data: {'email':email,
+             'action': 'verify_email'
             },
-            error: function(){
-              alert('Error!');
-            }
+        dataType: "JSON",
+        success: function(data) 
+        {
+          
+            if(data.stat == 'success')
+            {
+              $("#details").html('<b>'+data.message+'.</b><br><br><form id = "details_form"><input id = "code_input" type="email" class="form-control" placeholder="Enter verification code" required autofocus></form> ');
+              verf_code = data.verf_code;
+              flag = 1;
 
-          });
+            }
+            else
+            {
+              $("#details").html('<b>'+data.message+' ' +data.stat+'.</b><br><br><form id = "details_form"><input id = "email" type="email" class="form-control" placeholder="Enter Email address" required autofocus></form> ');
+              flag = 0;
+                
+            }
+        },
+        error: function()
+        {
+          alert('Error!');
         }
 
-        else if(flag == 1){  
-          //code verification
-          var code_input = $("#code_input").val();
-          
-          $.ajax({
-            url:"<?php echo site_url('borrower/forgot_password');?>",
-            type: "POST",
-            data: {'code_input':code_input,
-                'verf_code': verf_code,
-                'action': 'verify_code'
-                },
-            dataType: "JSON",
-            success: function(data){
-              if(data.stat == 'success'){
+      });
+
+
+    }
+
+    else if(flag == 1)
+    {  //code verification
+      var code_input = $("#code_input").val();
+        $.ajax({
+          url:"<?php echo site_url('borrower/forgot_password');?>",
+          type: "POST",
+          data: {'code_input':code_input,
+              'verf_code': verf_code,
+              'action': 'verify_code'
+              },
+          dataType: "JSON",
+          success: function(data)
+          {
+              if(data.stat == 'success')
+              {
                 $("#details").html('<b>'+data.message+'</b><br><br><form id = "details_form"><input id = "new_password" type="password" class="form-control" placeholder="New Password" required><br><input id = "retype_new_pw" type="password" class="form-control" placeholder="Verify New Password" required></form>');
                 flag = 2; 
               }
-              else{
+              else
+              {
                 $("#details").html('<b>'+data.message+'</b><br><br><form id = "details_form"><input id = "code_input" class="form-control" placeholder="Enter verification code" required autofocus></form>');
                 flag = 1;
               }
+          },
+
+          error: function()
+          {
+            alert('Ooops. Error.');
+          }
+
+        });
+        
+    }
+
+    else if(flag == 2){ //change password
+      var new_password = $("#new_password").val();
+      var retype_new_pw = $("#retype_new_pw").val();
+      
+        if(new_password == retype_new_pw)
+        {
+          $.ajax({
+            url: "<?php echo site_url('borrower/forgot_password');?>",
+            type: "POST",
+            data: {'new_password': new_password,
+                'retype_new_pw': retype_new_pw,
+                'email': email,
+                'action': 'change_pw'
+
             },
-            error: function(){
-              alert('Ooops. Error.');
-            }
-
-          });   
-        }
-
-        else if(flag == 2){ //change password
-          var new_password = $("#new_password").val();
-          var retype_new_pw = $("#retype_new_pw").val();
-          
-          if(new_password == retype_new_pw){
-            
-            $.ajax({
-              url: "<?php echo site_url('borrower/forgot_password');?>",
-              type: "POST",
-              data: {'new_password': new_password,
-                  'retype_new_pw': retype_new_pw,
-                  'email': email,
-                  'action': 'change_pw'},
-              dataType: "JSON",
-              success: function(data){
-                if(data.stat == 'success'){
+            dataType: "JSON",
+            success: function(data)
+            {
+                if(data.stat == 'success')
+                {
                     $('#details').html('<b>'+data.message+'</b>');
                     $("#modal-footer").html('<button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" id="done">Done</button>'); 
                 }
-                else{
+                else
+                {
                   $("#details").html('<b>'+data.message+'</b><br><br><form id = "details_form"><input id = "new_password" type="password" class="form-control" placeholder="New Password" required><br><input id = "retype_new_pw" type="password" class="form-control" placeholder="Verify New Password" required></form>');
                   flag = 2;
                 }
-              },
-              error: function(){
-                alert('Please try again.');
-              }
+            },
+            error: function()
+            {
+              alert('Please try again.');
+            }
           });
         }
 
-        else{
+        else
+        {
           $("#details").html('<b>Passwords must match</b><br><br><form id = "details_form"><input id = "new_password" type="password" class="form-control" placeholder="New Password" required><br><input id = "retype_new_pw" type="password" class="form-control" placeholder="Verify New Password" required></form>');
           flag = 2;
-        }  
-      }
-    });
+        }
+      
+      
+    }
+  });
+  
+  $("#cancel").click(function(){
+    flag = 0;
+    $("#details").replaceWith('<div id="details" class="modal-body"><input type="email" class="form-control" placeholder="Enter Email address" required autofocus>');
+  });
+  
+  $("#done").click(function(){
+    flag = 0;
+    $("#details").replaceWith('<div id="details" class="modal-body"><input type="email" class="form-control" placeholder="Enter Email address" required autofocus>');
+  });
     
-    $("#cancel").click(function(){
-      flag = 0;
-      $("#details").replaceWith('<div id="details" class="modal-body"><input type="email" class="form-control" placeholder="Enter Email address" required autofocus>');
-    });
     
-    $("#done").click(function(){
-      flag = 0;
-      $("#details").replaceWith('<div id="details" class="modal-body"><input type="email" class="form-control" placeholder="Enter Email address" required autofocus>');
-    });   
-   });
-  </script>
+ });
+</script>
     
   
-    <div class="row" id="container">
+   <div class="row" id="container">
       <div class="container">
-        <img src="<?php echo base_url(); ?>dist/css/banner5.png" class="img-responsive">
+         <center> <img src="<?php echo base_url(); ?>dist/css/banner_up_new.gif"></center>
       </div>
     </div>
 
-    <div class="container marketing" id="fixsize"><br/>
+
+
+    <div class="container marketing" id="fixsize">
+    <br/>
       <div class="row">
         <div class="col-lg-4">
           <img id="icons" alt="50x50" src="<?php echo base_url(); ?>dist/images/search.png">
-          <h3>Search</h3>
-          <p>Select from a wide range of learning materials in the field of computer science.</p>
-          <p><a class="btn btn-default" href="<?php echo base_url();?>borrower/outside_search" role="button">Search now »</a></p>
+          <h3>Looking for something?</h3>
+      <p>Search for materials available in the library.</p>
+          <p><a class="btn btn-primary" href="<?php echo base_url();?>borrower/outside_search" role="button">Search now »</a></p>
         </div><!-- /.col-lg-4 -->
 
         <div class="col-lg-4">
-          <img id="icons" alt="50x50" src="<?php echo base_url(); ?>/dist/images/clock.png">
-          <h3>Library Hours</h3>
-          <p>Library is open every Mondays to Fridays, from 8am to 12nn and 1pm to 5pm.</p>
-        </div><!-- /.col-lg-4 -->        
+                <img id="icons" alt="50x50" src="<?php echo base_url(); ?>/dist/images/clock.png">
+                <h3>When can you visit?</h3>
+                <p>The library is open from <strong>Monday to Friday, 8am to 12nn and 1pm to 5pm</strong>.</p>
+              </div><!-- /.col-lg-4 -->        
 
         <div class="col-lg-4">
-          <img id="icons" alt="50x50" src="<?php echo base_url(); ?>/dist/images/cmp.png">
-          <h3>ICS Courses</h3>
-          <p>Check out all the cool courses that Institute of Computer Science offers.</p>
-          <p><a class="btn btn-default" href="http://ics.uplb.edu.ph/courses/ugrad" role="button">View details »</a></p>
-        </div><!-- /.col-lg-4 -->  
-      </div><!-- /.row --><br/>
-
+                <img id="icons" alt="50x50" src="<?php echo base_url(); ?>/dist/images/cmp.png">
+                <h3>Want to know more?</h3>
+                <p>Take a look at the courses the Institute is offering.</p>
+          <p><a class="btn btn-primary" href="http://ics.uplb.edu.ph/courses/ugrad" role="button">View details »</a></p>
+        </div><!-- /.col-lg-4 -->
+        
+      </div><!-- /.row -->
       <!-- /END THE FEATURETTES -->
-       <!-- FOOTER -->
-
-      <footer>
-        <center>
-        <p>2013 AB-6L DevTeam. <a href="faq">FAQ</a> | <a href="operations_manual">User Operations Manual</a> | <a href="about_us">About</a> </p>
-        </center>
-      </footer>
-    </div><!-- /.container -->
+      <?php include "home_footer.php"; ?>
 
 </body></html>

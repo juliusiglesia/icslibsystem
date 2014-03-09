@@ -561,15 +561,6 @@ class Admin extends CI_Controller {
 		Page for admin settings
 	*/
 	
-	public function settings(){
-		$this->load->helper('url');
-		
-		$this->load->model('admin/settings_model');	
-		$data['info'] = $this->settings_model->get_data();
-		$this->load->view('admin/settings', $data);
-
-
-	}
 
 	public function search_user(){
 		$this->load->model('admin/search_user_model');
@@ -583,7 +574,7 @@ class Admin extends CI_Controller {
 		$this->load->model('admin/search_user_model');
 		$search = ""; 
 		$data['users'] = $this->search_user_model->get_users( $search );
-		$this->load->view('admin/search_user_view', $data);
+		$this->load->view('admin/get_user_view', $data);
 	}
 
 	public function add_multiple(){
@@ -597,28 +588,6 @@ class Admin extends CI_Controller {
 		$this->load->model('admin/insert_multiple_model');
 		$this->insert_multiple_model->insert_to_db();	
 			
-	}
-
-	public function settings_for_info(){
-	
-		$this->load->model('admin/settings_model');
-		
-		$fine = $this->input->post('fine');
-		$start_sem = $this->input->post('start_sem');
-		$end_sem = $this->input->post('end_sem');
-
-		//$expectedreturn = $this->reservation_queue_model->update_claimed_date( $materialid, $isbn, $idnumber, $start_date );
-		$this->settings_model->set_info( $fine, $start_sem, $end_sem );		
-	}
-	
-	public function settings_for_password(){
-		
-		$this->load->model('admin/settings_model');
-		
-		$newpw = $this->input->post('newpw');
-
-		//$expectedreturn = $this->reservation_queue_model->update_claimed_date( $materialid, $isbn, $idnumber, $start_date );
-		$this->settings_model->set_password( $newpw );		
 	}
 
 	public function check_isbn( ){
@@ -638,6 +607,60 @@ class Admin extends CI_Controller {
 		$this->clear_reservation_model->clear();
 		
 	}
+
+	public function check_password(){
+		$this->load->model('admin/delete_account_model');
+		echo $this->delete_account_model->check_combination();
+	} 
+
+	public function delete_account(){
+		$this->load->model('admin/delete_account_model');
+		$this->delete_account_model->delete_account();
+	}
+
+
+	public function settings(){
+		$this->load->model('admin/settings_model');	
+		$data['info'] = $this->settings_model->get_data();
+		$this->load->view('admin/settings', $data);
+	}
+
+	public function settings_for_enable(){	
+		$this->load->model('admin/settings_model');
+		$this->settings_model->set_enable();	
+	
+	}
+	
+	public function settings_for_disable(){
+		
+		$this->load->model('admin/settings_model');
+		
+		$this->settings_model->set_disable();	
+	
+	}
+
+	public function settings_for_info(){
+	
+		$this->load->model('admin/settings_model');
+		
+		$fine = $this->input->post('fine_value');
+		$start_sem = $this->input->post('start_sem_value');
+		$end_sem = $this->input->post('end_sem_value');
+
+		//$expectedreturn = $this->reservation_queue_model->update_claimed_date( $materialid, $isbn, $idnumber, $start_date );
+		$this->settings_model->set_info( $fine, $start_sem, $end_sem );		
+	}
+	
+	public function settings_for_password(){
+		
+		$this->load->model('admin/settings_model');
+		
+		$newpw = $this->input->post('newpw');
+
+		//$expectedreturn = $this->reservation_queue_model->update_claimed_date( $materialid, $isbn, $idnumber, $start_date );
+		$this->settings_model->set_password( $newpw );		
+	}
+
 }
 
 ?>

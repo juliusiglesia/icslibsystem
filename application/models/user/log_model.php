@@ -24,6 +24,15 @@ class Log_model extends CI_Model{
 			$query = $this->db->query($stmt);
 			return $query->result();
 		}
+
+	public function get_password($username)
+		{
+			$this->load->database();
+			$stmt = "SELECT idnumber,email,password FROM `borrower` WHERE email = '{$username}' or idnumber = '{$username}'";
+			$query = $this->db->query($stmt);
+			return $query->result();
+		}
+
 		
 }
 	/* 	End of file Log_model.php

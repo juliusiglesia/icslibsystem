@@ -39,7 +39,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#"><img src="<?php echo base_url(); ?>dist/images/logo4.png" height="40px"></a>
+          <a class="navbar-brand" href="<?php echo base_url();?>"><img src="<?php echo base_url(); ?>dist/images/logo4.png" height="40px"></a>
         </div>
        <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">

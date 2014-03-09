@@ -1,78 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="description" content="">
-		<meta name="author" content="">
-		
-		<link rel="shortcut icon" href="<?php echo base_url();?>dist/images/favicon.png">
-
-		<title>ICS-iLS</title>
-
-		<link href="<?php echo base_url();?>dist/css/bootstrap.css" rel="stylesheet">
-		<link href="<?php echo base_url();?>dist/css/carousel.css" rel="stylesheet">
-		<link href="<?php echo base_url();?>dist/css/signin.css" rel="stylesheet">
-		<link href="<?php echo base_url();?>dist/css/style2.css" rel="stylesheet">
-		<link href="<?php echo base_url();?>dist/css/date_picker.css" rel="stylesheet">
-		<link href="<?php echo base_url();?>dist/css/styles.css" rel="stylesheet" />
-
-		<script src="<?php echo base_url();?>dist/js/jquery.js"></script>
-		<script src="<?php echo base_url();?>dist/js/bootstrap.js"></script>
-		<script src="<?php echo base_url();?>dist/js/bootbox.min.js"></script>		
-		
-	</head>		
+	<?php include 'includes/head.php'; ?>	
 	<body>
-		 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand"><img src="<?php echo base_url();?>dist/images/logo4.png" height="40px"></a>
-                </div>
-                <div class="navbar-collapse collapse">
-			  <ul class="nav navbar-nav navbar-right">
-				<li class="dropdown">
-				  <a class = "notif" href="#" class="dropdown-toggle" data-toggle="dropdown" style="font-size:17px;" onclick = "this.style.color='white';"><span class="glyphicon glyphicon-cog" ></span></a>
-				  
-				  <ul class="dropdown-menu">
-					<li><a href="<?php echo base_url();?>admin/settings">Settings</a></li>
-					<li><a href="#">Help</a></li>
-					<li class="divider"></li>
-					<li><a href="<?php echo base_url();?>admin/logout">Log-out</a></li>
-				  </ul>
-            </div>
-
-            </div>
-        </div>
+		 <?php include 'includes\header.php'; ?>
 
 		<div class="mainBody">
 			<!-- Nav tabs -->
-			<div class="sidebarMain">
-				<ul class="nav nav-pills nav-stacked">
-					<li id = "reserved-nav"  class="active" ><br />
-						<a href="<?php echo base_url();?>admin/reservation"><span class="glyphicon glyphicon-import"></span> &nbsp;Reserved Books</a>
-					</li>
-					<li id = "borrowed-nav" >
-						<a href="<?php echo base_url();?>admin/borrowed_books"><span class="glyphicon glyphicon-export"></span> &nbsp;Borrowed Books</a>
-					</li>
-					<li id = "view-nav" >
-						<a href="<?php echo base_url();?>admin/admin_search"><span class="glyphicon glyphicon-search"></span> &nbsp;View All Materials</a>
-					</li>
-					<li id = "add-nav" >
-						<a href="<?php echo base_url();?>admin/add_material"><span class="glyphicon glyphicon-plus"></span> &nbsp;Add A New Material&nbsp;&nbsp;&nbsp;</a>
-					</li>
-					<li id = "overview-nav">
-						<a href="<?php echo base_url();?>admin/home"><span class="glyphicon glyphicon-dashboard"></span> &nbsp;Overview</a>
-					</li>	
-				</ul>
-			</div>
+			<?php include 'includes\sidebar.php'; ?>
 			
 			<div class="leftMain">
 				<div id="main-page">
@@ -102,11 +36,9 @@
 				</div>
 				
 			</div>
-		
-		 <!-- FOOTER -->
-		<footer><a href="#" class="back-to-top"><span class='glyphicon glyphicon-chevron-up'></span></a>
-        <center><p id="small">2013 CMSC 128 AB-6L. All Rights Reserved. <a href="#">Privacy</a> | <a href="#">Terms</a> | <a href="#">About</a> | <a href="#">Contact</a></p></center>
-		</footer>
+		</div>
+		<!-- Footer -->
+		<?php include 'includes\footer.php'; ?>
 
 		<script src="<?php echo base_url();?>dist/js/holder.js"></script>
 		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/jquery.tablesorter.js"></script>
@@ -117,6 +49,8 @@
 		<!--script src="<?php echo base_url();?>dist/js/modernizr.js"></script-->
 		
 		<script id="js">
+
+			$('#user-nav').addClass('active');
 			$(function(){
 
 				var pagerOptions = {

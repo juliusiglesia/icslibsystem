@@ -1,24 +1,11 @@
-<?php include 'admin_header.php'; ?></div>
+<!DOCTYPE html>
+<html lang="en">
+<?php include 'includes/head.php'; ?>
+
+	<body>
+		 <?php include 'includes/header.php'; ?>
         <div class="mainBody">
-            <div class="sidebarMain">
-				<ul class="nav nav-pills nav-stacked">
-					<li id = "reserved-nav" >
-						<a href="<?php echo base_url();?>admin/reservation"><span class="glyphicon glyphicon-import"></span> &nbsp;Reserved Books</a>
-					</li>
-					<li id = "borrowed-nav" >
-						<a href="<?php echo base_url();?>admin/borrowed_books"><span class="glyphicon glyphicon-export"></span> &nbsp;Borrowed Books</a>
-					</li>
-					<li id = "view-nav" >
-						<a href="<?php echo base_url();?>admin/admin_search"><span class="glyphicon glyphicon-search"></span> &nbsp;View All Materials</a>
-					</li>
-					<li id = "add-nav" >
-						<a href="<?php echo base_url();?>admin/add_material"><span class="glyphicon glyphicon-plus"></span> &nbsp;Add A New Material&nbsp;&nbsp;&nbsp;</a>
-					</li>
-					<li id = "overview-nav">
-						<a href="<?php echo base_url();?>admin/home"><span class="glyphicon glyphicon-dashboard"></span> &nbsp;Overview</a>
-					</li>	
-				</ul>
-			</div> 
+            <?php include 'includes/sidebar.php'; ?>
 
         <div class="leftMain">
 	        <div id="main-page">
@@ -42,15 +29,10 @@
 			</div>
 		
     </div>
-	<footer>
-		<center><p id="small">2013 CMSC 128 AB-6L. All Rights Reserved. <a href="#">Privacy</a> | <a href="#">Terms</a> | <a href="#">About</a> | <a href="#">Contact</a> </p></center>
-	</footer>
-
-	<script src="<?php echo base_url();?>dist/js/jquery.js"></script>
-    <script src="<?php echo base_url();?>dist/js/bootstrap.js"></script>
-    <script src="<?php echo base_url();?>dist/js/holder.js"></script>
-  	<script src="<?php echo base_url();?>dist/js/bootbox.min.js"></script>
+	
     <script type="text/javascript" language="javascript">
+		
+			$('#add-nav').addClass('active');
 		$(document).ready(function(){
 			var arrayGlobal = new Array();
 

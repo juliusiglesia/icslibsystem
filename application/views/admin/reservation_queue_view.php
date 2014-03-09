@@ -1,57 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="description" content="">
-		<meta name="author" content="">
-		
-		<link rel="shortcut icon" href="<?php echo base_url();?>dist/images/favicon.png">
-
-		<title>ICS-iLS</title>
-
-		<link href="<?php echo base_url();?>dist/css/bootstrap.css" rel="stylesheet">
-		<link href="<?php echo base_url();?>dist/css/carousel.css" rel="stylesheet">
-		<link href="<?php echo base_url();?>dist/css/signin.css" rel="stylesheet">
-		<link href="<?php echo base_url();?>dist/css/style2.css" rel="stylesheet">
-		<link href="<?php echo base_url();?>dist/css/date_picker.css" rel="stylesheet">
-		<link href="<?php echo base_url();?>dist/css/styles.css" rel="stylesheet" />
-
-		<script src="<?php echo base_url();?>dist/js/jquery.js"></script>
-		<script src="<?php echo base_url();?>dist/js/bootstrap.js"></script>
-		<script src="<?php echo base_url();?>dist/js/bootbox.min.js"></script>		
-		
-	</head>		
+	<?php include 'includes/head.php'; ?>		
 	<body>
-		 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand"><img src="<?php echo base_url();?>dist/images/logo4.png" height="40px"></a>
-                </div>
-                <div class="navbar-collapse collapse">
-			  <ul class="nav navbar-nav navbar-right">
-				<li class="dropdown">
-				  <a class = "notif" href="#" class="dropdown-toggle" data-toggle="dropdown" style="font-size:17px;" onclick = "this.style.color='white';"><span class="glyphicon glyphicon-cog" ></span></a>
-				  
-				  <ul class="dropdown-menu">
-					<li><a href="<?php echo base_url();?>admin/settings">Settings</a></li>
-					<li><a href="#">Help</a></li>
-					<li class="divider"></li>
-					<li><a href="<?php echo base_url();?>admin/logout">Log-out</a></li>
-				  </ul>
-            </div>
-
-            </div>
-        </div>
-
+		<?php include 'includes/header.php'; ?>
 		<div class="mainBody">
 			<script>
 				function claim( thisDiv ){
@@ -182,66 +133,38 @@
 				}
 
 			</script>
-			<!-- Nav tabs -->
-			<div class="sidebarMain">
-				<ul class="nav nav-pills nav-stacked">
-					<li id = "reserved-nav"  class="active" ><br />
-						<a href="<?php echo base_url();?>admin/reservation"><span class="glyphicon glyphicon-import"></span> &nbsp;Reserved Books</a>
-					</li>
-					<li id = "borrowed-nav" >
-						<a href="<?php echo base_url();?>admin/borrowed_books"><span class="glyphicon glyphicon-export"></span> &nbsp;Borrowed Books</a>
-					</li>
-					<li id = "view-nav" >
-						<a href="<?php echo base_url();?>admin/admin_search"><span class="glyphicon glyphicon-search"></span> &nbsp;View All Materials</a>
-					</li>
-					<li id = "add-nav" >
-						<a href="<?php echo base_url();?>admin/add_material"><span class="glyphicon glyphicon-plus"></span> &nbsp;Add A New Material&nbsp;&nbsp;&nbsp;</a>
-					</li>
-					<li id = "overview-nav">
-						<a href="<?php echo base_url();?>admin/home"><span class="glyphicon glyphicon-dashboard"></span> &nbsp;Overview</a>
-					</li>	
-				</ul>
-			</div>
+			
+			<?php include 'includes\sidebar.php'; ?>
 			
 			<div class="leftMain">
 				<div id="main-page">
 					<div id = "main-content">
-						<br />
-						<br />
+						<br /><br />
 
 						<?php
 							if( count($reservations) != 0 ){
 						?>
 
-						<input type="text" id = "searchReservedBooks" name ="search"  size="80"/>
-						<input class = "btn btn-primary" type="button" id = "searchReservedButton" value="Search"/> 
-						<div id = "alert"> </div><br /><br />
-	                
-						<table class="table table-hover tablesorter" border = "1" cellspacing='5' cellpadding='5' align = 'center'>
+						<form method="post"  style="width: 800px ; margin-left: auto; margin-right: auto;" role="form" align="center">
+							<input type="text" id = "searchReservedBooks" name ="search"  size="80"/>
+							<input class = "btn btn-primary" type="submit" id = "searchReservedButton" value="Search"/> 
+							<div class="alert-container" style = 'height: 40px; margin: 30px;'>
+								<div style="display:none" id = "alert" class = "alert alert-success">  </div>
+							</div>                         
+                        </form>		
+						<table id='myTable' class='table table-hover' border = '1'>
 							<thead>
 								<tr>
 									<th width="5%"><center>ISBN/ISSN</center></th>
-									<th width="5%"><center>Library Material ID</center></th>
-									<td width="5%"><center><b>Type</center></b></td>
-									<th width="45%"><center>Library Information</center></th>
+									<th width="11%"><center>ID Material</center></th>
+									<td width="5%"><br /><center><b>Type</b></center></td>
+									<th width="44%"><center>Library Information</center></th>
 									<th width="5%"><center>Borrower</center></th>
 									<th width="8%"><center>Start Date</center></th>
 									<th width="5%"><center>Rank</center></th>
-									<th width="22%"><center>Action</center></th>
+									<th width="12%"><center>Action</center></th>
 								</tr>
 							</thead>
-							<tfoot>
-								<tr>
-									<th width="5%"><center>ISBN/ISSN</center></th>
-									<th width="5%"><center>Library Material ID</center></th>
-									<td width="5%"><center><b>Type</center></b></td>
-									<th width="45%"><center>Library Information</center></th>
-									<th width="5%"><center>Borrower</center></th>
-									<th width="8%"><center>Start Date</center></th>
-									<th width="5%"><center>Rank</center></th>
-									<th width="22%"><center>Action</center></th>
-								</tr>
-							</tfoot>
 							<tbody>
 								<?php
 									$rank = 0;
@@ -249,33 +172,31 @@
 								
 									foreach($reservations as $row){
 										echo "<tr id = '${row['materialid']}-${row['idnumber']}'>";
-										if($row['type'] == 'Book' || $row['type'] == 'Reference'){											
-												echo "<td class = 'isbn'><span class='table-text'><center>" . $row['isbn'] ."</center></span></td>";
-											}
-											else echo "<td class = 'isbn' align='center'>---</td>";
+										if($row['type'] == 'Book' || $row['type'] == 'References'){											
+											echo "<td class = 'isbn'><span class='table-text'><center>" . $row['isbn'] ."</center></span></td>";
+										}
+										else echo "<td class = 'isbn' align='center'>---</td>";
 										echo "<td class = 'materialid' ><center><span class='table-text'>${row['materialid']} </span></center></td>";
 										
-										
 										if($row['type']== 'Book')
-											$type = "<span class='glyphicon glyphicon-book'></span>";
+											$type = "<a data-toggle='tooltip' class='tooltipLink' data-original-title='Book'><span class='glyphicon glyphicon-book'></span></a>";
 										else if($row['type'] == 'CD')
-											$type = "<span class='glyphicon glyphicon-headphones'></span>";
+											$type = "<a data-toggle='tooltip' class='tooltipLink' data-original-title='CD'><span class='glyphicon glyphicon-headphones'></span></a>";
 										else if($row['type'] == 'SP')
-											$type = "<span class='glyphicon glyphicon-file'></span>";
+											$type = "<a data-toggle='tooltip' class='tooltipLink' data-original-title='SP'><span class='glyphicon glyphicon-file'></span></a>";
 										else if($row['type'] == 'References')
-											$type = "<span class='glyphicon glyphicon-paperclip'></span>";
+											$type = "<a data-toggle='tooltip' class='tooltipLink' data-original-title='References'><span class='glyphicon glyphicon-paperclip'></span></a>";
 										else if($row['type']== 'Journals')
-											$type = "<span class='glyphicon glyphicon-pencil'></span>";
+											$type = "<a data-toggle='tooltip' class='tooltipLink' data-original-title='Journals'><span class='glyphicon glyphicon-pencil'></span></a>";
 										else if($row['type']== 'Magazines')
-											$type = "<span class='glyphicon glyphicon-picture'></span>";
+											$type = "<a data-toggle='tooltip' class='tooltipLink' data-original-title='Magazines'><span class='glyphicon glyphicon-picture'></span></a>";
 										else if($row['type'] == 'Thesis')
-											$type = "<span class='glyphicon glyphicon-bookmark'></span>";
+											$type = "<a data-toggle='tooltip' class='tooltipLink' data-original-title='Thesis'><span class='glyphicon glyphicon-bookmark'></span></a>";	
 											
 										echo "<td class = 'type' align='center'>". $type ."</td>";
-										
-
 										echo "<td>";
 										echo "<b><span class ='title'>${row['name']}.</b></span><br />";									
+										
 										foreach ($row['author'] as $name) {
 											$name = (array)$name;
 											echo "<span class ='author'> ${name['lname']}, ${name['fname']} ${name['mname']}.</span>";
@@ -295,7 +216,7 @@
 										echo "<td class = 'idnumber' ><center><span class='table-text'>${row['idnumber']}</span></center> </td>";
 										
 											if( $row['started'] == 0 ){
-												echo "<td align='center'><span class='table-text'> Not yet notified </span></td>";
+												echo "<td align='center'><span class='table-text'>Not yet notifed</span></td>";
 												echo "<td align='center'><span class='table-text'> ${row['queue']}/${row['total']}</span> </td>";
 												echo "<td align='center'><button onclick = 'notify($(this))' class='sendNotif btn btn-primary' name='notify' ><span class='glyphicon glyphicon-bullhorn'></button>";
 												echo "<button onclick = 'claim($(this))' class='sendClaim btn btn-primary' name='claim' disabled><span class='glyphicon glyphicon-download'></button>";
@@ -306,8 +227,7 @@
 												echo "<td align='center'><button onclick = 'notify($(this))' class='sendNotif btn btn-primary' name='notify' disabled><span class='glyphicon glyphicon-bullhorn'></button> ";
 												echo "<button onclick = 'claim($(this))' class='sendClaim btn btn-primary' name='claim'><span class='glyphicon glyphicon-download'></button>";
 												echo "</td>";
-											}
-										
+											}	
 										}
 										?>
 									</tbody>
@@ -334,28 +254,23 @@
 						<?php 
 	
 							} else {
-								echo "<h3> No reservations to be accepted </h3>";
+								echo "<tbody>";
+                                echo "<td colspan = '7' style='background-color:rgba(0,0,0,0.1); color: black;'><center><h3> No reservations to be accepted </h3></center></td>";
+                                echo "</tbody>";	
 							}
 						?>
-						
 						</div>
 					</div>
-				</div>
-				
+				</div>	
 			</div>
+			
+		<!-- Footer -->
+		<?php include 'includes/footer.php'; ?>
 		
-		 <!-- FOOTER -->
-		<footer><a href="#" class="back-to-top"><span class='glyphicon glyphicon-chevron-up'></span></a>
-        <center><p id="small">2013 CMSC 128 AB-6L. All Rights Reserved. <a href="#">Privacy</a> | <a href="#">Terms</a> | <a href="#">About</a> | <a href="#">Contact</a></p></center>
-		</footer>
-
-		<script src="<?php echo base_url();?>dist/js/holder.js"></script>
 		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/jquery.tablesorter.js"></script>
 		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/jquery.tablesorter.pager.js"></script>
 		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/jquery.tablesorter.widgets.js"></script>
 		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/widget-pager.js"></script>
-		<!--script src="<?php echo base_url();?>dist/js/dynamic.js"></script-->
-		<!--script src="<?php echo base_url();?>dist/js/modernizr.js"></script-->
 		
 		<script id="js">
 			$(function(){
@@ -444,6 +359,7 @@
 		</script>
 
 		<script>
+			$('#reserved-nav').addClass('active');
 			
 			$(document).ready(function(){		
 				function printAuthor( data ){
@@ -476,7 +392,7 @@
 				}
 
 				function printISBN( data, type ){
-					if(type == 'Book' || type == 'Reference'){											
+					if(type == 'Book' || type == 'References'){											
 						return data;
 					}
 					else return "---";
@@ -577,8 +493,28 @@
 
 				$("#logout").click(function(){
 					window.location.href = "<?php echo site_url('admin/logout'); ?>";
-				});				
+				});
+
 			});
+		</script>
+		<script >
+			//back to top code
+					var offset = 220;
+	                var duration = 500;
+	                jQuery(window).scroll(function() {
+	                    if (jQuery(this).scrollTop() > offset) {
+	                        jQuery('.back-to-top').fadeIn(duration);
+	                    } else {
+	                        jQuery('.back-to-top').fadeOut(duration);
+	                    }
+	                });
+	                
+	                jQuery('.back-to-top').click(function(event) {
+	                    event.preventDefault();
+	                    jQuery('html, body').animate({scrollTop: 0}, duration);
+	                    return false;
+	                });
+	                //end code of back to top
 		</script>
 	</body>
 </html>

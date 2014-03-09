@@ -55,7 +55,7 @@ class Reservation_model extends CI_Model{
 				   $idn=$id->idnumber;
 			}
 			
-			$material="SELECT materialid FROM borrowedmaterial where idnumber='{$idn}'";
+			$material="SELECT materialid FROM borrowedmaterial where idnumber='{$idn}' and status='BORROWED'";
 			$res = $this->db->query($material);
 			$data = array();
 

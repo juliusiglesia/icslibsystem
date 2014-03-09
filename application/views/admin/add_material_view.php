@@ -14,236 +14,178 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    
-    <link rel="shortcut icon" href="http://getbootstrap.com/docs-assets/ico/favicon.png">
-
-    <title>ICS-iLS</title>
-
-    <link href="<?php echo base_url();?>dist/css/bootstrap.css" rel="stylesheet">
-    <link href="<?php echo base_url();?>dist/css/carousel.css" rel="stylesheet">
-    <link href="<?php echo base_url();?>dist/css/signin.css" rel="stylesheet">
-
-    <style type="text/css" id="holderjs-style"></style></head>
-
+	<?php include 'includes/head.php'; ?>
 	<body>
-        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="#"><img src="<?php echo base_url();?>dist/images/logowhite.png" height="30px"></a>
-                </div>
-                
-                <form class="navbar-form navbar-right" role="form">
-                    <button type="button" class="btn btn-success" id = "logout" >Log out</button>
-                </form>
-
-            </div>
-        </div>
+        <?php include 'includes/header.php'; ?>
         <div class="mainBody">
             <!-- Nav tabs -->
-            <div class="sidebarMain">
-                <ul class="nav nav-pills nav-stacked">
-                    <li id = "overview-nav">
-                        <a href="<?php echo base_url();?>admin/home">Overview</a>
-                    </li>
-                    <li id = "reserved-nav" >
-                        <a href="<?php echo base_url();?>admin/reservation">Reserved Books</a>
-                    </li>
-                    <li id = "borrowed-nav">
-                        <a href="<?php echo base_url();?>admin/borrowed_books">Borrowed Books</a>
-                    </li>
-                    <li id = "view-nav"  >
-                        <a href="<?php echo base_url();?>admin/admin_search">View All Library Materials</a>
-                    </li>
-                    <li id = "add-nav" class="active">
-                        <a href="<?php echo base_url();?>admin/add_material">Add A New Material</a>
-                    </li>
-                    <li id = "generate-nav" >
-                        <a href="<?php echo base_url();?>admin/print_inventory" target = "_blank" >Generate Report</a>
-                    </li>
-                </ul>
-            </div>   
+            <?php include 'includes/sidebar.php'; ?> 
 
-        <div class="leftMain">
-        <div id="main-page">
-        <div id = "main-content">
-		<div id="container">
-		<form name="add" id="add" method="post" action="admin_search" onsubmit="return showModal()" class="form-horizontal">
-		<h2 class="form-signin-heading">Fill up the necessary info: </h2>
-		<div class="form-group">
-			<label class="col-sm-2 control-label">Library Material ID</label>
-			<label id="preclass" class="col-sm-1 control-label">CS1-</label>
-			<div class="col-sm-1">
-				<input type="text" class="form-control" id="material" placeholder="A1" name="material" pattern="[A-Za-z0-9]+" required>
-			</div>
-			<input type="hidden" id="matID" name="materialid" />
-				<span style="color: red;" name="helpmaterialid"> </span>
-			
-		</div>
-		<div class="form-group">
-			<label for="type" class="col-sm-2 control-label">Type</label>
-			<div class="col-sm-2">
-				<select name="type" id="type" class="form-control" >
-					<option value="Book" >Book</option>
-					<option value="SP">SP</option>
-					<option value="Reference">Reference</option>
-					<option value="CD">CD</option>
-					<option value="Journals">Journals</option>
-					<option value="Magazines">Magazines</option>
-					<option value="Thesis">Thesis</option>
-				</select>
-			</div>
-		</div>
+       <div class="leftMain">
+        	<div id="main-page">
+        		<div id = "main-content">
+					<div id="container">
+						<form name="add" id="add" method="post" action="admin_search" onsubmit="return showModal()" class="form-horizontal">
+							<h2 class="form-signin-heading">Fill up the necessary info: </h2>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">Library Material ID</label>
+								<label id="preclass" class="col-sm-1 control-label">CS1-</label>
+								<div class="col-sm-1">
+									<input type="text" class="form-control" id="material" placeholder="A1" name="material" pattern="[A-Za-z0-9]+" required>
+								</div>
+								<input type="hidden" id="matID" name="materialid" />
+								<span style="color: red;" name="helpmaterialid"></span>
+							</div>
+							<div class="form-group">
+								<label for="type" class="col-sm-2 control-label">Type</label>
+								<div class="col-sm-2">
+									<select name="type" id="type" class="form-control" >
+										<option value="Book" >Book</option>
+										<option value="SP">SP</option>
+										<option value="References">References</option>
+										<option value="CD">CD</option>
+										<option value="Journals">Journals</option>
+										<option value="Magazines">Magazines</option>
+										<option value="Thesis">Thesis</option>
+									</select>
+								</div>
+							</div>
+							<div id="isbn_div" class="form-group" style='display:block'>
+								<label for="type" class="col-sm-2 control-label">ISBN</label>
+								<div class="col-sm-2">
+									<input type="text" class="form-control"  name="isbn" id="isbn" pattern="[0-9]+" placeholder="ISBN" required/>
+								</div>
+								<span style="color: red;" name="helpisbn">
+							</div>
+							<div id="course_div" class="form-group" style="display:block">
+								<label for="course" class="col-sm-2 control-label">Course Classification</label>
+								<div class="col-sm-2">
+									<select name="course" id="course" class="form-control">
+										<option value="CS1">CMSC 1</option>
+										<option value="CS2">CMSC 2</option>
+										<option value="CS11">CMSC 11</option>
+										<option value="CS21">CMSC 21</option>
+										<option value="CS22">CMSC 22</option>
+										<option value="CS55">CMSC 55</option>
+										<option value="CS56">CMSC 56</option>
+										<option value="CS57">CMSC 57</option>
+										<option value="CS100">CMSC 100</option>
+										<option value="CS123">CMSC 123</option>
+										<option value="CS124">CMSC 124</option>
+										<option value="CS125">CMSC 125</option>
+										<option value="CS127">CMSC 127</option>
+										<option value="CS128">CMSC 128</option>
+										<option value="CS129">CMSC 129</option>
+										<option value="CS130">CMSC 130</option>
+										<option value="CS131">CMSC 131</option>
+										<option value="CS132">CMSC 132</option>
+										<option value="CS137">CMSC 137</option>
+										<option value="CS140">CMSC 140</option>
+										<option value="CS141">CMSC 141</option>
+										<option value="CS142">CMSC 142</option>
+										<option value="CS150">CMSC 150</option>
+										<option value="CS161">CMSC 161</option>
+										<option value="CS165">CMSC 165</option>
+										<option value="CS170">CMSC 170</option>
+										<option value="CS178">CMSC 172</option>
+										<option value="CS180">CMSC 180</option>
+										<option value="CS191">CMSC 191</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="title" class="col-sm-2 control-label">Title</label>
+								<div class="col-sm-4">
+									<textarea type="text" name="name" class="form-control" id="title" placeholder="Title" pattern="[A-Z][A-Za-z0-9\ \.\,\-\'\?\!]+" required rows="2" cols="50"></textarea>
+								</div>
+								<span style="color: red;" name="helpname">
+							</div>
+							<div class="form-group"><br />
+								<label for="year" class="col-sm-2 control-label">Year of Publication</label>
+								<div class="form-inline col-sm-2">
+									<input type="number" name="year" class="form-control" id="year" placeholder="YYYY" min="1950" max="2014" pattern="[0-9][0-9][0-9][0-9]" required>
+								</div>
+								<span style="color: red;" name="helpyear">
+							</div>
+							<div class="form-group"><br />
+								<label for="ed" class="col-sm-2 control-label">Edition</label>
+								<div class="form-inline col-sm-2">
+									<input type="text" name="edvol" class="form-control" id="ed" placeholder="Edition (optional)" pattern="[0-9]">
+								</div>
+								<span style="color: red;" name="helpedvol">
+							</div>
+							<div class="form-group"><br />
+								<label for="access" id="asdf" class="col-sm-2 control-label">Accessibility</label>
+								<div class="col-sm-3">
+								<select name="access" id="access" class="form-control" required>
+									
+										<option value="4">Student/Faculty</option>
+										<option value="1">Student</option>
+										<option value="2">Faculty</option>
+										<option value="3">Room Use</option>				
+								</select>
+								</div>
+							</div>
+							<div class="form-group"><br />
+								<label for="availability" class="col-sm-2 control-label">Availability</label>
+								<div class="col-sm-2">
+									<input type="radio" name="available" value="1" checked> Yes
+									<input type="radio" name="available" value="0" disabled> No
+								</div>
+							</div>
+							<div class="form-group"><br />
+								<label for="availability" class="col-sm-2 control-label">Requirements</label>
+								<div class="col-sm-6">
+									<input type="radio" name="requirement" value="0" checked> None
+									<input type="radio" name="requirement" value="1"> Letter of the Owner / Consent of Instructor
+								</div>
+							</div>
+							<div class="form-group"><br />
+								<label class="col-sm-2 control-label">Author</label>
+								<div class="form-inline col-sm-6">
+									<table id="formTable">
+									<tr>
+										<td><input type="text" name="fname1" id="fname1" class="form-control" placeholder="First Name" name="materialid" pattern="[A-Za-z]+" required></td>
+										<td><input type="text" name="mname1" id="mname1" class="form-control" placeholder="Middle Name" name="materialid" pattern="[A-Za-z]+" required></td>
+										<td><input type="text" name="lname1" id="lname1" class="form-control" placeholder="Last Name" name="materialid" pattern="[A-Za-z]+" required></td>
+										<td><input type="button" value="+" onClick="addRow()"></td>
+										<td><input type="button" value="x" onclick="deleteRow(this)" disabled ></td></td>
+										<td><span style="color: red;" name="helpauthor"></td>
+										<td><input type="hidden" name="numberOfAuthors" value="1"/></td>
+									</tr>
+									</table>
+								</div>
+							</div>		
+							<div class="form-group"><br />
+								<div class="col-sm-offset-2 col-sm-10">
+									<input type="submit" class="btn btn-default" id="addButton" name="insert" value="Add">
+									<a href="<?php echo base_url();?>admin/add_multiple"><button type="button" class="btn btn-primary">Add Multiple Material</button></a>
+								</div>
+							</div>
+						</form><br/>
+						<div class="modal fade" id="container1" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+						  	<div class="modal-dialog modal-sm" >
+								<div class="modal-content">
+							  		<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+										<h3 class="modal-title" id="myModalLabel">Successfully added material</h3>
+									</div>
+									<div id="details" class="modal-body">
+									</div>
+									<div class="modal-footer">
+										<button class="btn" data-dismiss="modal" aria-hidden="true">Done</button>
+									</div>
+								</div>
+							</div>
+						</div>		
+		</div></div></div></div>
 		
-		<div id="isbn_div" class="form-group" style='display:block'>
-			<label for="type" class="col-sm-2 control-label">ISBN</label>
-			<div class="col-sm-2">
-				<input type="text" class="form-control"  name="isbn" id="isbn" pattern="[0-9]+" placeholder="ISBN" required/>
-			</div>
-			<span style="color: red;" name="helpisbn">
-		</div>
+		<!-- Footer -->
+		<?php include 'includes/footer.php'; ?>
 		
-		<div id="course_div" class="form-group" style="display:block">
-			<label for="course" class="col-sm-2 control-label">Course Classification</label>
-			<div class="col-sm-2">
-				<select name="course" id="course" class="form-control">
-					<option value="CS1">CMSC 1</option>
-					<option value="CS2">CMSC 2</option>
-					<option value="CS11">CMSC 11</option>
-					<option value="CS21">CMSC 21</option>
-					<option value="CS22">CMSC 22</option>
-					<option value="CS55">CMSC 55</option>
-					<option value="CS56">CMSC 56</option>
-					<option value="CS57">CMSC 57</option>
-					<option value="CS100">CMSC 100</option>
-					<option value="CS123">CMSC 123</option>
-					<option value="CS124">CMSC 124</option>
-					<option value="CS125">CMSC 125</option>
-					<option value="CS127">CMSC 127</option>
-					<option value="CS128">CMSC 128</option>
-					<option value="CS129">CMSC 129</option>
-					<option value="CS130">CMSC 130</option>
-					<option value="CS131">CMSC 131</option>
-					<option value="CS132">CMSC 132</option>
-					<option value="CS137">CMSC 137</option>
-					<option value="CS140">CMSC 140</option>
-					<option value="CS141">CMSC 141</option>
-					<option value="CS142">CMSC 142</option>
-					<option value="CS150">CMSC 150</option>
-					<option value="CS161">CMSC 161</option>
-					<option value="CS165">CMSC 165</option>
-					<option value="CS170">CMSC 170</option>
-					<option value="CS178">CMSC 172</option>
-					<option value="CS180">CMSC 180</option>
-					<option value="CS191">CMSC 191</option>
-				</select>
-			</div>
-		</div>
-		<div class="form-group">
-			<label for="title" class="col-sm-2 control-label">Title</label>
-			<div class="col-sm-4">
-				<input type="text" name="name" class="form-control" id="title" placeholder="Title" pattern="[A-Z][A-Za-z0-9\ \.\,\-\'\?\!]+" required>
-			</div>
-			<span style="color: red;" name="helpname">
-		</div>
-		<div class="form-group">
-			<label for="year" class="col-sm-2 control-label">Year of Publication</label>
-			<div class="form-inline col-sm-2">
-				<input type="number" name="year" class="form-control" id="year" placeholder="YYYY" min="1950" max="2014" pattern="[0-9][0-9][0-9][0-9]" required>
-			</div>
-			<span style="color: red;" name="helpyear">
-		</div>
-		<div class="form-group">
-			<label for="ed" class="col-sm-2 control-label">Edition</label>
-			<div class="form-inline col-sm-2">
-				<input type="text" name="edvol" class="form-control" id="ed" placeholder="Edition (optional)" pattern="[0-9]">
-			</div>
-			<span style="color: red;" name="helpedvol">
-		</div>
-		<div class="form-group">
-			<label for="access" id="asdf" class="col-sm-2 control-label">Accessibility</label>
-			<div class="col-sm-3">
-			<select name="access" id="access" class="form-control" required>
-				
-					<option value="4">Student/Faculty</option>
-					<option value="1">Student</option>
-					<option value="2">Faculty</option>
-					<option value="3">Room Use</option>				
-			</select>
-			</div>
-		</div>
-		<div class="form-group">
-			<label for="availability" class="col-sm-2 control-label">Availability</label>
-			<div class="col-sm-2">
-				<input type="radio" name="available" value="1" checked> Yes
-				<input type="radio" name="available" value="0" disabled> No
-			</div>
-		</div>
-		<div class="form-group">
-			<label for="availability" class="col-sm-2 control-label">Requirements</label>
-			<div class="col-sm-6">
-				<input type="radio" name="requirement" value="0" checked> None
-				<input type="radio" name="requirement" value="1"> Letter of the Owner / Consent of Instructor
-			</div>
-		</div>
-		<div class="form-group">
-			<label class="col-sm-2 control-label">Author</label>
-			<div class="form-inline col-sm-6">
-				<table id="formTable">
-				<tr>
-					<td><input type="text" name="fname1" id="fname1" class="form-control" placeholder="First Name" name="materialid" pattern="[A-Za-z]+" required></td>
-					<td><input type="text" name="mname1" id="mname1" class="form-control" placeholder="Middle Name" name="materialid" pattern="[A-Za-z]+" required></td>
-					<td><input type="text" name="lname1" id="lname1" class="form-control" placeholder="Last Name" name="materialid" pattern="[A-Za-z]+" required></td>
-					<td><input type="button" value="+" onClick="addRow()"></td>
-					<td><input type="button" value="x" onclick="deleteRow(this)" disabled ></td></td>
-					<td><span style="color: red;" name="helpauthor"></td>
-					<td><input type="hidden" name="numberOfAuthors" value="1"/></td>
-				</tr>
-				
-				</table>
-			</div>
-		</div>		
-		<div class="form-group">
-			<div class="col-sm-offset-2 col-sm-10">
-				<input type="submit" class="btn btn-default" id="addButton" name="insert" value="Add">
-			</div>
-		</div>
-		</form>
-		<br>
-		<div class="modal fade" id="container1" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-				  <div class="modal-dialog modal-sm" >
-					<div class="modal-content">
-					  <div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h3 class="modal-title" id="myModalLabel">Successfully added material</h3>
-					  </div>
-					  <div id="details" class="modal-body">
-						
+	<script type="text/javascript">
 
-					  </div>
-					  <div class="modal-footer">
-						<button class="btn" data-dismiss="modal" aria-hidden="true">Done</button>
-					  </div>
-					 </div>
-					</div>
-		</div>	
-		</div>
-	<script src="<?php echo base_url();?>dist/js/jquery.js"></script>
-    <script src="<?php echo base_url();?>dist/js/bootstrap.js"></script>
-    <script src="<?php echo base_url();?>dist/js/holder.js"></script>
-		<script type="text/javascript">
+			$('#add-nav').addClass('active');
 			var n = 1;
 			
 			function deleteRow(row){
@@ -358,7 +300,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 					//add.course.disabled = true;
 					document.getElementById("matID").value = document.getElementById("preclass").innerHTML + document.getElementById("material").value;
 				}
-				else if(type == "Reference"){
+				else if(type == "References"){
 					add.isbn.disabled = false;
 					add.course.disabled = false;
 					document.getElementById("preclass").innerHTML = "R" + "-";
@@ -407,7 +349,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 				str = add.isbn.value;
 				pattern = add.isbn.pattern;
 				
-				if(add.type.value == "Book" || add.type.value == "Reference" ){
+				if(add.type.value == "Book" || add.type.value == "References" ){
 					if (str == "") {
 						msg+="ISBN-10 is required. ";
 					}
@@ -594,7 +536,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 					i++;
 				}
 			}
-			if(jArray[1] == "Reference"){
+			if(jArray[1] == "References"){
 				document.getElementById('matID').value = jArray[0];
 				
 				mat = jArray[0].split("-");
@@ -760,6 +702,25 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 					i++;
 				}
 			}
+		</script>
+		<script>
+				//back to top code
+				var offset = 220;
+			    var duration = 500;
+			    jQuery(window).scroll(function() {
+			        if (jQuery(this).scrollTop() > offset) {
+			            jQuery('.back-to-top').fadeIn(duration);
+			        } else {
+			            jQuery('.back-to-top').fadeOut(duration);
+			        }
+			    });
+			    
+			    jQuery('.back-to-top').click(function(event) {
+			        event.preventDefault();
+			        jQuery('html, body').animate({scrollTop: 0}, duration);
+			        return false;
+			    });
+		    //end code of back to top
 			</script>
 	</body>
 </html>

@@ -41,83 +41,9 @@
 
 				<div class="col-md-9 section">
 					<!--search bar-->
-					
-
-					<TABLE align="center" style="border-collapse: collapse; background-color: #efefef; width:100%; bordercolor: #999999" cellspacing=0 cellpadding="2" border="1">
-					<TBODY>
-						<TR>
-						<TD style="padding: 6px; color: #222222" align="left">
-						 	<!-- Begin Box 1 -->
-							<table bgcolor="#ffffff" cellspacing="0" cellpadding="2" border="0" style="width: 100%; border-collapse: collapse; bordercolor: #111111">
-								<tr>
-								<form method="post" action="<?php echo base_url();?>borrower/search_all">
-								<table bgcolor="#ffffff" cellspacing="0" cellpadding="2" border="0" style="width: 100%; border-collapse: collapse; bordercolor: #111111">
-								<td align="left">
-									<select size="1" id="category" name="category">
-										<option value="author">Author</option>
-										<option value="course">Course Subject</option>
-										<option value="name" SELECTED>Title</option>
-										<option value="keyword">Any Keyword</option>
-									</select>
-								</td>								
-								<td align="left">	
-									<input type= "textbox" name="searchbox" value="" size="50" style="width: 360px" />
-									<input type="submit" value="Search" name="eventSubmit_doSearchadvanced" id="defaultButton" />
-									<a class="btn collapse-data-btn" id="s_advance" href="#update">Advanced Search</a>
-									<a class="btn collapse-data-btn" id="s_basic" href="#update">Basic Search</a>
-								</td>
-								</table>	
-
-								<table id="tabelTemp" bgcolor="#ffffff" cellspacing="0" cellpadding="2" border="0" style=" width:100%; border-collapse: collapse; bordercolor: #111111">
-								<tr>
-									<td align="left" id="s_checkbox"><b>Filter: &nbsp;&nbsp;&nbsp;</b>
-										<input type="checkbox" name="type[]" value="Book" />&nbsp;Book&nbsp;&nbsp;
-										<input type="checkbox" name="type[]" value="Journal"/>&nbsp;Journal&nbsp;&nbsp;
-										<input type="checkbox" name="type[]" value="SP"/>&nbsp;SP&nbsp;&nbsp;
-										<input type="checkbox" name="type[]" value="Thesis"/>&nbsp;Thesis&nbsp;&nbsp;
-										<input type="checkbox" name="type[]" value="CD"/>&nbsp;CD&nbsp;&nbsp;
-										<input type="checkbox" name="type[]" value="Magazine"/>&nbsp;Magazine&nbsp;&nbsp;
-										<input type="checkbox" name="type[]" value="Reference"/>&nbsp;Reference&nbsp;&nbsp;
-									</td>
-								</tr>			
-								</form>	
-								</td>
-								</table>	
-
-								</tr>	
-							</table>				 
-						</TD>
-						</TR>
-					</TBODY>
-					</TABLE> <!--end of search bar-->
+					<?php include 'search_bar.php';?>
 
 
-
-	<script type="text/javascript">
-
-	$('#filter').show();
-	$('#s_radio').hide();
-	$('#s_checkbox').hide();
-	$('#s_basic').hide();
-
-	$('#s_advance').click(function(){
-		$('#s_radio').show();
-		$('#s_checkbox').show();
-		$('#s_basic').show();
-		$('#s_advance').hide();
-
-	});
-
-	$('#s_basic').click(function(){
-		$('#filter').show();
-		$('#s_radio').hide();
-		$('#s_checkbox').hide();
-		$('#s_advance').show();
-		$('#s_basic').hide();
-
-	});
-
-	</script>
 
 		<?php 
 			echo "<div class='alert-container'>";
@@ -193,20 +119,23 @@
 
 				<div id="reserved_link" class="tab-pane">
 					
-					<table class="table table-hover" summary="Results" border="1" cellspacing="5" cellpadding="5">
-						<thead>
-							<tr>
-								<th width="5%" abbr="ISBN" scope="col" title="ISBN/ISSN">ISBN/ISSN</th>
-								<th width="12%" abbr="lmID" scope="col" title="Library Material ID">Library Material ID</th>
-								<th width="5%" abbr="Type" scope="col" title="Type">Type</th>
-								<th width="70%" abbr="CourseClassification" scope="col" title="Description">Description</th>
-								<th width="7%" abbr="Queue" scope="col" title="Queue">Rank</th>
-								<th width="5%" abbr="Action" scope="col" title="Action">Action</th>
-							</tr>
-						</thead>
+					
 										
 					<?php
 						if($list!=NULL && $rank!=NULL && $total!=NULL){
+						?>
+							<table class="table table-hover" summary="Results" border="1" cellspacing="5" cellpadding="5">
+							<thead>
+								<tr>
+									<th width="5%" abbr="ISBN" scope="col" title="ISBN/ISSN">ISBN/ISSN</th>
+									<th width="12%" abbr="lmID" scope="col" title="Library Material ID">Library Material ID</th>
+									<th width="5%" abbr="Type" scope="col" title="Type">Type</th>
+									<th width="70%" abbr="CourseClassification" scope="col" title="Description">Description</th>
+									<th width="7%" abbr="Queue" scope="col" title="Queue">Rank</th>
+									<th width="5%" abbr="Action" scope="col" title="Action">Action</th>
+								</tr>
+							</thead>
+						<?php
 							foreach($reserved as $row){
 								echo "<tr>";
 								echo "<td>";
@@ -242,19 +171,28 @@
 									  </td>";
 								foreach($rank as $q_rank){
 											
-								if($q_rank['materialid']==$row['materialid']){
-									$rrank=$q_rank['queue'];
+									if($q_rank['materialid']== $row['materialid']){
+										$rrank=$q_rank['queue'];
+										//echo "<td> ${rrank} of ";
+										//echo "${q_rank['queue']} ";
+									}
+									
+								}
+								//var_dump($rrank);
+								foreach($total as $t_queue){
+									if($t_queue['materialid']==$row['materialid']){
+										 $t_q=$t_queue['tq'];
+										 //echo "${t_q} </td>";
 									}
 								}
-								foreach($total as $t_queue){
-								if($t_queue['materialid']==$row['materialid']){
-									 $t_q=$t_queue['tq'];
-								}
-								}
-								  echo "<td> $rrank of $t_q </td>";
+								  echo "<td> ${rrank} of ${t_q} </td>";
 								  echo "<td><button class=\"cancel_button btn btn-danger\" data-dismiss=\"modal\" name = 'materialid' value='${row['materialid']}'><span class='glyphicon glyphicon-remove'></button>" . "</td>";
 								  echo "</tr>";
 							  }
+						}
+						
+						else{
+							echo "<div>No reserved books!</div>";
 						}
 					?>			  
 					</table>

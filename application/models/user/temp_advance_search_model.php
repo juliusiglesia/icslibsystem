@@ -6,6 +6,7 @@
 		}
 	
 		public function get_adv_search($search, $category, $type, $s_type, $s_accessibility){
+			
 			$return_array = array();
 			$search = strtolower($search);
 

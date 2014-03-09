@@ -39,7 +39,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="index.php"><img src="<?php echo base_url(); ?>dist/images/logo4.png" height="50px" width="165px"></a>
+          <a class="navbar-brand" href="<?php echo base_url();?>"><img src="<?php echo base_url(); ?>dist/images/logo4.png" height="50px" width="165px"></a>
         </div>
         <div class="navbar-collapse collapse">
 
@@ -56,7 +56,7 @@
          <!--   <button type="submit" name="login" class="btn btn-primary">Sign in</button> -->
             <a href="register" name="signup" class="buttonhref white" >Sign up</a>
             <p><a href="#forgot" id="forgotText" data-toggle="modal"> Forgot password? </a></p>
-            </form>
+      </form>
 
         </div><!--/.navbar-collapse -->
       </div>
@@ -79,6 +79,7 @@
   </div>
 </div>
 <script src="<?php echo base_url();?>dist/js/jquery-2.1.0.min.js"></script>
+
 
     <script type="text/javascript">
     
@@ -109,19 +110,24 @@
             },
 
             success: function( result ){
-              //if username DNE
-              if(result == 0 ){
-                window.location.href = "<?php echo site_url('borrower/login/dne'); ?>";
-              }
-              //username exists, but pword does not match
-              else if(result ==2){
-                window.location.href = "<?php echo site_url('borrower/login/dnm'); ?>";
-              }
-              //if username and password exists
-              else {
-                window.location.href = "<?php echo site_url('borrower/home'); ?>";
-              }
+            //if username DNE
+            if(result == 0 ){
+              window.location.href = "<?php echo site_url('borrower/login/dne'); ?>";
             }
+            //username exists, but pword does not match
+            else if(result ==2){
+              window.location.href = "<?php echo site_url('borrower/login/dnm'); ?>";
+            }
+            //username is deactivated
+            else if(result == 3){
+              //  window.location.href = "<?php echo site_url('borrower/login/urlencode(" +username+ ")');?>";
+				  window.location.href = "<?php echo site_url('borrower/login/"+username+"'); ?>";
+              }
+            //if username and password exists
+            else {
+              window.location.href = "<?php echo site_url('borrower/home'); ?>";
+            }
+          }
           });
       });
     </script>

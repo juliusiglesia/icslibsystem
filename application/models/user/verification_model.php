@@ -69,7 +69,7 @@
 			if($validation === true){
 				return true;
 			}else{
-				echo 'verification_model/validate_email error';
+				//echo 'verification_model/validate_email error';
 				return false;
 			}
 			/* AFTER THIS FUNCTION BABALIK NA SIYA SA REGISTER->validate_email() */
@@ -83,7 +83,7 @@
 			if($this->db->affected_rows() === 1){
 				return true;
 			}else{
-				echo 'activate_account error';
+				//echo 'activate_account error';
 				return false;
 			}
 			

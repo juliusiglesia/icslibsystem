@@ -1,13 +1,3 @@
-<?php 
-	//profile picture
-	/*base_url();
-	if($this->session->userdata('sex') == 'F'){
-		echo "<img src='/icslibsystem/dist/images/female.png' alt='' class='img-rounded img-responsive' />";
-	}
-	else{
-		echo "<img src='/icslibsystem/dist/images/male.png' alt='' class='img-rounded img-responsive' />";
-	}*/
-?>
 <div id = "userInfo">
 <center>
 <?php 
@@ -15,15 +5,11 @@
 	if($this->session->userdata('sex') == 'F'){
 		echo "<img src='/icslibsystem/dist/images/female.png' alt='' class='img-rounded img-responsive' />";
 	}
-	else if($this->session->userdata('email')=="fernerick27@gmail.com"){
-		echo "<img src='/icslibsystem/dist/images/dev/fred.png' alt='' class='img-rounded img-responsive' />";
-	}
 	else{
 		echo "<img src='/icslibsystem/dist/images/male.png' alt='' class='img-rounded img-responsive' />";
 	}
 
 ?></center>
-
 
 <!--information-->
 <p style = "text-align: center; font-weight: bold; ">
@@ -35,46 +21,51 @@
 
 <div id = "summary">
 <!--profile summary-->
-<div class="profile_overview"> <hr />
-	<!---<h4><u><b>Profile Summary:</b></u></h4>-->
-	<ul style = "list-style: none; ">
-		<li><b>Overdue books: 
-			<span id = "overdue-count">
-			<?php
+<div class="profile_overview"> 
+
+	<center>
+	<br/>Material Inventory
+	<hr/>
+	<table cellpadding="2">
+		<tr>
+			<b>
+			<td>Overdue materials &nbsp;</td>
+			<td><?php
 				foreach($overdueCount as $row)
-					echo "${row['COUNT(librarymaterial.materialid)']}";
+					echo " ${row['COUNT(librarymaterial.materialid)']}";
 			?> 
-			</span>
+			</td>
 			</b>
-		</li>
-					
-		<li><b>Borrowed books:
-			<span id = "borrowed-count">
-			<?php
+		<tr>			
+		<tr>
+			<b>
+			<td>Borrowed materials &nbsp;</td>
+			<td><?php
 				foreach($borrowedCount as $row)
-					echo "${row['COUNT(librarymaterial.materialid)']}";
+					echo " ${row['COUNT(librarymaterial.materialid)']}";
 			?> 
-		</span>
+			</td>
 			</b>
-		</li>
-							
-		<li><b>Reserved books:
-			<span id = "reserved-count">
-			<?php
+		</tr>
+		<tr>
+			<b>
+			<td>Reserved materials &nbsp;</td>
+			<td><?php
 				foreach($reservedCount as $row)
-					echo "${row['resCount']}";
+					echo " ${row['resCount']}";
 				?> 
-			</span>
+			</td>
 			</b>
-			
-		</li>
-								
-	</ul>	<hr />			
+		</tr>
+	</table>
+	</center>
+	<hr />			
 </div> <!--end of profile_overview-->
 </div>
 
+<center>
 <button class="btn collapse-data-btn btn-default" id="manageBtn">Manage account</button>
-<button class="btn collapse-data-btn btn-default" id="cancelBtn">Hindi to cancel!</button>
+</center>
 
 <div id="update" >
 	<form>
@@ -101,11 +92,12 @@
 	</form>
 </div> <!--update account-->
 
-
+<center><button class="btn collapse-data-btn btn-default" id="cancelBtn">Cancel</button></center>
 
 <span id="error_update"> </span>
 <span id="error_updatePassword"> </span>
 
+<div id = "alert_update" class = "alert danger-success">  </div>
 <div id = "success_email_update" class = "alert alert-success">  </div>
 
 <script src="<?php echo base_url();?>dist/js/jquery.js"></script>
@@ -142,7 +134,10 @@ hidePasswordEdit();
 				}
 			},
 			error: function() {
-				alert('Oops.An error occured.');
+				$("#alert_update").show();
+				$('#alert_update').html("Oops.An error occured.");
+				$("#alert_update").fadeIn('slow');
+				setTimeout(function() { $('#alert_update').fadeOut('slow') }, 3000);
 			}
 
 		});
@@ -150,7 +145,7 @@ hidePasswordEdit();
 
 	});
 
-$('#npassword').blur(function(){
+	$('#npassword').blur(function(){
 		var value_pword = $('#npassword').val();
 		$.ajax({
 			url: "<?php echo base_url(); ?>borrower/checkUpdatePassword",
@@ -159,14 +154,8 @@ $('#npassword').blur(function(){
 			success: function(result){
 				if($.trim(result) == "1"){
 					$('#error_updatePassword').html("Invalid password");
-					//$('#re_password').hide();
 				}
-				/*else if($.trim(result)=="2"){
-                   $('#error_updatePassword').html("Password and Re_password does not match");
-              	}*/
 				else{
-					//var x = document.getElementById('re_password');
-					//x.disabled = false;
 					$('#error_updatePassword').html("");
 				}
 			}
@@ -186,20 +175,11 @@ $('#npassword').blur(function(){
 			success: function(result){
 				if($.trim(result) == "1"){
 					$('#error_updatePassword').html("Passwords do not match.");
-					//$('#set_password').disabled();
 				}
-				/*else if($.trim(result)=="2"){
-                   $('#error_updatePassword').html("Password and Re_password does not match");
-              		//$('#set_password').disabled();
-              	}*/
 				else{
-					//var z = document.getElementById('set_password');
-					//z.disabled=false;
 					$('#error_updatePassword').html("");
-					//$('#set_password').show();
 				}
 			}
-
 		});
 
 	});
@@ -245,6 +225,7 @@ $('#edit-email').click( function(){
 	$('#set-email').show();
 	$('#cancel-email').show();	
 	$('#email').show();
+	$('#error_update').html("");
 });
 
 $('#edit-password').click( function(){
@@ -259,6 +240,7 @@ $('#edit-password').click( function(){
 	$('#opassword').show();
 	$('#npassword').show();
 	$('#re-npassword').show();
+	$('#error_updatePassword').html("");
 });
 
 $('#set-email').click(function(){
@@ -326,7 +308,10 @@ if(npassword == re_password){
 								},
 							error: function()
 							{
-								alert('Oops. An error occured.');
+									$("#alert_update").show();
+									$('#alert_update').html("Oops.An error occured.");
+									$("#alert_update").fadeIn('slow');
+									setTimeout(function() { $('#alert_update').fadeOut('slow') }, 3000);
 							}
 							});
 				}
@@ -338,7 +323,10 @@ if(npassword == re_password){
 
 			},
 			error: function() {
-				alert('Oops.An error occured.');
+				$("#alert_update").show();
+				$('#alert_update').html("Oops.An error occured.");
+				$("#alert_update").fadeIn('slow');
+				setTimeout(function() { $('#alert_update').fadeOut('slow') }, 3000);
 			}
 
 		});
@@ -346,7 +334,7 @@ if(npassword == re_password){
 
 else
 {
-		$('#error_updatePassword').html("New password does not match.");
+	$('#error_updatePassword').html("New password does not match.");
 }
 
 	/*if((npassword == re_password) && (cpword == pword))
@@ -549,7 +537,6 @@ $('#cancel-password').click(function(){
 		$('#error').hide();
 		$('#error_update').html("");
 		$("#email-label").show();               
-		$("#update_password[type=button]").removeAttr("disabled"); 
 		}
 
 	function cancel(){

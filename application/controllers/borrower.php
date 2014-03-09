@@ -52,28 +52,28 @@ class Borrower extends CI_Controller {
 	}
 	
 
-	public function cancel_reservation(){
-			$this->load->library("session");
-			$this->load->helper('url');
-			$matid = $this->input->post('materialid');
-			$this->load->model('user/reservation_model');
-			$this->reservation_model->cancel_res($matid);
-	//		$this->reserved_materials_view();
-		}	
+public function cancel_reservation(){
+		$this->load->library("session");
+		$this->load->helper('url');
+		$matid = $this->input->post('materialid');
+		$this->load->model('user/reservation_model');
+		$this->reservation_model->cancel_res($matid);
+//		$this->reserved_materials_view();
+	}	
 
 
-	public function check_logout(){
-			$is_logged_in = $this->is_logged_in();
-			$this->no_cache();
-			if( $is_logged_in ){
-				redirect('/borrower/borrowed_materials', 'refresh');
-			} else {
-				$this->load->view('borrower/forgot_pword');
-			}
-		
-	}
-		
-	public function home(){
+public function check_logout(){
+		$is_logged_in = $this->is_logged_in();
+		$this->no_cache();
+		if( $is_logged_in ){
+			redirect('/borrower/borrowed_materials', 'refresh');
+		} else {
+			$this->load->view('borrower/forgot_pword');
+		}
+	
+}
+	
+public function home(){
 		$is_logged_in = $this->is_logged_in();
 		if( !$is_logged_in ){
 			redirect('/borrower/login/null', 'refresh');
@@ -99,7 +99,8 @@ class Borrower extends CI_Controller {
 			$this->load->view('user/profile', $data);	
 		}
 	}
-		
+	
+	//7am update
 	public function login($message){
 		$is_logged_in = $this->is_logged_in();
 		$this->no_cache();
@@ -108,16 +109,25 @@ class Borrower extends CI_Controller {
 		} else {
 		
 		if($message != null){
-			if($message =='dne') $message = 'Username does not exist!';
-			else if($message =='dnm') $message = 'Password does not match with the username!';
-		
+			if($message != 'dne' && $message != 'dnm' && $message !='done' && $message !='verified' ){
+					$this->load->model('user/log_model');
+					$em = $this->input->post('email');
+					$borrower_info = $this->log_model->get_password($message);
+					$data['idnumber'] = $borrower_info[0]->idnumber ;
+					$data['password'] =$borrower_info[0] ->password;
+					$data['email'] = $borrower_info[0]->email ;
+			}
+			else{
+			$data['idnumber'] =null;
+			$data['password'] =null;
+			$data['email'] = null;
+			}
 			$data['message'] = $message;
-		
 			$this->load->view('user/forgot_pword',$data);
 		}
 		
 		}
-	}	
+	}	//7am update
 	
 	public function check_user(){
 		$this->load->model('user/check_user_model');
@@ -128,36 +138,45 @@ class Borrower extends CI_Controller {
 		if( $user_count != 1 ){
 			echo "0";
 		}else {
-			$pass_count =  $this->check_user_model->check_password();
 
-			//user exists but pword does not match
-			if( $pass_count != 1 ){
-				echo "2";
-			} 
-			//password and email match
-			else {
-				$this->load->model('user/log_model');
-				$borrower_info = $this->log_model->get_borrower($this->input->post('email'), $this->input->post('pword'));
-				$this->session->set_userdata('idnumber',$borrower_info[0]->idnumber);
-				$this->session->set_userdata('email',$borrower_info[0]->email);
-				$this->session->set_userdata('password',$this->input->post('pword'));
-				$this->session->set_userdata('bookcount',$borrower_info[0]->bookcount);
+			$active = $this->check_user_model->check_email_activation();
 
-				$b_info = $this->log_model->get_info($borrower_info[0]->idnumber);
-				$this->session->set_userdata('college',$b_info[0]->college);
-				$this->session->set_userdata('course',$b_info[0]->course);
-				$this->session->set_userdata('sex',$b_info[0]->sex);
-				$this->session->set_userdata('classification',$b_info[0]->classification);
-				$this->session->set_userdata('fname',$b_info[0]->fname);
-				$this->session->set_userdata('mname',$b_info[0]->mname);
-				$this->session->set_userdata('lname',$b_info[0]->lname);
-				echo "1";
+			if($active == 1){
+				echo "3";
+			}else{//activated
+				$pass_count =  $this->check_user_model->check_password();
+
+				//user exists but pword does not match
+				if( $pass_count != 1 ){
+					echo "2";
+				} 
+				//password and email match
+				else {
+					$this->load->model('user/log_model');
+					$borrower_info = $this->log_model->get_borrower($this->input->post('email'), $this->input->post('pword'));
+					$this->session->set_userdata('idnumber',$borrower_info[0]->idnumber);
+					$this->session->set_userdata('email',$borrower_info[0]->email);
+					$this->session->set_userdata('password',$this->input->post('pword'));
+					$this->session->set_userdata('bookcount',$borrower_info[0]->bookcount);
+
+					$b_info = $this->log_model->get_info($borrower_info[0]->idnumber);
+					$this->session->set_userdata('college',$b_info[0]->college);
+					$this->session->set_userdata('course',$b_info[0]->course);
+					$this->session->set_userdata('sex',$b_info[0]->sex);
+					$this->session->set_userdata('classification',$b_info[0]->classification);
+					$this->session->set_userdata('fname',$b_info[0]->fname);
+					$this->session->set_userdata('mname',$b_info[0]->mname);
+					$this->session->set_userdata('lname',$b_info[0]->lname);
+					$this->session->set_userdata('searchtype',0);
+					echo "1";
+				}
 			}
+			
 		}
 	
 	}
 	
-	public function logout()
+public function logout()
 	{
 		$this->session->sess_destroy();
 		$this->index();
@@ -230,6 +249,16 @@ public function load_profile(){
 			
 	}
 
+public function resend_mail(){
+	$this->load->model('user/verification_model');
+
+	$email = $this->input->post('email');
+	$idnumber = $this->input->post('idnumber');
+	$password = SHA1($this->input->post('password'));
+
+	$this->verification_model->send_verification_email($idnumber, $email, $password);
+}
+
 
 public function registration(){
 
@@ -255,10 +284,11 @@ public function validate_email($idnumber, $verification_code){
 			$validated = $this->verification_model->validate_email($idnumber, $verification_code);
 			
 			if($validated === true){
-				echo 'YOUR ACCOUNT HAS BEEN VERIFIED YEY';
+				//echo 'YOUR ACCOUNT HAS BEEN VERIFIED YEY';
+				$this->login('verified');
 			}
 			else{
-				echo 'error';
+				$this->login('done');
 			}
 	}
 
@@ -361,7 +391,7 @@ public function checkpassword(){
 		//field name, error message, validation rules
 		
 		$this->form_validation->set_rules('password', 'Password',
-			'trim|required|min_length[8]|max_length[32]');
+			'trim|required|min_length[6]|max_length[32]');
 		
 		if($this->form_validation->run() == FALSE){
 			echo "1";
@@ -393,6 +423,8 @@ public function resend_email_verification(){
 				}
 			}
 }
+
+
 
 public function forgot_password()
 	{	
@@ -570,8 +602,9 @@ public function updatePassword(){
 	echo "1";
 }
 
+
 public function getPassword()
-{
+	{
 	$opassword = $this->input->post('opassword');
 	$idnumber = $this->input->post('idnumber');
 
@@ -584,7 +617,10 @@ public function getPassword()
 	echo json_encode($ret_val);
 	
 
-}
+	}
+
+
+
 
 public function outside_search(){
 			
@@ -607,7 +643,7 @@ public function outside_search(){
 
 
 
-public function new_search(){
+/*public function new_search(){
 		$is_logged_in = $this->is_logged_in();
 		if( !$is_logged_in ){
 			redirect('/borrower/login/null', 'refresh');
@@ -632,6 +668,13 @@ public function new_search(){
 			$this->load->model('user/basic_search_model');
 
 			
+
+
+
+
+
+
+
 		
 			$this->load->model('user/reservation_model');
 			$result_info['matid'] = $this->reservation_model->if_reserved($userid);
@@ -659,7 +702,7 @@ public function new_search(){
 			//$this->load->view('user/search_results_view', $result_info);
 			$this->load->view('user/search_results_view', $result_info);	
 		}
-	}
+	}*/
 
 	public function get_message(){
 		$this->load->model('user/borrowed_model'); 
@@ -672,15 +715,76 @@ public function new_search(){
 		echo json_encode($data);
 	}
 
-	public function insert_rating(){
-		$this->load->model('user/rating_model');
-		$idnumber = $this->session->userdata('idnumber');
-		$isbn = $this->input->post('isbn');
-		$materialid = $this->input->post('materialid');
-		$rating = $this->input->post('rating');
 
-		$this->rating_model->check_rating(trim($materialid), trim($idnumber), trim($isbn),$rating);
+
+
+
+
+	
+
+public function new_search(){
+		$is_logged_in = $this->is_logged_in();
+		if( !$is_logged_in ){
+			redirect('/borrower/login/null', 'refresh');
+		}else{
+			$this->no_cache();
+			$this->load->helper('url');
+			
+			$search = 	$this->db->escape_str($this->input->post('searchbox'));
+			$userid = $this->session->userdata('email');
+			
+			$search_option = $this->input->post('category'); //array yung options
+			$s_access_val = $this->input->post('s_access_val');
+			$category = $this->input->post('category'); 
+			$s_type = $this->input->post('s_type'); 
+			$s_accessibility = $this->input->post('s_accessibility'); 
+
+			$st = $this->session->userdata('searchtype');
+			
+			if($st == 0){
+
+				$this->load->model('user/basic_search_model');
+				$result_info['value'] = $this->basic_search_model->get_search_res($search,$search_option);
+			}
+			else if($st == 1){
+				
+				$this->load->model('user/advance_search_model');
+				$result_info['value'] = $this->advance_search_model->get_adv_search($search,$category,$s_access_val,$s_type,$s_accessibility);
+			}
+
+			$this->load->model('user/basic_search_model');
+			$this->load->model('user/reservation_model');
+			$result_info['matid'] = $this->reservation_model->if_reserved($userid);
+			$result_info['material'] = $this->reservation_model->if_waitlisted($userid);
+			$result_info['total'] = $this->reservation_model->get_total($userid);
+			
+			$this->load->model('user/borrowed_model');
+			$result_info['borrowed'] = $this->borrowed_model->get_borrowed_material();
+			$result_info['res'] = $this->borrowed_model->get_reservations();
+			$result_info['overdue'] = $this->borrowed_model->get_overdue();
+			$result_info['readytoclaim'] = $this->borrowed_model->get_ready_to_claim();
+			
+		
+			$result_info['reserved'] = $this->borrowed_model->get_reserved_books();
+				
+			$result_info['borrowedCount'] = $this->borrowed_model->get_borrowed_material_count();
+			$result_info['reservedCount'] = $this->borrowed_model->get_reserved_material_count();
+			$result_info['overdueCount'] = $this->borrowed_model->get_overdue_material_count();
+
+			$this->load->model('user/reservation_model');
+			$result_info['list'] = $this->reservation_model->waitlisted_matid($userid);
+			$result_info['rank'] = $this->reservation_model->get_rank($userid);
+			$result_info['total'] = $this->reservation_model->get_total($userid); //end update
+			
+			$result_info['searchtext'] = $this->db->escape_str($this->input->post('searchbox'));
+			$this->load->view('user/search_results_view', $result_info);
+		}
 	}
+
+
+
+
+	
 }
 
 ?> 

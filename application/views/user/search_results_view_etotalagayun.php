@@ -7,6 +7,11 @@
 
 ?>
 
+	<!--
+	
+			HOME PAGE - BORROWER
+
+	-->
 	<style>
 		.sidebar{border-right: 1px solid #eee; height:700px;}
 		th{text-align: center;}
@@ -36,7 +41,14 @@
 					}
 				?>
 					<!--search bar-->
-					<?php include 'search_bar.php'; ?>				
+					
+					<?php include 'search_bar.php'; ?>
+					<!--
+
+						JOHANA, DITO ILALAGAY YUNG FILTERS PARA SA ADVANCED SEARCH :)
+
+					-->
+										
 					<br />
 					<?php
 						if($email){
@@ -47,6 +59,7 @@
 					
 
 						<?php
+						//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 								$reserved_flag=0;
 								$waitlist_flag=0;
 								$rowNum 	 = 0;
@@ -111,17 +124,7 @@
 											
 										echo "<td class = 'type' align='center'>". $type ."</td>";
 										//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-										/*echo "<td><span class='table-text'><b> ${row['name']} </b></span> <br/>
-
-										<span class='author'> ${row['authorname']}</span><br /></td>";*/
-										echo "<td><b><span class ='title'>${row['name']}.</b></span><br />";									
-										foreach ($row['author'] as $name) {
-											$name = (array)$name;
-											echo "<span class ='author'> ${name['lname']}, ${name['fname']} ${name['mname']}.</span>";
-										}
-										echo "</td>";
-
-
+										echo "<td><span class='table-text'><b> ${row['name']} </b></span> <br/><span class='author'> ${row['authorname']}</span><br /></td>";
 										//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 										if($email){
 											$t_q = 0;
@@ -162,8 +165,8 @@
 											}
 											else if($this->session->userdata('classification') == 'F' && $row['access']==1){
 													
-												echo "<td><span class='table-text'><center>" . "STUDENT USE" . "</span></center></td>";
-												echo "</tr>";	
+													echo "<td><span class='table-text'><center>" . "STUDENT USE" . "</span></center></td>";
+													echo "</tr>";	
 												
 											}
 											else if($this->session->userdata('classification') == 'S' && $row['access']==2){
