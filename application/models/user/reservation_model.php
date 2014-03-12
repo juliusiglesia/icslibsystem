@@ -124,7 +124,7 @@ class Reservation_model extends CI_Model{
 				   $isbn = $res->isbn;
 			}
 			
-			$insert="INSERT INTO reservation(idnumber, materialid, queue, isbn, startdate) VALUES ('{$idno}', '{$materialid}', '{$qno}', '{$isbn}', sysdate())";
+			$insert="INSERT INTO reservation(idnumber, materialid, queue, isbn) VALUES ('{$idno}', '{$materialid}', '{$qno}', '{$isbn}')";
 			$insertbm = $this->db->query($insert);
 			
 		}

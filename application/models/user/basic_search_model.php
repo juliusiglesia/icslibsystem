@@ -8,83 +8,47 @@
 	
 		public function get_search_res($search, $category)
 		{
-
-
+			$search = $this->db->escape_like_str($search);
+			$search = trim($search);
+			$search = mysql_real_escape_string($search);
+			$search = htmlspecialchars($search);
+			$search = str_replace("'", '', $search);
 			$return_array = array();
-			
 			$this->load->database();
 			$this->load->library("session");
 			
 			$conditions = array();
-
 			$search = strtolower($search);
-			
-			/*if($filter == 'keyword'){
-				$stmt = "SELECT DISTINCT l.materialid, l.isbn, l.name, l.course, l.available, l.access, l.type, l.year, l.edvol, l.borrowedcount, l.requirement, l.quantity, l.borrowedcopy,
-						GROUP_CONCAT(a.lname, ', ', a.fname, ' ', a.mname, '\n') as authorname
-						FROM author a, librarymaterial l
-						WHERE (a.fname LIKE '{%{$search}%}' 
-						OR a.materialid LIKE '%{$search}%'
-						OR a.mname LIKE '%{$search}%' 
-						OR a.lname LIKE '%{$search}%'
-						OR l.materialid LIKE '%{$search}%' 
-						OR l.course LIKE '%{$search}%'
-						OR l.type LIKE '%{$search}%'  
-						OR l.name LIKE '%{$search}%'
-						OR l.year LIKE '%{$search}%')	
-						AND a.materialid = l.materialid 
-						GROUP BY l.materialid
-						ORDER BY l.name";
-			}
-			else if($filter=='name' || $filter =='course' ){
-				$stmt = "SELECT DISTINCT l.materialid, l.isbn, l.name, l.course, l.available, l.access, l.type, l.year, l.edvol, l.borrowedcount, l.requirement, l.quantity, l.borrowedcopy,
-						GROUP_CONCAT(a.lname, ', ', a.fname, ' ', a.mname, '\n') as authorname
-						FROM author a, librarymaterial l
-						WHERE l.$filter LIKE '%{$search}%'	
-						AND a.materialid = l.materialid 
-						GROUP BY l.materialid
-						ORDER BY l.name";
+			//$conditions = "";
+			$temp_search = explode(" ", $search);
 
-			
-			}
-			else if($filter=='author'){
-				$stmt = "SELECT DISTINCT l.materialid, l.isbn, l.name, l.course, l.available, l.access, l.type, l.year, l.edvol, l.borrowedcount, l.requirement, l.quantity, l.borrowedcopy,
-						GROUP_CONCAT(a.lname, ', ', a.fname, ' ', a.mname, '\n') as authorname
-						FROM author a, librarymaterial l
-						WHERE (a.fname LIKE '{%{$search}%}' 
-						OR a.mname LIKE '%{$search}%' 
-						OR a.lname LIKE '%{$search}%')	
-						AND a.materialid = l.materialid 
-						GROUP BY l.materialid
-						ORDER BY l.name";	
-			}*/
-
-			$conditions = "";
-			$condition_author = "";
+			for($i=0; $i<count($temp_search); $i++){	
 				//get the queries
 				if($category=='author'){ //check if author is checked
-					$condition_author = " (LOWER(fname) LIKE '%{$search}%' OR LOWER(mname) LIKE '%{$search}%' OR LOWER(lname) LIKE '%{$search}%') ";
+					$conditions[] = "(a.fname LIKE '%{$temp_search[$i]}%' OR a.mname LIKE '%{$temp_search[$i]}%' OR a.lname LIKE '%{$temp_search[$i]}%')";
 				}
 				else if($category=='name'){ //check if title is checked
-					$conditions = "(LOWER(name) LIKE '%{$search}%') ";
+					$conditions[] = "(l.name LIKE '%{$temp_search[$i]}%')";
 				}
 				else if($category=='course'){ //check if course is checked
-					$conditions = " (LOWER(course) LIKE '%{$search}%') ";
+					$conditions[] = "(l.course LIKE '%{$temp_search[$i]}%')";
 				}
 				else if($category=='keyword'){ //check if year is checked
-					$conditions = " (LOWER(name) LIKE '%{$search}%' OR LOWER(course) LIKE '%{$search}%')";
-					$condition_author = " (LOWER(fname) LIKE '%{$search}%' OR LOWER(mname) LIKE '%{$search}%' OR LOWER(lname) LIKE '%{$search}%') ";
+					$conditions[] = "(l.name LIKE '%{$temp_search[$i]}%' OR l.course LIKE '%{$temp_search[$i]}%') 
+									OR (a.fname LIKE '%{$temp_search[$i]}%' OR a.mname LIKE '%{$temp_search[$i]}%' OR a.lname LIKE '%{$temp_search[$i]}%')";
+				}
+			}
+				$id = $this->session->userdata('idnumber');
+
+				if(count($conditions)!=0){			
+					$stmt = "SELECT DISTINCT r.rating, l.materialid, l.isbn, l.name, l.course, l.available, l.access, l.type, l.year, l.edvol, l.borrowedcount, l.requirement, l.quantity, l.borrowedcopy
+						FROM librarymaterial l INNER JOIN author a ON a.materialid = l.materialid LEFT JOIN rating r ON r.idnumber = '${id}' AND l.materialid = r.materialid WHERE ". implode(' OR ', $conditions) . "ORDER BY l.name";
+				}
+				else{
+					$stmt = "SELECT DISTINCT r.rating, l.materialid, l.isbn, l.name, l.course, l.available, l.access, l.type, l.year, l.edvol, l.borrowedcount, l.requirement, l.quantity, l.borrowedcopy
+						FROM librarymaterial l INNER JOIN author a ON a.materialid = l.materialid LEFT JOIN rating r ON r.idnumber = '${id}' AND l.materialid = r.materialid ORDER BY l.name";	
 				}
 
-				if ( $conditions != "" && $condition_author != "" ) $stmt = "SELECT DISTINCT l.materialid, l.isbn, l.name, l.course, l.available, l.access, l.type, l.year, l.edvol, l.borrowedcount, l.requirement, l.quantity, l.borrowedcopy
-						FROM librarymaterial l WHERE ${conditions} OR 
-						materialid IN ( SELECT materialid FROM author WHERE ${condition_author} )
-						ORDER BY l.name";
-
-				else $stmt = "SELECT DISTINCT l.materialid, l.isbn, l.name, l.course, l.available, l.access, l.type, l.year, l.edvol, l.borrowedcount, l.requirement, l.quantity, l.borrowedcopy
-						FROM librarymaterial l ORDER BY l.name";
-
-				echo $stmt;
 				$query = $this->db->query($stmt);
 				$query = $query->result();
 

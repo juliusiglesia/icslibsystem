@@ -25,15 +25,8 @@ class Borrowed_books_model extends CI_Model{
 		$query = $this->db->query("SELECT l.materialid, b.idnumber, l.isbn, l.type, l.name, b.start, b.expectedreturn,
 									GROUP_CONCAT(a.lname, ', ', a.fname, ' ', a.mname, '; ') as authorname
 									FROM librarymaterial l, borrowedmaterial b, author a WHERE l.materialid = b.materialid AND b.materialid = a.materialid AND b.status LIKE 'BORROWED' GROUP BY a.materialid ORDER BY b.expectedreturn");
-		/*
-		$result = $query->result();
-
-		foreach($result as $row) {
-				$return_array[count($return_array)] = (array)$row;
-		}
-		*/
-		//echo count($query->result());
-		return $query;
+		
+        return $query->result();
 	}
 
 	public function get_fine(){
@@ -41,6 +34,13 @@ class Borrowed_books_model extends CI_Model{
 		$this->load->database();
 		$query = $this->db->query("SELECT fine FROM settings");
 		return $query->row()->fine;
+	}
+
+	public function get_enable_fine(){
+
+		$this->load->database();
+		$query = $this->db->query("SELECT fineenable FROM settings");
+		return $query->row()->fineenable;
 	}
 
 	public function get_searched_book($word) {
@@ -57,7 +57,7 @@ class Borrowed_books_model extends CI_Model{
 									FROM librarymaterial l, borrowedmaterial b, author a WHERE l.materialid = b.materialid AND b.materialid = a.materialid AND b.status LIKE 'BORROWED' GROUP BY a.materialid ORDER BY b.expectedreturn");
 		}
 
-		return $query;
+        return $query->result();
 	}
 }
 

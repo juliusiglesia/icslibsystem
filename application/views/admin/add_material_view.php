@@ -19,28 +19,31 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
         <?php include 'includes/header.php'; ?>
         <div class="mainBody">
             <!-- Nav tabs -->
-            <?php include 'includes/sidebar.php'; ?> 
+            <?php include 'includes/sidebar.php'; ?>   
 
-       <div class="leftMain">
+        <div class="leftMain">
         	<div id="main-page">
         		<div id = "main-content">
 					<div id="container">
-						<form name="add" id="add" method="post" action="admin_search" onsubmit="return showModal()" class="form-horizontal">
+						<form name="add" id="add" method="post" class="form-horizontal">
+
 							<br />
 							<h2> Add New Material </h2>
 							<ol class="breadcrumb">
-								<li><a href="<?php echo base_url()?>admin/home">Home</a></li>
+								<li><a href="<?php echo site_url();?>/admin/home">Home</a></li>
 								<li class="active"> Add New Material </li>
 							</ol>
-							<h2 class="form-signin-heading">Fill up the necessary info: </h2>
+							<div class="alert-container" style = 'height: 40px; margin-bottom: 19px;'>
+									<div style="display:none" id="success_add" class = "alert alert-success"></div>
+									<div style="display:none" id="fail_add" class = "alert alert-danger"></div>
+							</div> 
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Library Material ID</label>
-								<label id="preclass" class="col-sm-1 control-label">CS1-</label>
+								<label id="preclass" name="preclass" class="col-sm-1 control-label">CS1-</label>
 								<div class="col-sm-1">
-									<input type="text" class="form-control" id="material" placeholder="A1" name="material" pattern="[A-Za-z0-9]+" required>
+									<input type="text" maxlength="10" class="form-control" id="materialid" placeholder="A1" name="materialid" pattern="[A-Za-z0-9]+" required>
 								</div>
-								<input type="hidden" id="matID" name="materialid" />
-								<span style="color: red;" name="helpmaterialid"></span>
+								<span style="color: red;" id="helpmaterialid" name="helpmaterialid"></span>
 							</div>
 							<div class="form-group">
 								<label for="type" class="col-sm-2 control-label">Type</label>
@@ -59,9 +62,9 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 							<div id="isbn_div" class="form-group" style='display:block'>
 								<label for="type" class="col-sm-2 control-label">ISBN</label>
 								<div class="col-sm-2">
-									<input type="text" class="form-control"  name="isbn" id="isbn" pattern="[0-9]+" placeholder="ISBN" required/>
+									<input type="text" maxlength="10" class="form-control"  name="isbn" id="isbn" pattern="[0-9]+" placeholder="ISBN" required/>
 								</div>
-								<span style="color: red;" name="helpisbn">
+								<span style="color: red;" id="helpisbn" name="helpisbn">
 							</div>
 							<div id="course_div" class="form-group" style="display:block">
 								<label for="course" class="col-sm-2 control-label">Course Classification</label>
@@ -109,11 +112,11 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 							<div class="form-group"><br />
 								<label for="year" class="col-sm-2 control-label">Year of Publication</label>
 								<div class="form-inline col-sm-2">
-									<input type="number" name="year" class="form-control" id="year" placeholder="YYYY" min="1950" max="2014" pattern="[0-9][0-9][0-9][0-9]" required>
+									<input type="number" name="year" class="form-control" id="year" value="2014" placeholder="YYYY" min="1950" max="2014" pattern="/^[0-9][0-9][0-9][0-9]$/" required>
 								</div>
 								<span style="color: red;" name="helpyear">
 							</div>
-							<div class="form-group"><br />
+							<div id="edvol_div" class="form-group"><br />
 								<label for="ed" class="col-sm-2 control-label">Edition</label>
 								<div class="form-inline col-sm-2">
 									<input type="text" name="edvol" class="form-control" id="ed" placeholder="Edition (optional)" pattern="[0-9]">
@@ -123,609 +126,518 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 							<div class="form-group"><br />
 								<label for="access" id="asdf" class="col-sm-2 control-label">Accessibility</label>
 								<div class="col-sm-3">
-								<select name="access" id="access" class="form-control" required>
-									
+									<select name="access" id="access" class="form-control" required>
 										<option value="4">Student/Faculty</option>
 										<option value="1">Student</option>
 										<option value="2">Faculty</option>
 										<option value="3">Room Use</option>				
-								</select>
+									</select>
 								</div>
 							</div>
 							<div class="form-group"><br />
 								<label for="availability" class="col-sm-2 control-label">Availability</label>
 								<div class="col-sm-2">
-									<input type="radio" name="available" value="1" checked> Yes
+									<input type="radio" name="available" id="yes" value="1" checked> Yes
 									<input type="radio" name="available" value="0" disabled> No
 								</div>
 							</div>
 							<div class="form-group"><br />
 								<label for="availability" class="col-sm-2 control-label">Requirements</label>
 								<div class="col-sm-6">
-									<input type="radio" name="requirement" value="0" checked> None
+									<input type="radio" name="requirement" id="none" value="0" checked> None
 									<input type="radio" name="requirement" value="1"> Letter of the Owner / Consent of Instructor
 								</div>
 							</div>
 							<div class="form-group"><br />
 								<label class="col-sm-2 control-label">Author</label>
 								<div class="form-inline col-sm-6">
+									<span style='color:red;' name='helpauthor'></span>
 									<table id="formTable">
-									<tr>
-										<td><input type="text" name="fname1" id="fname1" class="form-control" placeholder="First Name" name="materialid" pattern="[A-Za-z]+" required></td>
-										<td><input type="text" name="mname1" id="mname1" class="form-control" placeholder="Middle Name" name="materialid" pattern="[A-Za-z]+" required></td>
-										<td><input type="text" name="lname1" id="lname1" class="form-control" placeholder="Last Name" name="materialid" pattern="[A-Za-z]+" required></td>
-										<td><input type="button" value="+" onClick="addRow()"></td>
-										<td><input type="button" value="x" onclick="deleteRow(this)" disabled ></td></td>
-										<td><span style="color: red;" name="helpauthor"></td>
-										<td><input type="hidden" name="numberOfAuthors" value="1"/></td>
-									</tr>
+										<tr>
+											<td><input type="text" name="fname" id="fname" class="form-control" placeholder="First Name" pattern="[A-Za-z\ ]+" required></td>
+											<td><input type="text" name="mname" id="mname" class="form-control" placeholder="Middle Name" pattern="[A-Za-z\ ]+" required></td>
+											<td><input type="text" name="lname" id="lname" class="form-control" placeholder="Last Name" pattern="[A-Za-z\ ]+" required></td>
+											<td><input type="button" value="+" onClick="addRow()"></td>
+											<td><input type="button" value="x" onclick="deleteRow(this)" disabled ></td>
+											<td><input type="hidden" name="numberOfAuthors" value="1"/></td>
+										</tr>
 									</table>
-								</div>
-							</div>		
+								</div> 
+							</div>	
+							</form>	
 							<div class="form-group"><br />
 								<div class="col-sm-offset-2 col-sm-10">
-									<input type="submit" class="btn btn-default" id="addButton" name="insert" value="Add">
-									<a href="<?php echo base_url();?>admin/add_multiple"><button type="button" class="btn btn-primary">Add Multiple Material</button></a>
+									<button onclick="addDetails()" class="btn btn-primary" id="addButton" name="add">Add</button>
+									<a href="<?php echo site_url();?>/admin/add_multiple"><button type="button" class="btn btn-default">Add Multiple Material</button></a>
 								</div>
 							</div>
-						</form><br/>
-						<div class="modal fade" id="container1" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-						  	<div class="modal-dialog modal-sm" >
-								<div class="modal-content">
-							  		<div class="modal-header">
-										<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-										<h3 class="modal-title" id="myModalLabel">Successfully added material</h3>
-									</div>
-									<div id="details" class="modal-body">
-									</div>
-									<div class="modal-footer">
-										<button class="btn" data-dismiss="modal" aria-hidden="true">Done</button>
-									</div>
-								</div>
-							</div>
-						</div>		
-		</div></div></div></div>
+						<br>		
+					</div>
+				</div>
+			</div>
+		</div>
 
-		<!-- Footer -->
 		<?php include 'includes/footer.php'; ?>
-	<script type="text/javascript">
-
-			$('#add-nav').addClass('active');
-			var n = 1;
-			
-			function deleteRow(row){
-				n--;
-				
-				var i=row.parentNode.parentNode.rowIndex;
-				document.getElementById('formTable').deleteRow(i);
-			}
-		
-			function addRow(){
-				n++;
-				
-				var x=document.getElementById('formTable');
-				// deep clone the targeted row
-				var new_row = x.rows[0].cloneNode(true);
-				
-				// set the innerHTML of the first row 
-				//new_row.cells[0].innerHTML = '';
-				
-				var inp6 = new_row.cells[6].getElementsByTagName('input')[0];
-				inp6.value = n;
-				
-				// grab the input from the first cell and update its ID and value
-				var inp1 = new_row.cells[0].getElementsByTagName('input')[0];
-				inp1.name = 'fname' + n;
-				inp1.id = 'fname' + n;
-				inp1.placeholder = 'First Name';
-				inp1.required = true;
-				inp1.pattern = "[A-Za-z]+";
-				inp1.value = '';
-				
-				// grab the input from the first cell and update its ID and value
-				var inp2 = new_row.cells[1].getElementsByTagName('input')[0];
-				inp2.name = 'mname' + n;
-				inp2.id = 'mname' + n;
-				inp2.placeholder = 'Middle Name';
-				inp2.required = true;
-				inp2.pattern = "[A-Za-z]+";
-				inp2.value = '';
-				
-				
-				// grab the input from the first cell and update its ID and value
-				var inp3 = new_row.cells[2].getElementsByTagName('input')[0];
-				inp3.name = 'lname' + n;
-				inp3.id = 'lname' + n;
-				inp3.placeholder = 'Last Name';
-				inp3.required = true;
-				inp3.pattern = "[A-Za-z]+";
-				inp3.value = '';
-				
-				
-				var inp4 = new_row.cells[3].getElementsByTagName('input')[0];
-				inp4.disabled = false;
-				
-				var inp5 = new_row.cells[4].getElementsByTagName('input')[0];
-				inp5.disabled = false;
-				
-				
-				// append the new row to the table
-				x.appendChild(new_row);
-			}
-			
-			window.onload = function() {
-				add.material.onblur = validateMaterialID;
-				add.type.onchange = disableFeatures;
-				if (document.getElementById("course_div").style.display == 'block') add.course.onchange = disableFeatures;
-				if (document.getElementById("isbn_div").style.display == 'block') add.isbn.onblur = validateISBN;
-				add.name.onblur = validateName;
-				add.year.onchange = disableFeatures;
-				add.course.onchange = disableFeatures;
-				add.edvol.onblur = validateEdition;
-				$('#container1').modal('hide');
-			}
-			
-			function validateMaterialID(){
-				msg = "Invalid input. ";
-				str = add.material.value;
-				if (str == "") {
-					msg+="Library Material ID is required. ";
-				}
-				if (!str.match(/^[A-Za-z0-9]+$/)) {
-					msg+="Characters are invalid.";
-				}
-				if (msg == "Invalid input. ") msg="";
-
-				document.getElementsByName("helpmaterialid")[0].innerHTML = msg;
-				if (msg == ""){ 
-					return true;
-				}
-			}
-
-			function disableFeatures(){
-				type = add.type.value;
-				
-				if(type == "Book"){
-					//add.isbn.disabled = false;
-					add.isbn.disabled = false;
-					add.course.disabled = false;
-					//add.isbn.placeholder = "ISBN-10";
-					document.getElementById("preclass").innerHTML = add.course.value + "-";
-					//update.materialid.value = array[1];
-					document.getElementById("isbn_div").style.display = 'block';
-					document.getElementById("course_div").style.display = 'block';
-					document.getElementById("matID").value = document.getElementById("preclass").innerHTML + document.getElementById("material").value;
-				}
-				else if(type == "SP"){
-					document.getElementById("isbn").value = Math.floor(Math.random()*1000000000+1);
-					document.getElementById("preclass").innerHTML = "SP" + add.year.value + "-";
-					document.getElementById("isbn_div").style.display = 'none';
-					document.getElementById("course_div").style.display = 'none';
-					//add.isbn.disabled = true;
-					//add.course.disabled = true;
-					document.getElementById("matID").value = document.getElementById("preclass").innerHTML + document.getElementById("material").value;
-				}
-				else if(type == "References"){
-					add.isbn.disabled = false;
-					add.course.disabled = false;
-					document.getElementById("preclass").innerHTML = "R" + "-";
-					document.getElementById("isbn_div").style.display = 'block';
-					document.getElementById("course_div").style.display = 'block';
-					document.getElementById("matID").value = document.getElementById("preclass").innerHTML + document.getElementById("material").value;
-				}
-				else if(type == "CD"){
-					document.getElementById("isbn").value = Math.floor(Math.random()*1000000000+1);
-					document.getElementById("preclass").innerHTML = "CD" + "-";
-					document.getElementById("isbn_div").style.display = 'none';
-					document.getElementById("course_div").style.display = 'block';
-					//add.isbn.disabled = true;
-					//add.course.disabled = false;
-					document.getElementById("matID").value = document.getElementById("preclass").innerHTML + document.getElementById("material").value;
-				}
-				else if(type == "Journals"){
-					//add.isbn.disabled = false;
-					//add.course.disabled = true;
-					document.getElementById("preclass").innerHTML = "J" + "-";
-					document.getElementById("isbn_div").style.display = 'block';
-					document.getElementById("course_div").style.display = 'none';
-					document.getElementById("matID").value = document.getElementById("preclass").innerHTML + document.getElementById("material").value;
-				}
-				else if(type == "Magazines"){
-					//add.isbn.disabled = false;
-					//add.course.disabled = true;
-					document.getElementById("preclass").innerHTML = "M" + "-";
-					document.getElementById("isbn_div").style.display = 'block';
-					document.getElementById("course_div").style.display = 'none';
-					document.getElementById("matID").value = document.getElementById("preclass").innerHTML + document.getElementById("material").value;
-				}
-				else if(type == "Thesis"){
-					document.getElementById("isbn").value = Math.floor(Math.random()*1000000000+1);
-					document.getElementById("preclass").innerHTML = "T" + "-";
-					document.getElementById("isbn_div").style.display = 'none';
-					document.getElementById("course_div").style.display = 'none';
-					//add.isbn.disabled = true;
-					//add.course.disabled = true;
-					document.getElementById("matID").value = document.getElementById("preclass").innerHTML + document.getElementById("material").value;
-				}
-			}
-			
-			function validateISBN(){
-				msg = "Invalid input. ";
-				str = add.isbn.value;
-				pattern = add.isbn.pattern;
-				
-				if(add.type.value == "Book" || add.type.value == "References" ){
-					if (str == "") {
-						msg+="ISBN-10 is required. ";
-					}
-					if (!str.match(/^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$/)) {
-						msg+="Characters are invalid.";
-						pattern = "[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]";
-					}
-					if (msg == "Invalid input. ") msg="";
-
-					document.getElementsByName("helpisbn")[0].innerHTML = msg;
-					if (msg == ""){ 
-						return true;
-					}
-				}
-				else{
-					if (str == "") {
-						msg+="ISBN-8 is required. ";
-					}
-					if (!str.match(/^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$/)) {
-						msg+="Characters are invalid.";
-						pattern = "[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]";
-					}
-					if (msg == "Invalid input. ") msg="";
-
-					document.getElementsByName("helpisbn")[0].innerHTML = msg;
-					if (msg == ""){ 
-						return true;
-					}
-				}
-				
-			}
-			
-			function validateName(){
-				msg = "Invalid input. ";
-				str = add.name.value;
-				if (str == "") {
-					msg+="Title is required. ";
-				}
-				if (!str.match(/^[A-Z][A-Za-z0-9\ \.\,\-\'\?\!]+$/)) {
-					msg+="Characters are invalid.";
-				}
-				if (msg == "Invalid input. ") msg="";
-
-				document.getElementsByName("helpname")[0].innerHTML = msg;
-				if (msg == ""){ 
-					return true;
-				}
-			}
-			
-			function validateYear(){
-				msg = "Invalid input. ";
-				str = add.year.value;
-				if (str == "") {
-					msg+="Year of publication is required. ";
-				}
-				if (!str.match(/^[0-9][0-9][0-9][0-9]$/)) {
-					msg+="Characters are invalid.";
-				}
-				if (msg == "Invalid input. ") msg="";
-
-				document.getElementsByName("helpyear")[0].innerHTML = msg;
-				if (msg == ""){ 
-					return true;
-				}
-			}
-			
-			function validateEdition(){
-				msg = "Invalid input. ";
-				str = add.edvol.value;
-				if (str == "") {
-					add.edvol.value = "";
-				}
-				else if (!str.match(/^[0-9]+$/) && str != "") {
-					msg="Characters are invalid.";
-				}
-				if (msg == "Invalid input. ") msg="";
-				
-				document.getElementsByName("helpedvol")[0].innerHTML = msg;
-				if (msg == ""){ 
-					return true;
-				}
-			}
-			
-			<?php
-				if($this->session->flashdata('feedback1') != FALSE){
-					$back1 = "Invalid input. Material ID already exists.";
-					$back2 = "";
-					
-					$data = array();
-					$i = 0;
-					foreach($this->session->flashdata('feedback1') as $value){
-						$data[$i++] = $value;
-					}
-				}
-				else if($this->session->flashdata('feedback3') != FALSE){
-					$back1 = "";
-					$back2 = "Invalid input. ISBN already exists.";
-					$data = array();
-					$i = 0;
-					foreach($this->session->flashdata('feedback3') as $value){
-						$data[$i++] = $value;
-					}
-				}
-				else{
-					$back1 = "";
-					$back2 = "";
-					$data = array("CS128-","Book","","CS128","","","","4","","","1",array("","","",""));
-				}
-			?>
-			
-			var prompt1 = <?php echo json_encode($back1);?>;
-			document.getElementsByName("helpmaterialid")[0].innerHTML = prompt1;
-			
-			var prompt2 = <?php echo json_encode($back2);?>;
-			document.getElementsByName("helpisbn")[0].innerHTML = prompt2;
-			
-			var jArray = <?php echo json_encode($data);?>;
-			var m = jArray[10];
-			var i = 1, j= 1, f, m, l, mat;
-				
-			if(jArray[1] == "Book"){
-				document.getElementById('matID').value = jArray[0];
-				
-				mat = jArray[0].split("-");
-				
-				document.getElementById('preclass').innerHTML = mat[0] + '-';
-				document.getElementById('material').value = mat[1];
-				document.getElementById('type').value = jArray[1];
-				document.getElementById('isbn').value = jArray[2];
-				document.getElementById('course').value = jArray[3];
-				document.getElementById('title').value = jArray[4];
-				document.getElementById('year').value = jArray[5];
-				document.getElementById('ed').value = jArray[6];
-				document.getElementById('access').value = jArray[7];
-				
-				while(m != 1){
-					addRow();
-					m = m - 1;
-				}
-				
-				while(i <= jArray[10]){
-					f = 'fname' + i;
-					m = 'mname' + i;
-					l = 'lname' + i;
-					
-					document.getElementById(f).value = jArray[11][j++];
-					document.getElementById(m).value = jArray[11][j++];
-					document.getElementById(l).value = jArray[11][j++];
-					
-					i++;
-				}
-			}
-			if(jArray[1] == "SP"){
-				document.getElementById('matID').value = jArray[0];
-				
-				mat = jArray[0].split("-");
-				
-				document.getElementById('preclass').innerHTML = mat[0] + '-';
-				document.getElementById('material').value = mat[1];
-				document.getElementById('type').value = jArray[1];
-				document.getElementById('isbn').value = jArray[2];
-				document.getElementById('course').value = jArray[3];
-				document.getElementById('title').value = jArray[4];
-				document.getElementById('year').value = jArray[5];
-				document.getElementById('ed').value = jArray[6];
-				document.getElementById('access').value = jArray[7];
-				document.getElementById('course_div').style.display = 'none';
-				document.getElementById('isbn_div').style.display = 'none';
-				
-				while(m != 1){
-					addRow();
-					m = m - 1;
-				}
-				
-				while(i <= jArray[10]){
-					f = 'fname' + i;
-					m = 'mname' + i;
-					l = 'lname' + i;
-					
-					document.getElementById(f).value = jArray[11][j++];
-					document.getElementById(m).value = jArray[11][j++];
-					document.getElementById(l).value = jArray[11][j++];
-					
-					i++;
-				}
-			}
-			if(jArray[1] == "References"){
-				document.getElementById('matID').value = jArray[0];
-				
-				mat = jArray[0].split("-");
-				
-				document.getElementById('preclass').innerHTML = mat[0] + '-';
-				document.getElementById('material').value = mat[1];
-				document.getElementById('type').value = jArray[1];
-				document.getElementById('isbn').value = jArray[2];
-				document.getElementById('course').value = jArray[3];
-				document.getElementById('title').value = jArray[4];
-				document.getElementById('year').value = jArray[5];
-				document.getElementById('ed').value = jArray[6];
-				document.getElementById('access').value = jArray[7];
-				
-				while(m != 1){
-					addRow();
-					m = m - 1;
-				}
-				
-				while(i <= jArray[10]){
-					f = 'fname' + i;
-					m = 'mname' + i;
-					l = 'lname' + i;
-					
-					document.getElementById(f).value = jArray[11][j++];
-					document.getElementById(m).value = jArray[11][j++];
-					document.getElementById(l).value = jArray[11][j++];
-					
-					i++;
-				}
-			}
-			if(jArray[1] == "CD"){
-				document.getElementById('matID').value = jArray[0];
-				
-				mat = jArray[0].split("-");
-				
-				document.getElementById('preclass').innerHTML = mat[0] + '-';
-				document.getElementById('material').value = mat[1];
-				document.getElementById('type').value = jArray[1];
-				document.getElementById('isbn').value = jArray[2];
-				document.getElementById('course').value = jArray[3];
-				document.getElementById('title').value = jArray[4];
-				document.getElementById('year').value = jArray[5];
-				document.getElementById('ed').value = jArray[6];
-				document.getElementById('access').value = jArray[7];
-				document.getElementById('course_div').style.display = 'none';
-				document.getElementById('isbn_div').style.display = 'none';
-				
-				while(m != 1){
-					addRow();
-					m = m - 1;
-				}
-				
-				while(i <= jArray[10]){
-					f = 'fname' + i;
-					m = 'mname' + i;
-					l = 'lname' + i;
-					
-					document.getElementById(f).value = jArray[11][j++];
-					document.getElementById(m).value = jArray[11][j++];
-					document.getElementById(l).value = jArray[11][j++];
-					
-					i++;
-				}
-			}
-			if(jArray[1] == "Journals"){
-				document.getElementById('matID').value = jArray[0];
-				
-				mat = jArray[0].split("-");
-				
-				document.getElementById('preclass').innerHTML = mat[0] + '-';
-				document.getElementById('material').value = mat[1];
-				document.getElementById('type').value = jArray[1];
-				document.getElementById('isbn').value = jArray[2];
-				document.getElementById('course').value = jArray[3];
-				document.getElementById('title').value = jArray[4];
-				document.getElementById('year').value = jArray[5];
-				document.getElementById('ed').value = jArray[6];
-				document.getElementById('access').value = jArray[7];
-				document.getElementById('course_div').style.display = 'none';
-				
-				while(m != 1){
-					addRow();
-					m = m - 1;
-				}
-				
-				while(i <= jArray[10]){
-					f = 'fname' + i;
-					m = 'mname' + i;
-					l = 'lname' + i;
-					
-					document.getElementById(f).value = jArray[11][j++];
-					document.getElementById(m).value = jArray[11][j++];
-					document.getElementById(l).value = jArray[11][j++];
-					
-					i++;
-				}
-			}
-			if(jArray[1] == "Magazines"){
-				document.getElementById('matID').value = jArray[0];
-				
-				mat = jArray[0].split("-");
-				
-				document.getElementById('preclass').innerHTML = mat[0] + '-';
-				document.getElementById('material').value = mat[1];
-				document.getElementById('type').value = jArray[1];
-				document.getElementById('isbn').value = jArray[2];
-				document.getElementById('course').value = jArray[3];
-				document.getElementById('title').value = jArray[4];
-				document.getElementById('year').value = jArray[5];
-				document.getElementById('ed').value = jArray[6];
-				document.getElementById('access').value = jArray[7];
-				document.getElementById('course_div').style.display = 'none';
-				
-				while(m != 1){
-					addRow();
-					m = m - 1;
-				}
-				
-				while(i <= jArray[10]){
-					f = 'fname' + i;
-					m = 'mname' + i;
-					l = 'lname' + i;
-					
-					document.getElementById(f).value = jArray[11][j++];
-					document.getElementById(m).value = jArray[11][j++];
-					document.getElementById(l).value = jArray[11][j++];
-					
-					i++;
-				}
-			}
-			if(jArray[1] == "Thesis"){
-				document.getElementById('matID').value = jArray[0];
-				
-				mat = jArray[0].split("-");
-				
-				document.getElementById('preclass').innerHTML = mat[0] + '-';
-				document.getElementById('material').value = mat[1];
-				document.getElementById('type').value = jArray[1];
-				document.getElementById('isbn').value = jArray[2];
-				document.getElementById('course').value = jArray[3];
-				document.getElementById('title').value = jArray[4];
-				document.getElementById('year').value = jArray[5];
-				document.getElementById('ed').value = jArray[6];
-				document.getElementById('access').value = jArray[7];
-				document.getElementById('course_div').style.display = 'none';
-				document.getElementById('isbn_div').style.display = 'none';
-				
-				while(m != 1){
-					addRow();
-					m = m - 1;
-				}
-				
-				while(i <= jArray[10]){
-					f = 'fname' + i;
-					m = 'mname' + i;
-					l = 'lname' + i;
-					
-					document.getElementById(f).value = jArray[11][j++];
-					document.getElementById(m).value = jArray[11][j++];
-					document.getElementById(l).value = jArray[11][j++];
-					
-					i++;
-				}
-			}
-		</script>
+	
 		<script>
-				//back to top code
-				var offset = 220;
-			    var duration = 500;
-			    jQuery(window).scroll(function() {
-			        if (jQuery(this).scrollTop() > offset) {
-			            jQuery('.back-to-top').fadeIn(duration);
-			        } else {
-			            jQuery('.back-to-top').fadeOut(duration);
-			        }
-			    });
-			    
-			    jQuery('.back-to-top').click(function(event) {
-			        event.preventDefault();
-			        jQuery('html, body').animate({scrollTop: 0}, duration);
-			        return false;
-			    });
-		    //end code of back to top
-			</script>
+		$('#add-nav').addClass('active');
+			function finalcheckofadd() {
+				if (validateName() && validateEdition() && disableFeatures() && validateAuthors())
+				bootbox.dialog({
+					message: "Confirm details of this library material?",
+					title: "Confirmation",
+					buttons: {
+							yes: {
+							label: "Save",
+							className: "btn-primary",
+							callback: function() {
+															
+								var preclass = document.getElementById("preclass").innerHTML;
+								var materialid = preclass + add.materialid.value;
+								var type = add.type.value;
+							
+								if (type == 'Book' || type == 'References' || type == 'Journals' || type == 'Magazines')
+									var isbn = add.isbn.value;
+								else var isbn = "+" + materialid;
+							
+								if (type == 'Book' || type == 'References' || type == 'CD')
+									var course = add.course.value;
+								else var course = null;
+							
+								var name = add.name.value;
+								var year = add.year.value;
+								var edvol = add.edvol.value;
+								var access = add.access.value;
+								
+								var available;
+								if(document.getElementById("yes").checked) available = 1;
+								else available = 0;
+
+								var requirement;
+								if(document.getElementById("none").checked) requirement = 0;
+								else requirement = 1;
+
+								var authors_fname = document.getElementsByName("fname");
+								var authors_mname = document.getElementsByName("mname");
+								var authors_lname = document.getElementsByName("lname");
+								
+								authors=new Array();
+								var i=0;
+								while (authors_fname[i]) {
+									array = new Array(authors_fname[i].value, authors_mname[i].value, authors_lname[i++].value);
+									authors.push(array);
+								}
+															
+								$.ajax({
+									type: "POST",
+									url: "<?php echo site_url();?>/admin/add_execution",
+									data: { materialid : materialid,
+											type : type,
+											isbn : isbn,
+											course : course,
+											name : name,
+											year : year,
+											edvol : edvol,
+											access : access,
+											available : available,
+											requirement: requirement,
+											authors : authors,
+										  },
+									beforeSend: function() {
+										//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
+										$("#error_message").html("loading...");
+									},
+
+									error: function(xhr, textStatus, errorThrown) {
+											$('#error_message').html(textStatus);
+											//console.log(textStatus);
+									},
+
+									success: function( result ){
+
+										if( result != "1" ){
+											$("#success_add").show();
+											$("#fail_add").hide();
+											$("#success_add").html("Library material successfully added to the database!");
+											$("#success_add").fadeIn('slow');
+											document.body.scrollTop = document.documentElement.scrollTop = 0;
+											setTimeout(function() { $("#success_add").html("Redirecting to View All Library Materials...");
+																	window.location.href = "<?php echo site_url();?>/admin/show_recent/"+materialid; }, 2000);	
+										}
+									}
+								});
+							}
+							},
+							no: {
+								label: "No",
+								className: "btn-default"
+							}
+						}
+					});
+				else showError();
+			}
+
+			function showError(){
+				$("#success_add").hide();
+				$("#fail_add").show();
+				$("#fail_add").html("Some library material details are not valid!");
+				$("#fail_add").fadeIn('slow');
+				document.body.scrollTop = document.documentElement.scrollTop = 0;
+			}
+
+			function addDetails(){
+
+				preclass = document.getElementsByName('preclass')[0].innerHTML;
+				materialid = add.materialid.value;
+				type = add.type.value;
+
+				$.ajax({
+					url: "<?php echo site_url();?>/admin/check_materialid",
+					type: "POST",
+					data: { preclass: preclass, materialid : materialid },
+					success: function (result){
+						if ($.trim(result) == '1'){
+
+							$('#helpmaterialid').html("");
+
+							if (type == 'Book' || type == 'References' || type == 'Journals' || type == 'Magazines') {
+
+								isbn = add.isbn.value;
+								type = add.type.value;
+								
+								$.ajax({
+									url: "<?php echo site_url();?>/admin/check_isbn",
+									type: "POST",
+									data: { isbn : isbn , type : type },
+									success: function (result){
+										if ($.trim(result) == '1'){
+											$('#helpisbn').html("");
+											finalcheckofadd();
+										}
+										else if ($.trim(result) == '2') {
+											$('#helpisbn').html("A library material with the same ISBN/ISSN already exists.");
+											showError();
+										}
+										else if ($.trim(result) == '3') {
+											$('#helpisbn').html("Invalid ISBN. Books and references require 10-digit ISBN. Journals and magazines require 8-digit ISSN.");
+											showError();
+										}
+									}
+								});
+							}
+							else finalcheckofadd();
+						}
+						else if ($.trim(result) == '2') {
+							$('#helpmaterialid').html("Material ID already exists.");
+							showError();
+						}
+						else if ($.trim(result) == '3') {
+							$('#helpmaterialid').html("Invalid material id.");
+							showError();
+						}
+					}
+				});
+			}
+
+				var n = 1;
+				
+				function deleteRow(row){
+					n--;
+					
+					var i=row.parentNode.parentNode.rowIndex;
+					document.getElementById('formTable').deleteRow(i);
+				}
+			
+				function addRow(){
+					n++;
+					
+					var x=document.getElementById('formTable');
+					// deep clone the targeted row
+					var new_row = x.rows[0].cloneNode(true);
+					
+					// set the innerHTML of the first row 
+					//new_row.cells[0].innerHTML = '';
+					
+					var inp6 = new_row.cells[5].getElementsByTagName('input')[0];
+					inp6.value = n;
+					
+					// grab the input from the first cell and update its ID and value
+					var inp1 = new_row.cells[0].getElementsByTagName('input')[0];
+					//inp1.name = 'fname';
+					inp1.placeholder = 'First Name';
+					inp1.required = true;
+					inp1.pattern = "[A-Za-z\ ]+";
+					inp1.value = '';
+					
+					// grab the input from the first cell and update its ID and value
+					var inp2 = new_row.cells[1].getElementsByTagName('input')[0];
+					//inp2.name = 'mname';
+					inp2.placeholder = 'Middle Name';
+					inp2.required = true;
+					inp2.pattern = "[A-Za-z\ ]+";
+					inp2.value = '';
+					
+					
+					// grab the input from the first cell and update its ID and value
+					var inp3 = new_row.cells[2].getElementsByTagName('input')[0];
+					//inp3.name = 'lname';
+					inp3.placeholder = 'Last Name';
+					inp3.required = true;
+					inp3.pattern = "[A-Za-z\ ]+";
+					inp3.value = '';
+					
+					
+					var inp4 = new_row.cells[3].getElementsByTagName('input')[0];
+					inp4.disabled = false;
+					
+					var inp5 = new_row.cells[4].getElementsByTagName('input')[0];
+					inp5.disabled = false;
+					
+					
+					// append the new row to the table
+					x.appendChild(new_row);
+				}
+				
+				window.onload = function() {
+					add.materialid.onblur = validateMaterialID;
+					add.type.onchange = disableFeatures;
+					add.course.onchange = disableFeatures;
+					add.isbn.onblur = validateISBN;
+					add.name.onblur = validateName;
+					add.year.onblur = disableFeatures;
+					add.edvol.onblur = validateEdition;
+					$('#container1').modal('hide');
+				}
+				
+
+				function validateMaterialID(){
+					
+					preclass = document.getElementsByName('preclass')[0].innerHTML;
+					materialid = add.materialid.value;
+				
+					$.ajax({
+						url: "<?php echo site_url();?>/admin/check_materialid",
+						type: "POST",
+						data: { preclass: preclass, materialid : materialid },
+						success: function (result){
+							if ($.trim(result) == '1'){
+								$('#helpmaterialid').html("");
+								return true;
+							}
+							else if ($.trim(result) == '2') {
+								$('#helpmaterialid').html("Material ID already exists.");
+								return false;
+							}
+							else if ($.trim(result) == '3') {
+								$('#helpmaterialid').html("Invalid material id.");
+								return false;
+							}
+						}
+					});
+				}
+				
+				function disableFeatures(){
+					type = add.type.value;
+					year = add.year.value;
+
+					if(type == "Book"){
+						//add.isbn.disabled = false;
+						add.course.disabled = false;
+						//add.isbn.placeholder = "ISBN-10";
+						document.getElementById("preclass").innerHTML = add.course.value + "-";
+						//update.materialid.value = array[1];
+						document.getElementById("isbn_div").style.display = 'block';
+						document.getElementById("course_div").style.display = 'block';
+						document.getElementById("edvol_div").style.display = 'block';
+					}
+					else if(type == "SP"){
+						//add.isbn.disabled = true;
+						//array = update.materialid.value.split("-");
+						document.getElementById("preclass").innerHTML = "SP" + add.year.value + "-";
+						add.course.disabled = true;
+						document.getElementById("isbn_div").style.display = 'none';
+						document.getElementById("course_div").style.display = 'none';
+						document.getElementById("edvol_div").style.display = 'none';
+					}
+					else if(type == "References"){
+						//add.isbn.disabled = false;
+						add.course.disabled = false;
+						//add.isbn.placeholder = "ISBN-10";
+						document.getElementById("preclass").innerHTML = "R" + "-";
+						document.getElementById("isbn_div").style.display = 'block';
+						document.getElementById("course_div").style.display = 'block';
+						document.getElementById("edvol_div").style.display = 'block';
+					}
+					else if(type == "CD"){
+						//add.isbn.disabled = true;
+						add.course.disabled = false;
+						document.getElementById("preclass").innerHTML = "CD" + "-";
+						document.getElementById("isbn_div").style.display = 'none';
+						document.getElementById("course_div").style.display = 'block';
+						document.getElementById("edvol_div").style.display = 'none';
+					}
+					else if(type == "Journals"){
+						//add.isbn.disabled = false;
+						add.course.disabled = true;
+						//add.isbn.placeholder = "ISBN-8";
+						document.getElementById("preclass").innerHTML = "J" + "-";
+						document.getElementById("isbn_div").style.display = 'block';
+						document.getElementById("course_div").style.display = 'none';
+						document.getElementById("edvol_div").style.display = 'block';
+					}
+					else if(type == "Magazines"){
+						//add.isbn.disabled = false;
+						add.course.disabled = true;
+						//add.isbn.placeholder = "ISBN-8";
+						document.getElementById("preclass").innerHTML = "M" + "-";
+						document.getElementById("isbn_div").style.display = 'block';
+						document.getElementById("course_div").style.display = 'none';
+						document.getElementById("edvol_div").style.display = 'block';
+					}
+					else if(type == "Thesis"){
+						//add.isbn.disabled = false;
+						add.course.disabled = true;
+						//add.isbn.placeholder = "ISBN-8";
+						document.getElementById("preclass").innerHTML = "T" + "-";
+						document.getElementById("isbn_div").style.display = 'none';
+						document.getElementById("course_div").style.display = 'none';
+						document.getElementById("edvol_div").style.display = 'none';
+					}
+
+
+					if (add.materialid.value != "") {
+						validateMaterialID();
+					}
+
+					if (validateYear2())
+						if (year < 1950 || year > 2014) {
+							document.getElementsByName("helpyear")[0].innerHTML = "Invalid Input. Valid years are from 1950-2014 only.";
+							return false;
+						}
+						else {
+							document.getElementsByName("helpyear")[0].innerHTML = "";
+							return true;
+						}
+				}
+				
+				function validateYear2(){
+		
+					str = add.year.value;
+					if (str == "" || !str.match(/^[0-9][0-9][0-9][0-9]$/))
+						return false
+					else return true;
+				}
+
+				function validateISBN(){
+				
+					isbn = add.isbn.value;
+					type = add.type.value;
+					
+					$.ajax({
+						url: "<?php echo site_url();?>/admin/check_isbn",
+						type: "POST",
+						data: { isbn : isbn , type : type },
+						success: function (result){
+							if ($.trim(result) == '1'){
+								$('#helpisbn').html("");
+								//return true;
+							}
+							else if ($.trim(result) == '2') {
+								$('#helpisbn').html("A library material with the same ISBN/ISSN already exists.");
+								//return false;
+							}
+							else if ($.trim(result) == '3') {
+								$('#helpisbn').html("Invalid ISBN. Books and references require 10-digit ISBN. Journals and magazines require 8-digit ISSN.");
+								//return false;
+							}
+						}
+					});
+				}
+				
+				function validateName(){
+					msg = "Invalid input. ";
+					str = add.name.value;
+					if (str == "") {
+						msg+="Title is required. ";
+					}
+					if (!str.match(/^[A-Z][A-Za-z0-9\(\)\ \.\,\-\'\?\!\/]+$/)) {
+						msg+="Characters are invalid.";
+					}
+					if (msg == "Invalid input. ") msg="";
+
+					document.getElementsByName("helpname")[0].innerHTML = msg;
+					if (msg == ""){ 
+						return true;
+					}
+				}
+
+				function validateAuthors(){
+					
+					var authors_fname = document.getElementsByName("fname");
+					var authors_mname = document.getElementsByName("mname");
+					var authors_lname = document.getElementsByName("lname");
+								
+					var i=0;
+					var flag = 0;
+					while (authors_fname[i]) {
+						if (authors_fname[i].value == "" || !authors_fname[i].value.match(/^[A-Z][A-Za-z0-9\.\-\'\ ]+$/)) {
+							flag = 1;
+							break;
+						}
+						if (authors_mname[i].value == "" || !authors_mname[i].value.match(/^[A-Z][A-Za-z0-9\.\-\'\ ]+$/)){
+							flag = 2;
+							break;
+						}
+						if (authors_lname[i].value == "" || !authors_lname[i++].value.match(/^[A-Z][A-Za-z0-9\.\-\'\ ]+$/)){
+							flag = 3;
+							break;
+						}
+					}
+
+					if (flag == 1) document.getElementsByName("helpauthor")[0].innerHTML = "First name invalid.";
+					else if (flag == 2) document.getElementsByName("helpauthor")[0].innerHTML = "Middle name invalid.";
+					else if (flag == 3) document.getElementsByName("helpauthor")[0].innerHTML = "Last name invalid.";
+					else if (flag == 0) document.getElementsByName("helpauthor")[0].innerHTML = "";
+
+					if (flag == 0) return true;
+					else return false;
+				}
+				
+				function validateYear(){
+					msg = "Invalid input. ";
+					str = add.year.value;
+					if (str == "") {
+						msg+="Year of publication is required. ";
+					}
+					if (!str.match(/^[0-9][0-9][0-9][0-9]$/)) {
+						msg+="Characters are invalid.";
+					}
+					if (msg == "Invalid input. ") msg="";
+
+					document.getElementsByName("helpyear")[0].innerHTML = msg;
+					if (msg == ""){ 
+						return true;
+					}
+					else return false;
+				}
+				
+				function validateEdition(){
+					msg = "Invalid input. ";
+					str = add.edvol.value;
+					if (str == "") {
+						add.edvol.value = "";
+					}
+					else if (!str.match(/^[0-9]+$/) && str != "") {
+						msg="Characters are invalid.";
+					}
+					if (msg == "Invalid input. ") msg="";
+					
+					document.getElementsByName("helpedvol")[0].innerHTML = msg;
+					if (msg == ""){ 
+						return true;
+					}
+					else return false;
+				}
+		</script>
 	</body>
 </html>

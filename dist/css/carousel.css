@@ -47,7 +47,7 @@ body {
 .leftMain{
 	width:950px;
 	border-top:1px solid transparent;
-	margin-left:auto;
+	margin-left: auto;
 	margin-top:-1px;
 	min-height:300px;
 }

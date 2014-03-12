@@ -12,7 +12,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Reservation_queue_model extends CI_Model{
 	public function __construct(){
-			
+		
 	}
 
 	/*
@@ -20,7 +20,7 @@ class Reservation_queue_model extends CI_Model{
 	*/
 	public function get_reservations( $search = "" ) {
 		
-		/*
+	/*
 		*	get all the id, store it in an array
 		*	while( array is not empty ){
 		*		count = get the value of quantity - borrowed copy for array[i] // that is the available copy		
@@ -31,7 +31,8 @@ class Reservation_queue_model extends CI_Model{
 		*/
 
 		$search = trim($search);
-
+		$search = mysql_real_escape_string($search);
+		$search = htmlspecialchars($search);
 		$return_array = array();
 		// get all the materialids with reservations
 		$query = $this->db->query("SELECT DISTINCT reservation.materialid, reservation.isbn 
@@ -52,8 +53,8 @@ class Reservation_queue_model extends CI_Model{
 			// get the materialid, store it to a variable
 			$matid = $row->materialid;
 			$isbn = $row->isbn;
-			
-			
+
+
 
 			// make the query for determining the number of available materials
 			$query = $this->db->query("SELECT quantity-borrowedcopy AS available 
@@ -208,6 +209,10 @@ class Reservation_queue_model extends CI_Model{
 
 		if ( intval($result->row()->count) > intval($result2->row()->count) ) return $result->row()->count;
 		else return $result2->row()->count;
+	}
+
+	public function update_reservations(){
+		$this->db->query('DELETE FROM reservation WHERE NOW() > claimdate');
 	}
 }
 

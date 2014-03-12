@@ -16,7 +16,7 @@
  */
 
 // Include the main TCPDF library (search for installation path).
-require_once('\application\third_party\tcpdf_min\tcpdf.php');
+require_once('/application/third_party/tcpdf_min/tcpdf.php');
 
 // extend TCPF with custom functions
 class MYPDF extends TCPDF {

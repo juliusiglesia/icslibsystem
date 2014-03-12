@@ -25,14 +25,14 @@
 								<label class="col-sm-3 control-label">Start of the Semester : </label>
 								<div class="col-sm-3">
 									<label class = "control-label" id="startDateText"> <?php echo $info[0]->start; ?> </label>
-									<input type="date" class="form-control" id="startDateInput" value = "<?php echo $info[0]->start; ?>" >
+									<input type="date" class="form-control" id="startDateInput" value = "<?php echo $info[0]->start; ?>"/>
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-sm-3 control-label">End of the Semester : </label>
 								<div class="col-sm-3">
 									<label class = "control-label" id="endDateText"> <?php echo $info[0]->end; ?> </label>
-									<input type="date" class="form-control" id="endDateInput" value = "<?php echo $info[0]->end; ?>" >
+									<input type="date" class="form-control" id="endDateInput" value = "<?php echo $info[0]->end; ?>"/>
 								</div>
 							</div>
 							<div id = "infoDiv" class="form-horizontal" >
@@ -54,6 +54,20 @@
 								<div class="col-sm-1">
 									<input type="button" class="btn btn-default" id="fineEnable" value = "Enable Fine" />
 									<input type="button" class="btn btn-default" id="fineDisable" value = "Disable Fine" />
+								</div>
+							</div>
+						</div>
+						<br /> <br />
+						
+						<legend> Maximum Materials Settings </legend>
+						
+						<div id = "maxDiv" class="form-horizontal" >
+							<div class="form-group">
+								<input type="text" class="control-label col-sm-1" id="maxInput" value = "<?php echo $info[0]->max; ?>">
+								<div class="col-sm-3">
+									<input type="button" class="btn btn-primary col-sm-6" id="updateMax" value = "Update Max" />
+									<input type="button" class="btn btn-default col-sm-6" id="saveMax" value = "Save" />
+									<input type="button" class="btn btn-danger col-sm-6" id="cancelMax" value = "Cancel" />
 								</div>
 							</div>
 						</div>
@@ -89,7 +103,9 @@
 							</div>
 						</div>
 						<legend> Clear </legend>
+						<div id= "clearDiv">
 						<input id = "clear" type = "button" class = "btn btn-default" value = "Clear Reservations" style = 'margin-top: 12px;'/>
+						</div>
 					</div>
 					</div>
 					</div>
@@ -102,9 +118,11 @@
     <script src="<?php echo base_url();?>dist/js/holder.js"></script>
     <script src="<?php echo base_url();?>dist/js/bootbox.min.js"></script>
 	<script>
-		var enable = "<?php echo $info[0]->fineenable; ?>";	
+		var enable = "<?php echo $info[0]->fineenable; ?>";
+		
 		hideInfoInput();
 		hideFine();
+		hideMax();
 		hidePassword();
 
 		function hidePassword(){
@@ -133,6 +151,7 @@
 		}
 
 		function hideInfoLabel(){
+		
 			$('#startDateText').hide();
 			$('#endDateText').hide();
 
@@ -144,6 +163,20 @@
 			$('#cancel').show();
 			$('#updateInfo').hide();
 
+		}
+		
+		function hideMax(){
+			$('#maxInput').show();
+			$('#updateMax').show();
+			$('#saveMax').hide();
+			$('#cancelMax').hide();
+		}
+		
+		function hideMaxLabel(){
+			$('#maxInput').show();
+			$('#updateMax').hide();
+			$('#saveMax').show();
+			$('#cancelMax').show();
 		}
 
 		$('#cancelPass').click(function(){
@@ -160,6 +193,10 @@
 			$('#cancelPass').show();
 			$('#updatePass').hide();
 			$('#passText').hide();
+		});
+		
+		$('#updateMax').click(function() {
+			hideMaxLabel();
 		});
 
 		$('#updateInfo').click(function(){
@@ -212,6 +249,17 @@
 
 			$('#cna').hide();
 		}
+		
+		$('#saveMax').click(function(){
+			if(max_check()){ 
+				confirmUpdateSettings('maxDiv'); 
+				hideMax(); 
+			};
+		});
+		
+		$('#cancelMax').click(function(){		
+				hideMax(); 
+		});
 
 		$('#save').click(function(){
 			if(info_check()){ 
@@ -230,7 +278,6 @@
 
 		$('#savePass').click(function(){
 			if(valPword() && reNewPassInput_check()){ 
-				confirmUpdateSettings('passwordDiv');
 				$('#newPassInput').val('');
 				$('#passInput').val('');			
 				$('#reNewPassInput').val('');
@@ -273,6 +320,21 @@
 			}
 		
 		}
+		
+		function max_check() {
+			var max = document.getElementById('maxInput').value;
+			var filter = /^\d{1,2}$/; 
+			if (!filter.test(max)){
+				alert('Invalid max value.');
+				max.focus;	
+				return false;
+			}
+			
+			else {
+				return true;
+			}
+		
+		}
 
 		function info_check(){
 			var start_sem = document.getElementById('startDateInput').value;
@@ -295,7 +357,7 @@
 				return false;
 			}
 			
-			else if(end_sem.value < start_sem.value){
+			if(end_sem.value < start_sem.value){
 				
 				alert('End of semester date should occur later than the start of semester date.');
 				return false;
@@ -318,7 +380,7 @@
 			enable_fine.style.display='none';
 			
 			$.ajax({
-				url : "<?php echo base_url();?>admin/settings_for_enable",
+				url : "<?php echo site_url()?>/admin/settings_for_enable",
 				success : function( result ){
 					if( result == "" ){
 						console.log("Updated");
@@ -339,7 +401,7 @@
 			enable_fine.style.display='inline';
 			
 			$.ajax({
-				url : "<?php echo base_url();?>admin/settings_for_disable",
+				url : "<?php echo site_url()?>/admin/settings_for_disable",
 				success : function( result ){
 					if( result == "" ){
 						console.log("Updated");
@@ -365,7 +427,7 @@
 							if( password != "" ){
 								$.ajax({
 									type : "POST",
-									url : "<?php echo base_url(); ?>admin/check_password",
+									url : "<?php echo site_url()?>/admin/check_password",
 									data : { password : password },
 									success : function( result ){
 													console.log( result );
@@ -396,7 +458,7 @@
 	
 				$.ajax({
 					type : "POST",
-					url : "<?php echo base_url();?>admin/settings_for_info",
+					url : "<?php echo site_url()?>/admin/settings_for_info",
 					data: { start_sem_value : start_sem_value, end_sem_value : end_sem_value },
 					success : function( result ){
 						if( result == "" ){
@@ -411,7 +473,7 @@
 				var fine = document.getElementById('fineInput').value;
 				$.ajax({
 					type: "POST",
-					url: "<?php echo base_url();?>admin/settings_for_fine",
+					url: "<?php echo site_url()?>/admin/settings_for_fine",
 					data: { fine: fine },
 					success : function( result ){
 						if( result == "" ){
@@ -422,12 +484,12 @@
 					}
 				});
 			}
-			else if(thisDiv == 'passwordDiv'){
-				var newpw = document.getElementById('passInput').value;			
+			else if(thisDiv == 'maxDiv'){
+				var max = document.getElementById('maxInput').value;
 				$.ajax({
 					type: "POST",
-					url: "<?php echo base_url();?>admin/settings_for_password",
-					data: { newpw: newpw },
+					url: "<?php echo site_url()?>/admin/settings_for_max",
+					data: { max: max },
 					success : function( result ){
 						if( result == "" ){
 							console.log("Updated");
@@ -438,9 +500,27 @@
 				});
 			}
 		}
+		
+		function checkDays(){
+			var end_sem = document.getElementById('endDateInput').value;
+			var end_sem_date = new Date(end_sem);
+			var current_date = new Date();
+			var diff =  Math.floor(( Date.parse(end_sem_date) - Date.parse(current_date) ) / 86400000);
+				
+			if(diff > 10){
+				alert("Invalid number of days.");
+				return false;
+			}else return true;
+				
+		}
 
 		$("#clear").click(function(){
-			
+			if(checkDays()){ 
+				confirmClearReserv('clearDiv'); 
+			};		
+		});
+		
+		function confirmClearReserv( thisDiv ){
 			bootbox.dialog({
 						message: "Are you sure you want to clear the reservations?",
 						title: "Clear Reservations",
@@ -451,7 +531,7 @@
 								callback: function() {
 									$.ajax({
 										type: "POST",
-										url: "<?php echo base_url();?>admin/clear_reservation",
+										url: "<?php echo site_url()?>/admin/clear_reservation",
 
 										beforeSend: function() {
 											//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
@@ -475,9 +555,8 @@
 							}
 						}
 					});
-			
-		
-		});
+				
+		}
 	</script>
 
 	</body>

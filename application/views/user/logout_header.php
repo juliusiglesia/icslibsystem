@@ -12,17 +12,6 @@
 
     <link href="<?php echo base_url(); ?>dist/css/bootstrap.css" rel="stylesheet">
 
-    <script type="text/javascript">
-           
-      function toggle() {
-       if( document.getElementById("hidethis").style.display=='none' ){
-         document.getElementById("hidethis").style.display = 'table-row'; // set to table-row instead of an empty string
-       }else{
-         document.getElementById("hidethis").style.display = 'none';
-       }
-      }
-      </script>
-
     <!-- Custom styles for this template-->
     <link href="<?php echo base_url(); ?>dist/css/carousel.css" rel="stylesheet">
     <link href="<?php echo base_url(); ?>dist/css/modulestyle.css" rel="stylesheet">
@@ -39,13 +28,13 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="<?php echo base_url();?>"><img src="<?php echo base_url(); ?>dist/images/logo4.png" height="40px"></a>
+          <a class="navbar-brand" href="<?php echo base_url();?>"><img src="<?php echo base_url(); ?>dist/images/logo.png" height="70px"></a>
         </div>
        <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="<?php echo base_url();?>borrower/profile" style="font-size:17px;" onclick = "this.style.color='white';"><span class="glyphicon glyphicon-home" ></span></a></li>
+            <li><a href="<?php echo Site_url();?>/borrower/profile" style="font-size:17px;" onclick = "this.style.color='white';"><span class="glyphicon glyphicon-home" id="glyphcolor"></span></a></li>
             <li class="dropdown">
-              <a  id = "message" class = "notif" href="#" class="dropdown-toggle" data-toggle="dropdown" style="font-size:17px;" onclick = "this.style.color='white';"><span class="glyphicon glyphicon-envelope" ></span></a>
+              <a  id = "message" class = "notif" href="#" class="dropdown-toggle" data-toggle="dropdown" style="font-size:17px;" onclick = "this.style.color='white';"><span class="glyphicon glyphicon-envelope" id="glyphcolor"></span></a>
                 <?php
                  // if($overdue || $res || $readytoclaim){ echo "<span class='glyphicon glyphicon-exclamation-sign'></span>"; }
                 ?>
@@ -59,8 +48,6 @@
                       foreach ($overdue as $temps) {
                         echo $temps['name']; 
                         echo "<br/>";
-                        echo "Fine:  Php ";
-                        echo "${temps['user_fine']}";
                       }
                     }
                   ?>
@@ -96,13 +83,83 @@
                     ?>
                   </div>
                  </a></li>
-              </ul>
+              </ul> <!--notifs-->
             </li>
-            <form class="navbar-form navbar-right" role="form" action="logout" >
-              <button type="submit" class="btn btn-link"><span class="glyphicon glyphicon-log-out" type="submit" style="font-size:17px;" onclick = "this.style.color='white';"><a href="/icslibsystem/logout?"></a></span></button>
-              <!--li><a href="/icslibsystem/logout?"><span class="glyphicon glyphicon-log-out" type="submit" style="font-size:17px;" onclick = "this.style.color='white';"></span></a></li-->
-            </form>
-          </ul>
+            <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="font-size:17px;" onclick = "this.style.color='white';"><span class="glyphicon glyphicon-cog" id="glyphcolor" ></span></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="<?php echo base_url();?>dist/pdf/user/ILS MANUAL.pdf" target="_blank">Operations Manual</a></li>
+                    <li><a href="<?php echo base_url();?>dist/pdf/user/ILS FAQ.pdf" target="_blank">FAQs</a></li>
+                    <li class="divider"></li>
+                    <li><a href="<?php echo site_url();?>/logout?">Logout</a></li>
+                  </ul>
+                 </li>
+          </ul> <!--buong menu-->
         </div><!--/.nav-collapse -->
       </div>
     </div>
+
+    <script type = "text/javascript" src = "<?php echo base_url();?>dist/js/jquery-2.1.0.min.js"></script>
+    <script type="text/javascript">
+    //$("a.tooltipLink").tooltip();
+    
+    $('#message').click(function(){
+      $.ajax({
+        url: "<?php echo site_url();?>/borrower/get_message",
+        dataType : "json",
+        beforeSend: function() {
+          //$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
+          $("#error_message").html("loading...");
+        },
+
+        error: function(xhr, textStatus, errorThrown) {
+            $('#error_message').html(textStatus);
+        },
+
+        success: function( result ){
+          var overdue = result['overdue'];
+          var fne = result['fineenable'];
+          var str = "";
+          
+          if( overdue.length == 0 ){  str += "<li><a><i> None </i></a></li>"; }
+                  else{
+                     for( var i = 0; i < overdue.length; i++){
+                        //str += "<li><a>" + overdue[i].name + " <br /> Fine: Php " + overdue[i].user_fine + "</a> </li>";
+                        if(fne[0].fineenable == 1){
+                          str += "<li><a>" + overdue[i].name + " <br /> Fine: Php " + overdue[i].user_fine + "</a> </li>";
+                        }
+                        else{
+                          str += "<li><a>" + overdue[i].name + "<br/> </a> </li>";
+                        }
+
+                     } 
+                  }
+          
+          $('#overdue').html( str );
+                  str="";
+                  var reserved = result['reserved'];
+                  if( reserved.length == 0 ){  str += "<li><a><i> None </i></a></li>"; }
+                  else{
+                     for( var i = 0; i < reserved.length; i++){
+                        str += "<li><a>" + reserved[i].name + "</a> </li>";
+                     } 
+                  }
+
+                  $('#reserved').html( str );
+                  
+          var readytoclaim = result['readytoclaim'];
+                  str="";
+                  if( readytoclaim.length == 0 ){  str += "<li><a><i> None </i></a></li>"; }
+                  else{
+                     for( var i = 0; i < readytoclaim.length; i++){
+                        str += "<li><a>" + readytoclaim[i].name + " until <b>" + readytoclaim[i].claimdate + " </b></a> </li>";
+                     } 
+                  }
+
+                  $('#ready').html( str );
+                  
+        }
+      });
+    });
+
+</script>

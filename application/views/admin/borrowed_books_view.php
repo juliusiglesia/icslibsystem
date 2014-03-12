@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<?php include 'includes/head.php'; ?>
-
+<?php include 'includes/head.php'; ?>		
 	<script>
 		function returnBook( thisDiv ){
 					bootbox.dialog({
@@ -21,7 +20,7 @@
 							
 									$.ajax({
 										type: "POST",
-										url: "<?php echo base_url();?>admin/material_returned",
+										url: "<?php echo site_url();?>/admin/material_returned",
 										data: { isbn : isbn, materialid : materialid, fine : fine }, 
 
 										beforeSend: function() {
@@ -76,7 +75,7 @@
 						<h2> Borrowed View </h2>
 						<h5> <i> You are currently viewing the borrowed material that can be provided with a library material copy. </i> </h5>
 						<ol class="breadcrumb">
-							<li><a href="<?php echo base_url()?>admin/home">Home</a></li>
+							<li><a href="<?php echo site_url()?>/admin/home">Home</a></li>
 							<li class="active"> Borrowed </li>
 						</ol>
 						<div class="row">
@@ -87,24 +86,17 @@
 							</div>
 						</div>
 						<br />
-						<form method="post" role="form" align="center">
-							 <div class="row">
-								<div class="col-md-6 col-md-offset-3 ">
-									<div class="input-group">
-                            			<input type="text" name="search" class="form-control"/>
-                            			<span class="input-group-btn"> 
-	                           				<input class = "btn btn-default" type="submit" value="Search" name="search_borrowed_books"/> 
-	                           			</span>
-									</div><!-- /input-group -->  
-								</div><!-- /.col-lg-6 -->
-							</div><!-- /.row -->
-                        </form>
-                        <br />
+						<form method="post"  style="width: 800px ; margin-left: auto; margin-right: auto;" role="form" align="center">
+                            <input type="text" name="search"  size="80"/>
+                            <input class = "btn btn-primary" type="submit" value="Search" name="search_borrowed_books"/> 
+                           <div class="alert-container" style = 'height: 40px; margin: 30px;'>
+								<div style="display:none" id = "success_return" class = "alert alert-success">  </div>
+							</div>   
+                        </form>	
+
 						<?php
-						  if($this->input->post('returnButton') != ''){
-							echo "wew";
-						  }
-						  	echo"<table border = '1' id='myTable' class='table table-hover'>
+
+						  	echo"<table border = '1' id='myTable' class='table table-hover' tablesorter>
 								<thead>
 									<tr>
 										<th width='10%'><center>ISBN/ISSN</center></th>
@@ -113,15 +105,17 @@
 										<th width='42%'><center>Library Information</center></th>
 										<th width='8%'><center>Borrower</center></th>
 										<th width='8%'><center>Start Date</center></th>
-										<th width='8%'><center>Due Date</center></th>
-										<th width='5%'><center>Status</center></th>
-										<th width='5%'><center>Action</center></th>
+										<th width='8%'><center>Due Date</center></th>";
+							if ($enable_fine == 0) echo "<th width='5%'><center>Status</center></th>";
+							else echo "<th width='5%'><center>Fine</center></th>";
+										
+							echo"		<th width='5%'><center>Action</center></th>
 									</tr>
 								</thead>
 								<tfoot>
 								</tfoot>";
 							echo "<tbody>";
-                         	if($flag->num_rows ==0){		
+                         	if(count($flag) ==0){		
                                     echo "<td colspan = '9' style='background-color:rgba(0,0,0,0.1); color: black;'><center>No search results found.</center></td>";
                                     
                          	}else{
@@ -130,7 +124,7 @@
 							    $date = strtotime(date('Y-m-d'));
 								//echo count($borrowed_books->result());
 								//$i=0;
-								foreach($borrowed_books->result() as $row){	
+								foreach($borrowed_books as $row){	
 									$date2 = strtotime($row->expectedreturn);
 									$days = $date-$date2;
 									$finalfine = floor($days/(60*60*24))*$fine;
@@ -160,41 +154,35 @@
 									echo "<td class='idnumber'><span class='table-text'>". $row->idnumber. "</span></td>";
 									echo "<td><span class='table-text'>". $row->start . "</span></td>";
 									echo "<td><span class='table-text'>". $row->expectedreturn. "</span></td>";
-									if($finalfine > 0){
-										echo "<td align='center'><span class='table-text'>". "Overdue" . "</span></td>";
+									if($enable_fine == 1) {
+										if ($finalfine > 0) echo "<td><span class='table-text'>". $finalfine. ".00</span></td>";
+										else echo "<td><span class='table-text'>0.00</span></td>";
 									}
-									else{
-										echo "<td></td>";
+									else {
+										if ($finalfine > 0) echo "<td><span class='table-text'>Overdue</span></td>";
+										else echo "<td><span class='table-text'>0.00</span></td>";
 									}
-									echo "<td><button onclick = 'returnBook($(this))' class='returnButton btn btn-primary' name='return'><span class='glyphicon glyphicon-remove'></span></button>";
+									echo "<td><button onclick = 'returnBook($(this))' class='returnButton btn btn-primary' name='return'><span class='glyphicon glyphicon-remove-circle'></span></button>";
 									echo "</td></tr>";
 								}//for	
 							}
 							echo "</tbody>";
 							echo "</table>";
 						?>
-						<?php include 'includes/pager.php'; ?>
-						</div>
+						
 					</div>
+					<?php include "includes/pager.php"; ?>
 				</div>
 				<div id = "error"> </div>
 			</div>
-			
-		<!-- Footer -->
-		<?php include 'includes/footer.php'; ?>
-
-		<?php include 'includes/pagination.php'; ?>	
-
-		<script src="<?php echo base_url();?>dist/js/holder.js"></script>
-		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/jquery.tablesorter.js"></script>
-		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/jquery.tablesorter.pager.js"></script>
-		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/jquery.tablesorter.widgets.js"></script>
-		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>dist/js/widget-pager.js"></script>
+		<!-- FOOTER -->
+		<footer>
+			<a href="#" class="back-to-top"><span class='glyphicon glyphicon-chevron-up'></span></a>
+		</footer>
 		
-		<!--script src="<?php echo base_url();?>dist/js/dynamic.js"></script-->
-		<!--script src="<?php echo base_url();?>dist/js/modernizr.js"></script-->
+		<?php include "includes/pagination.php"; ?>
+
 	<script>
-	$('#borrowed-nav').addClass('active');
 		//For back to top javascript//
 			$("#logout").click(function(){
 				window.location.href = "<?php echo site_url('admin/logout'); ?>";

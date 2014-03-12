@@ -1,12 +1,15 @@
 <div id = "userInfo">
 <center>
 <?php 
-	base_url();
 	if($this->session->userdata('sex') == 'F'){
-		echo "<img src='/icslibsystem/dist/images/female.png' alt='' class='img-rounded img-responsive' />";
+		echo "<img src='";
+		echo base_url();
+		echo "dist/images/female.png' alt='' class='img-rounded img-responsive' />";
 	}
 	else{
-		echo "<img src='/icslibsystem/dist/images/male.png' alt='' class='img-rounded img-responsive' />";
+		echo "<img src='";
+		echo base_url();
+		echo "dist/images/male.png' alt='' class='img-rounded img-responsive' />";
 	}
 
 ?></center>
@@ -30,7 +33,7 @@
 		<tr>
 			<b>
 			<td>Overdue materials &nbsp;</td>
-			<td><?php
+			<td id="overdueCount"><?php
 				foreach($overdueCount as $row)
 					echo " ${row['COUNT(librarymaterial.materialid)']}";
 			?> 
@@ -40,7 +43,7 @@
 		<tr>
 			<b>
 			<td>Borrowed materials &nbsp;</td>
-			<td><?php
+			<td id="borrowedCount"><?php
 				foreach($borrowedCount as $row)
 					echo " ${row['COUNT(librarymaterial.materialid)']}";
 			?> 
@@ -50,7 +53,7 @@
 		<tr>
 			<b>
 			<td>Reserved materials &nbsp;</td>
-			<td><?php
+			<td id="reservedCount"><?php
 				foreach($reservedCount as $row)
 					echo " ${row['resCount']}";
 				?> 
@@ -64,58 +67,88 @@
 </div>
 
 <center>
-<button class="btn collapse-data-btn btn-default" id="manageBtn">Manage account</button>
+<button class="btn collapse-data-btn " id="manageBtn" class="button-color">Manage account</button>
 </center>
 
 <div id="update" >
 	<form>
+		<div id = "success_email_update" class = "alert alert-success"></div>
+		<div id="error_update" class = "alert alert-danger"> </div>
+		<div id="error_updatePassword" class = "alert alert-danger"> </div>
 		<hr />
-		<label> Email: </label>
-		<input id="email" name="email" type="text" value="<?php echo $this->session->userdata('email'); ?>">&nbsp;
-		<label for="email" id ="email-label"><?php echo $this->session->userdata('email'); ?> </label>
+		<table>
+		<tr>
+			<td><label> Email: </label></td>
+			<td><input id="email" name="email" type="text" value="<?php echo $this->session->userdata('email'); ?>">&nbsp;
+			<label for="email" id ="email-label"><?php echo $this->session->userdata('email'); ?> </label></td>
+		</tr>
+		<tr>
+			<td><label for="epass" id="epass-label">Current Password</label></td>
+			<td><input id="epassword" name="password" type="password" value=""/></td>
+		</tr>
+		</table>
+
 		
 		<a id="edit-email" value="Update Email" style = "cursor : pointer;" onclick="edit()"> &nbsp; Edit </a>
 		<br /><a type="button" class = "btn btn-default" id="set-email" value="Save" style = "cursor : pointer;"> <i class="glyphicon glyphicon-ok"></i>  </a>
 		<a type="button" class = "btn btn-default" id="cancel-email" value="Cancel" onclick="cancel_email()" style = "cursor : pointer;"> <i class="glyphicon glyphicon-remove"></i></a>
 		
 		<hr />
-		<label for="pass" id="i-pass"> Password: </label>
-		&nbsp;&nbsp;<label for="password" id ="password-label"> <?php echo "*************"; ?> </label>
-		<label for="cpass" id="cpass-label">Current Password</label><input id="opassword" name="password" type="password" value=""/><!--not edited -->
 		
-		<label for="npass" id="npass-label">New Password:</label><input id="npassword" name="npassword" type="password" value=""/>
-		<label for="rnpass" id="rnpass-label">Re-type New Password:</label><input id="re-npassword" name="re-password" type="password" value=""/>
-		<a id = "edit-password" value="Update Password" onclick="edit_password()" style = "cursor : pointer;"> &nbsp; Edit </a>
+			<label for="pass" id="i-pass"> Password: </label>
+			&nbsp;&nbsp;<label for="password" id ="password-label"> <?php echo "*************"; ?> </label>
+			<a id = "edit-password" value="Update Password" onclick="edit_password()" style = "cursor : pointer;"> Edit </a>
+		<table>
+		<tr>
+			<td><label for="cpass" id="cpass-label">Current Password</label></td>
+			<td><input id="opassword" name="password" type="password" value=""/></td>
+		</tr>
+		<tr>
+			<td><label for="npass" id="npass-label">New Password:</label></td>
+			<td><input id="npassword" name="npassword" type="password" value=""/></td>
+		</tr>
+		<tr>
+			<td><label for="rnpass" id="rnpass-label">Re-type New Password:</label></td>
+			<td><input id="re-npassword" name="re-password" type="password" value=""/></td>
+		</tr>
+		</table>
+		
 		<br /><a type="button" class = "btn btn-default" id="set-password" value="Save" style = "cursor : pointer;" style="font-size:15px;"> <i class="glyphicon glyphicon-ok"></i> </a>
 		<a type="button" class = "btn btn-default" id="cancel-password" value="Cancel" onclick="cancel()" style = "cursor : pointer;" style="font-size:15px;"> <i class="glyphicon glyphicon-remove"></i> </a>
+
 		<hr />
 	</form>
 </div> <!--update account-->
 
 <center><button class="btn collapse-data-btn btn-default" id="cancelBtn">Cancel</button></center>
 
-<span id="error_update"> </span>
-<span id="error_updatePassword"> </span>
 
-<div id = "alert_update" class = "alert danger-success">  </div>
-<div id = "success_email_update" class = "alert alert-success">  </div>
+<div id = "alert_update" class = "alert alert-danger">  </div>
+
 
 <script src="<?php echo base_url();?>dist/js/jquery.js"></script>
-<script type = "text/javascript" src = "<?php echo base_url();?>script/jquery-2.1.0.min.js"></script>
+<script type = "text/javascript" src = "<?php echo base_url();?>dist/js/jquery-2.1.0.min.js"></script>
 
 <script>
 $('#update').hide();
 $('#cancelBtn').hide();
+$('#alert_update').hide();
+$("#error_update").hide();
+$('#error_updatePassword').hide();
+$("#epass-label").hide();
+$('#epassword').hide();
 
 hideEmailEdit();
 hidePasswordEdit();
+var flag = false;
+var flagMail = false;
 
 	$('#opassword').blur(function () {
 	var opassword = $('#opassword').val();
 	var id = "<?php echo $this->session->userdata('idnumber');?>";
 	var password;
 		$.ajax({
-			url: "<?php echo base_url(); ?>borrower/getPassword",
+			url: "<?php echo site_url(); ?>/borrower/getPassword",
 			type: "POST",
 			data: {idnumber: id,
 					opassword: opassword
@@ -130,7 +163,10 @@ hidePasswordEdit();
 				}
 				else
 				{
-					$('#error_updatePassword').html("Wrong password");
+					$("#error_updatePassword").show();
+					$('#error_updatePassword').html("Wrong Password");
+					$("#error_updatePassword").fadeIn('slow');
+					setTimeout(function() { $('#error_updatePassword').fadeOut('slow') }, 3000);
 				}
 			},
 			error: function() {
@@ -139,21 +175,64 @@ hidePasswordEdit();
 				$("#alert_update").fadeIn('slow');
 				setTimeout(function() { $('#alert_update').fadeOut('slow') }, 3000);
 			}
-
 		});
-
-
 	});
+
+	$('#epassword').blur(function (){
+	var epassword = $('#epassword').val();
+	var id = "<?php echo $this->session->userdata('idnumber');?>";
+	var password;
+		$.ajax({
+			url: "<?php echo site_url(); ?>/borrower/getPasswordForEmail",
+			type: "POST",
+			data: {idnumber: id,
+					epassword: epassword
+				},
+			dataType: "JSON",
+			success: function(result){
+				password = result.password;
+				epassword = result.epassword;
+				if(epassword == password)
+				{
+					$('#error_update').html("");
+					flag = true;
+				}
+				else
+				{
+					flag = false;
+					$("#error_update").show();
+					$('#error_update').html("Wrong Password");
+					$("#error_update").fadeIn('slow');
+					setTimeout(function() { $('#error_update').fadeOut('slow') }, 3000);
+				}
+			},
+			error: function() {
+				flag = false;
+				$("#alert_update").show();
+				$('#alert_update').html("Oops.An error occured.");
+				$("#alert_update").fadeIn('slow');
+				setTimeout(function() { $('#alert_update').fadeOut('slow') }, 3000);
+			}
+		});
+	});
+
+
+
+
 
 	$('#npassword').blur(function(){
 		var value_pword = $('#npassword').val();
 		$.ajax({
-			url: "<?php echo base_url(); ?>borrower/checkUpdatePassword",
+			url: "<?php echo site_url(); ?>/borrower/checkUpdatePassword",
 			type: "POST",
 			data: {password : value_pword},
 			success: function(result){
 				if($.trim(result) == "1"){
-					$('#error_updatePassword').html("Invalid password");
+					//$('#error_updatePassword').html("Invalid password");
+					$("#error_updatePassword").show();
+					$('#error_updatePassword').html("Invalid Password");
+					$("#error_updatePassword").fadeIn('slow');
+					setTimeout(function() { $('#error_updatePassword').fadeOut('slow') }, 3000);
 				}
 				else{
 					$('#error_updatePassword').html("");
@@ -168,13 +247,17 @@ hidePasswordEdit();
 		var value_pword = $('#npassword').val();
 		var value_re_pword = $('#re-npassword').val();
 		$.ajax({
-			url: "<?php echo base_url(); ?>borrower/checkUpdateRe_Password",
+			url: "<?php echo site_url(); ?>/borrower/checkUpdateRe_Password",
 			type: "POST",
 			data: {re_password : value_re_pword,
 					password: value_pword},
 			success: function(result){
 				if($.trim(result) == "1"){
-					$('#error_updatePassword').html("Passwords do not match.");
+					//$('#error_updatePassword').html("Passwords do not match.");
+					$("#error_updatePassword").show();
+					$('#error_updatePassword').html("Passwords do not match");
+					$("#error_updatePassword").fadeIn('slow');
+					setTimeout(function() { $('#error_updatePassword').fadeOut('slow') }, 3000);
 				}
 				else{
 					$('#error_updatePassword').html("");
@@ -188,6 +271,8 @@ function hideEmailEdit(){
 	$('#set-email').hide();
 	$('#cancel-email').hide();
 	$('#email').hide();
+	$("#epass-label").hide();
+	$('#epassword').hide();
 }
 
 function hidePasswordEdit(){
@@ -215,8 +300,31 @@ $('#cancelBtn').click( function(){
 	$('#update').hide();
 	$('#error_updatePassword').html("");
 	$('#error_update').html("");
-	$('#cancel-email').click();
-	$('#cancel-password').click();
+	$('#set-email').hide();
+	$('#cancel-email').hide();
+	$('#edit-email').show();
+	$('#email-label').show();
+	$('#error_updateEmail').html("");
+	$('#email').hide();
+	$('#set-password').hide();
+	$('#cancel-password').hide();
+	$('#cpass-label').hide();
+	$('#npass-label').hide();
+	$('#rnpass-label').hide();
+	$('#opassword').hide();
+	$('#npassword').hide();
+	$('#re-npassword').hide();
+	$('#i-pass').show();
+	$('#password-label').show();
+	$('#edit-password').show();
+	$('#error_updatePassword').html("");
+	$('#opassword').val("");
+	$('#npassword').val("");
+	$('#re-npassword').val("");
+	$('#email').val("<?php echo $this->session->userdata('email'); ?>");
+	$("#epass-label").hide();
+	$('#epassword').hide();
+	$('#epassword').val("");
 });
 
 $('#edit-email').click( function(){
@@ -226,6 +334,8 @@ $('#edit-email').click( function(){
 	$('#cancel-email').show();	
 	$('#email').show();
 	$('#error_update').html("");
+	$("#epass-label").show();
+	$('#epassword').show();
 });
 
 $('#edit-password').click( function(){
@@ -243,13 +353,6 @@ $('#edit-password').click( function(){
 	$('#error_updatePassword').html("");
 });
 
-$('#set-email').click(function(){
-		$('#set-email').hide();
-		$('#cancel-email').hide();
-		$('#edit-email').show();
-		$('#email-label').show();
-		$('#email').hide();
-});
 
 $('#cancel-email').click(function(){
 		$('#set-email').hide();
@@ -258,6 +361,9 @@ $('#cancel-email').click(function(){
 		$('#email-label').show();
 		$('#error_updateEmail').html("");
 		$('#email').hide();
+		$('#email').val("<?php echo $this->session->userdata('email'); ?>");
+		$("#epass-label").hide();
+		$('#epassword').hide();
 });
 
 $('#set-password').click(function(){
@@ -268,7 +374,7 @@ $('#set-password').click(function(){
 	
 if(npassword == re_password){
 	$.ajax({
-			url: "<?php echo base_url(); ?>borrower/getPassword",
+			url: "<?php echo site_url(); ?>/borrower/getPassword",
 			type: "POST",
 			data: {idnumber: id,
 					opassword: opassword
@@ -292,15 +398,11 @@ if(npassword == re_password){
 					$('#npassword').hide();
 					$('#re-npassword').hide();
 						$.ajax({
-							url: "<?php echo base_url(); ?>borrower/updatePassword",
+							url: "<?php echo site_url(); ?>/borrower/updatePassword",
 							type: "POST",
 							data: {password: npassword},
 							success: function()
 								{
-									//var opassword = $('#opassword').val();
-									//var npassword = $('#npassword').val();
-									//var re_password = $('#re-npassword').val();
-
 									$("#success_email_update").show();
 									$("#success_email_update").html("Password successfully changed :D");
 									$("#success_email_update").fadeIn('slow');
@@ -318,7 +420,11 @@ if(npassword == re_password){
 
 				else
 				{
+					//$('#error_updatePassword').html("Wrong password.");
+					$("#error_updatePassword").show();
 					$('#error_updatePassword').html("Wrong password.");
+					$("#error_updatePassword").fadeIn('slow');
+					setTimeout(function() { $('#error_updatePassword').fadeOut('slow') }, 3000);
 				}
 
 			},
@@ -334,34 +440,11 @@ if(npassword == re_password){
 
 else
 {
+	$("#error_updatePassword").show();
 	$('#error_updatePassword').html("New password does not match.");
+	$("#error_updatePassword").fadeIn('slow');
+	setTimeout(function() { $('#error_updatePassword').fadeOut('slow') }, 3000);
 }
-
-	/*if((npassword == re_password) && (cpword == pword))
-	{
-		$.ajax({
-			url: "<?php echo base_url(); ?>borrower/checkUpdateRe_Password",
-			type: "POST",
-			data: {password: npassword},
-			success: function()
-			{
-				$('#set-password').hide();
-				$('#cancel-password').hide();
-				$('#i-pass').show();
-				$('#password-label').show();
-				$('#edit-password').show();
-				$('#cpass-label').hide();
-				$('#npass-label').hide();
-				$('#rnpass-label').hide();
-				$('#opassword').hide();
-				$('#npassword').hide();
-				$('#re-npassword').hide();
-				alert('updated password');
-			}
-
-		});
-	}*/
-
 
 });
 
@@ -378,6 +461,9 @@ $('#cancel-password').click(function(){
 		$('#password-label').show();
 		$('#edit-password').show();
 		$('#error_updatePassword').html("");
+		$('#opassword').val("");
+		$('#npassword').val("");
+		$('#re-npassword').val("");
 });
 
 //**** BORROWER ****//
@@ -393,17 +479,26 @@ $('#cancel-password').click(function(){
 	$('#email').blur(function(){
 		var value = $('#email').val();
         $.ajax({
-          url: "<?php echo base_url();?>borrower/checkUpdateEmail",
+          url: "<?php echo site_url();?>/borrower/checkUpdateEmail",
           type: "POST",
           data: { email : value},
           success: function(result){
               if($.trim(result)=="1"){
-                   $('#error_update').html("Invalid email");
+                flagMail = false;
+                $("#error_update").show();
+				$('#error_update').html("Oops.An error occured.");
+				$("#error_update").fadeIn('slow');
+				setTimeout(function() { $('#error_update').fadeOut('slow') }, 3000);
               }
               else if($.trim(result)=="2"){
-                   $('#error_update').html("Email already in use");
+                flagMail = false;
+                $("#error_update").show();
+				$('#error_update').html("Email already in use");
+				$("#error_update").fadeIn('slow');
+				setTimeout(function() { $('#error_update').fadeOut('slow') }, 3000);
               }
               else if($.trim(result)=="0"){
+              	flagMail = true;
                    $('#error_update').html("");
               }
             }
@@ -426,20 +521,25 @@ $('#cancel-password').click(function(){
 	function update_email(){
 		var value = $('#email').val();
         $.ajax({
-          url: "<?php echo base_url();?>borrower/checkUpdateEmail",
+          url: "<?php echo site_url();?>/borrower/checkUpdateEmail",
           type: "POST",
           data: { email : value},
           success: function(result){
               if($.trim(result)=="1"){
-                   $('#error_update').html("Invalid email");
+                   $("#error_update").show();
+				   $('#error_update').html("Invalid Email");
+				   $("#error_updateord").fadeIn('slow');
+					setTimeout(function() { $('#error_update').fadeOut('slow') }, 3000);
               }
               else if($.trim(result)=="2"){
-                   $('#error_update').html("Email already in use");
+                   $("#error_update").show();
+				   $('#error_update').html("Email already in use");
+				   $("#error_update").fadeIn('slow');
+				   setTimeout(function() { $('#error_update').fadeOut('slow') }, 3000);
               }
               else{
-
                    $.ajax({
-			          url: "<?php echo base_url();?>borrower/updateEmail",
+			          url: "<?php echo site_url();?>/borrower/updateEmail",
 			          type: "POST",
 			          data: { email : value },
 			          success: function(result){
@@ -451,20 +551,28 @@ $('#cancel-password').click(function(){
 							 $("#success_email_update").fadeIn('slow');
 							 setTimeout(function() { $('#success_email_update').fadeOut('slow') }, 3000);
 			              }
-
 			            }
 			         });
-
-
-              }
-              
+              }       
             }
         });
        }
 
 
 	$('#set-email').click(function(){
-		update_email();
+		if(flag && flagMail){
+			update_email();
+			$('#set-email').hide();
+			$('#cancel-email').hide();
+			$('#edit-email').show();
+			$('#email-label').show();
+			$('#email').hide();
+			$("#epass-label").hide();
+			$('#epassword').hide();
+		}
+		else{
+
+		}
 	});
 
 	function edit(){										
@@ -501,27 +609,6 @@ $('#cancel-password').click(function(){
 
 												
 	}
-											
-	/*function validate(){
-											
-		var email = document.getElementById('email');
-		var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-		var y = document.getElementById('update_email');
-		var w = document.getElementById('cancel');
-
-		if (filter.test(email.value)){
-			w.style.display="none";
-			y.style.display="inline";
-			$("#temp").click();
-			alert("Your email has been updated.");	
-		}
-		else{
-			//alert('Please provide a valid email address');
-			email.focus;	
-		}
-											
-	}*/
-
 
 											
 	function cancel_email(){

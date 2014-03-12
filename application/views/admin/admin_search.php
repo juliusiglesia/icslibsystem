@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<?php include 'includes/head.php'; ?>
-
+		
 	<script>
 
 		function deleteBook( thisDiv ){
@@ -18,7 +18,7 @@
 							var materialid = $.trim(parent.siblings('.materialid').text());
 							$.ajax({
 								type: "POST",
-								url: "<?php echo base_url();?>admin/delete_material",
+								url: "<?php echo site_url(); ?>/admin/delete_material",
 								data: { materialid : materialid }, 
 
 								beforeSend: function() {
@@ -32,21 +32,22 @@
 
 								success: function( result ){
 
-									if( result != "1" ){
-										
-										//thisButton.attr('disabled', 'disabled');
-										// remove row
-										//alert("SUCCESS!!!");
-										//document.getElementById("success_notify").style.display='none';
-
+									if ($.trim(result) == '1'){
+										$("#fail_delete").hide();
 										$("#success_delete").show();
 										$("#success_delete").html("Library Material successfully deleted from the database.");
 										$("#success_delete").fadeIn('slow');
 										$("#"+materialid).html("");
 										document.body.scrollTop = document.documentElement.scrollTop = 0;
-										setTimeout(function() { $('#success_delete').fadeOut('slow') }, 5000);	
-									} else {
-										//alert("Failed to notify");
+										setTimeout(function() { $('#success_delete').fadeOut('slow') }, 5000);
+									}
+									else if ($.trim(result) == '0') {
+										$("#success_delete").hide();
+										$("#fail_delete").show();
+										$("#fail_delete").html("The book is currently borrowed / reserved. Have it returned first / clear all reservations before deleting from the database.");
+										$("#fail_delete").fadeIn('slow');
+										document.body.scrollTop = document.documentElement.scrollTop = 0;
+										setTimeout(function() { $('#fail_delete').fadeOut('slow') }, 5000);
 									}
 								}
 							});
@@ -59,23 +60,11 @@
 				}
 			});
 		}
-		function showMaterial( thisDiv ){
-			bootbox.dialog({
-				message: showMessage,
-				title: "<h3>Successfully Added!</h3>",
-				buttons: {
-					no: {
-						label: "Okay",
-						className: "btn-primary"
-					}
-				}
-			});
-		} 
 		
 	</script>
 		
 	<body>
-        <?php include 'includes/header.php'; ?>
+		<?php include 'includes/header.php'; ?>
         <div class="mainBody">
             <!-- Nav tabs -->
             <?php include 'includes/sidebar.php'; ?> 
@@ -87,7 +76,7 @@
 						<h2> All Library Materials </h2>
 						<h5> <i> You are viewing all library materials. </i> </h5>
 						<ol class="breadcrumb">
-							<li><a href="<?php echo base_url()?>admin/home">Home</a></li>
+							<li><a href="<?php echo site_url(); ?>/admin/home">Home</a></li>
 							<li class="active"> View All Materials </li>
 						</ol>
 					<div class="row">
@@ -97,6 +86,7 @@
 							</div>
 						</div>
 					</div>
+	            	<br /><br />
 	                <form method="post"  style="width: 800px ; margin-left: auto; margin-right: auto;" role="form">
 	                    <label for="filter"><span class="label label-default">Filter by:</span></label>
 	                    <select name="filter">
@@ -110,16 +100,16 @@
 	                    <label for="type"<span class="label label-default">Type:</span></label>
 	                    <select name="type">
 	                        <option value="allTypes">All</option>
-	                        <option value="book">Book</option>
-	                        <option value="sp">SP</option>
-	                        <option value="thesis">Thesis</option>
-	                        <option value="references">References</option> 
-	                        <option value="cd">CD</option>
-	                        <option value="journals">Journals</option>
-	                        <option value="magazines">Magazines</option>
+	                        <option value="Book">Book</option>
+	                        <option value="SP">SP</option>
+	                        <option value="Thesis">Thesis</option>
+	                        <option value="References">References</option> 
+	                        <option value="Cd">CD</option>
+	                        <option value="Journals">Journals</option>
+	                        <option value="Magazines">Magazines</option>
                   		</select>          
 	                 	<label for="access"><span class="label label-default">Accessible by:</span></label>
-	                    <select name="access"> 
+	                    <select name="access">
                             <option value="allAccess">---</option>
                             <option value="1">Student</option>
                             <option value="2">Faculty</option>
@@ -134,102 +124,13 @@
                             <input type="radio" name="avail" value="allAvail" id="avail" checked="true"/>
                             <label for="allAvail">Both</label>
 							<br/>
+						  
                     </form>
-                    <br /><br />
-					<?php
-
-						if($this->input->post('insert') != ''){
-						    $numberOfAuthors = $this->input->post('numberOfAuthors');
-						    $materialid = $this->input->post('materialid');
-						    $course = $this->input->post('course');
-						    $type = $this->input->post('type');
-						    $isbn = $this->input->post('isbn');
-						    $name = $this->input->post('name');
-						    $year = $this->input->post('year');
-						    $edvol = $this->input->post('edvol');
-						    $access = $this->input->post('access');
-						    $available = $this->input->post('available');
-						    $requirement = $this->input->post('requirement');
-							
-							$fname1 = $this->input->post('fname1');
-							$mname1 = $this->input->post('mname1');
-							$lname1 = $this->input->post('lname1');
-							
-							$query = $this->db->query("SElECT * FROM librarymaterial WHERE materialid LIKE '${materialid}'");
-							$query2 = $this->db->query("SElECT * FROM librarymaterial WHERE isbn LIKE '${isbn}'");
-							
-						    if( $query->num_rows() > 0 ) {
-								$data_authors = array();
-								$data_authors[1] = $this->input->post('fname1');
-								$data_authors[2] = $this->input->post('mname1');
-								$data_authors[3] = $this->input->post('lname1');
-							
-								for($i=$numberOfAuthors; $i>1; $i--){
-									$k = 'fname' . $i;
-									$s = 'mname' . $i;
-									$p = 'lname' . $i;
-									$fname = $this->input->post($k);
-									$mname = $this->input->post($s);
-									$lname = $this->input->post($p);
-									
-									array_push($data_authors, $fname, $mname, $lname);
-								}
-											
-									$data = array(
-										'materialid' => $materialid,
-										'type' => $type,
-										'isbn' => $isbn,
-										'course' => $course,
-										'name' => $name,
-										'year' => $year,
-										'edvol' => $edvol,
-										'access' => $access,
-										'available' => $available,
-										'requirement' => $requirement,
-										'numberOfAuthors' => $numberOfAuthors,
-										$data_authors,
-									);
-										
-									$this->session->set_flashdata('feedback1', $data);
-									redirect('admin/add_material', 'location');
-							}
-							else if( $query2->num_rows() > 0 ) {
-								$data_authors = array();
-								$data_authors[1] = $this->input->post('fname1');
-								$data_authors[2] = $this->input->post('mname1');
-								$data_authors[3] = $this->input->post('lname1');
-								
-								for($i=$numberOfAuthors; $i>1; $i--){
-										$k = 'fname' . $i;
-										$s = 'mname' . $i;
-										$p = 'lname' . $i;
-										$fname = $this->input->post($k);
-										$mname = $this->input->post($s);
-										$lname = $this->input->post($p);
-									
-									array_push($data_authors, $fname, $mname, $lname);
-								}
-							
-								$data2 = array(
-									'materialid' => $materialid,
-									'type' => $type,
-									'isbn' => $isbn,
-									'course' => $course,
-									'name' => $name,
-									'year' => $year,
-									'edvol' => $edvol,
-									'access' => $access,
-									'available' => $available,
-									'requirement' => $requirement,
-									'numberOfAuthors' => $numberOfAuthors,
-									$data_authors,
-								);
-										
-								$this->session->set_flashdata('feedback3', $data2);
-								redirect('admin/add_material', 'location');
-							}
-                        }
-                    ?>
+					
+                     <div class="alert-container" style = 'height: 40px; margin: 30px;'>
+							<div style="display:none" id = "success_delete" class = "alert alert-success">  </div>
+							<div style="display:none" id = "fail_delete" class = "alert alert-danger">  </div>
+						</div> 
                     <?php
                         echo "<table border = '1' id='myTable' class = 'table table-hover'>
                             <thead>
@@ -237,25 +138,25 @@
 									<th style='width:11%;'><b><center>ISBN/ISSN</center></b></th>
                                     <th style='width:10%;'><center>ID Material</center></th>
                                     <th style='width:7%;'><b><center>Type</center></b></th>
-                                    <th style='width:45%;'><center>Library Information</center></th>
+                                    <th style='width:49%;'><center>Library Information</center></th>
                                     <th style='width:8%;'><center>Req.</center></th>
                                     <th style='width:5%;'><center>Available Copies</center></th>
-                                    <th style='width:14%;'><b><center>Action</center></b></th>
+                                    <th style='width:10%;'><b><center>Action</center></b></th>
                                 </tr>
                             </thead>";
-                                if($flag->num_rows()==0){
+                                if(count($flag)==0){
                                 	echo "<tbody>";
                                     echo "<td colspan = '7' class = 'nolibmat' style='background-color:rgba(0,0,0,0.1); color: black;'><center>No library material available.</center></td>";
                                     echo "</tbody>";
                                 }else{ 
                                     echo "<tbody>";	
-                                    foreach ($sql2->result() as $q){
+                                    foreach ($sql2 as $q){
 										$rowAuthor = $q->authorname;
 										echo "<tr id = '{$q->materialid}'>";
 												
 											if($q->type == 'Book' || $q->type == 'References' || $q->type == 'Journals' || $q->type == 'Magazines'){											
 												echo "<td><center><span class='table-text'>{$q->isbn}</span></center></td>";
-											}else echo "<td><center>---</center></td>";
+											}else echo "<td><center>---------</center></td>";
 												
 											echo "<td class = 'materialid'><center><span class='table-text'>{$q->materialid} </span></center></td>";
 
@@ -285,7 +186,7 @@
 												else if( $q->edvol % 10 == 3 )
 													echo "<span class ='author'>". $q->edvol ."rd Edition.</span>"; 
 												else {
-													if ( $q->edvol > 0)
+													if ( $q->edvol > 1)
 														echo "<span class ='author'>". $q->edvol ."th Edition.</span>";
 												}	
 											}
@@ -296,6 +197,8 @@
 													$req = "none";
 												}else if($q->requirement==1){
 													$req = "COI";
+												}else if($q->requirement==2){
+													$req = "COO";
 												}
 												echo "<td><center>" . $req . "</center></td>";
 												$availcopy = $q->quantity - $q->borrowedcopy;
@@ -303,7 +206,9 @@
 												echo "<td align='center'>";
 												echo "<form method='post' name='update' action='update_material'>";
 												echo "<input type='hidden' name='materialid' value='" . $q->materialid . "'/>";
-												echo "<button type='submit' class='updateButton btn btn-default' name='update'></form><span class='glyphicon glyphicon-edit'></button><button onclick = 'deleteBook($(this))' class='deleteButton btn btn-danger' name='return'><span class='glyphicon glyphicon-remove'></button>";
+												echo "<button type='submit' class='updateButton btn btn-default' name='update'><span class='glyphicon glyphicon-edit'></button></form>";
+												echo "<button onclick = 'deleteBook($(this))' class='deleteButton btn btn-danger' name='return'><span class='glyphicon glyphicon-remove'></button>";
+												echo "</td></tr>";
 											}
                                        	echo "</tbody>";
                                     }
@@ -314,103 +219,18 @@
                 </div><!-- main page -->
         </div><!-- left -->
 
-        <!-- Footer -->
+         <!-- Footer -->
 		<?php include 'includes/footer.php'; ?>
 
 		<?php include 'includes/pagination.php'; ?>	
-		
-		<script id="js">	
-			var tryinsert = <?php echo "'" . $this->input->post('insert') . "'"; ?>;
-			if(tryinsert != ''){
-				var type = "<?php if(isset($type)) echo $type; else echo '';?>";
-				if (type == 'Book') {
-
-				};
-				var materialid = "<?php if(isset($materialid)) echo $materialid; else echo ''; ?>"; 
-				var isbn = "<?php if(isset($isbn)) echo $isbn; else echo '';?>";
-				var course = "<?php if(isset($course)) echo $course; else echo '';?>";
-				var name = "<?php if(isset($name)) echo $name; else echo '';?>";
-				var authorname = "<?php if(isset($fname1)) echo $fname1 . ' ' . $mname1 . ' ' . $lname1; else echo '';?>";
-				var edvol = "<?php if(isset($edvol)) echo $edvol; else echo '';?>";
-				var year = "<?php if(isset($year)) echo $year; else echo '';?>";
-				var access = "<?php if(isset($access)){ if($access == 1) echo 'Student'; else if($access == 2) echo 'Faculty'; else if($access == 3) echo 'Room Use'; else echo 'Student/Faculty'; } else echo '';?>";
-				var available = "<?php if(isset($available)){ if($available == 1) echo 'Available'; else echo 'Not Available';} else echo '';?>";
-				var requirement = "<?php if(isset($requirement)){ if($requirement == 0) echo 'None'; else echo 'COI';}else echo '';?>";  
-
-				if(type == 'SP' || type == 'Thesis'){
-					if (edvol == '') {
-					var showMessage = "<strong><h4>Library Information: </h4></strong><br /><b>ID Material: </b>"+materialid+"<br /><b>Type: </b>"+type+"<br /><b>Title: </b>"+name+"<br /><b>Author: </b>"+authorname+"<br /><b>Year of Publication: </b>"+year+"<br /><b>Accessibility: </b>"+access+"<br /><b>Availability: </b>"+available+"<br /><b>Requirement: </b>"+requirement+"<br />";
-					}else{
-					var showMessage = "<strong><h4>Library Information: </h4></strong><br /><b>ID Material: </b>"+materialid+"<br /><b>Type: </b>"+type+"<br /><b>Title: </b>"+name+"<br /><b>Author: </b>"+authorname+"<br /><b>Year of Publication: </b>"+year+"<br /><b>Edition: </b>"+edvol+"<br /><b>Accessibility: </b>"+access+"<br /><b>Availability: </b>"+available+"<br /><b>Requirement: </b>"+requirement+"<br />";
-					}
-				}else if(type == 'CD'){
-					if (edvol == '') {
-						var showMessage = "<strong><h4>Library Information: </h4></strong><br /><b>ID Material: </b>"+materialid+"<br /><b>Type: </b>"+type+"<br /><b>Course Classification: </b>"+course+"<br /><b>Title: </b>"+name+"<br /><b>Author: </b>"+authorname+"<br /><b>Year of Publication: </b>"+year+"<br /><b>Accessibility: </b>"+access+"<br /><b>Availability: </b>"+available+"<br /><b>Requirement: </b>"+requirement+"<br />";
-					}else{
-						var showMessage = "<strong><h4>Library Information: </h4></strong><br /><b>ID Material: </b>"+materialid+"<br /><b>Type: </b>"+type+"<br /><b>Course Classification: </b>"+course+"<br /><b>Title: </b>"+name+"<br /><b>Author: </b>"+authorname+"<br /><b>Year of Publication: </b>"+year+"<br /><b>Edition: </b>"+edvol+"<br /><b>Accessibility: </b>"+access+"<br /><b>Availability: </b>"+available+"<br /><b>Requirement: </b>"+requirement+"<br />";
-					}
-				}else if(type == 'Journals' || type == 'Magazines'){
-					if (edvol == '') {
-						var showMessage = "<strong><h4>Library Information: </h4></strong><br /><b>ID Material: </b>"+materialid+"<br /><b>ISBN/ISSN: </b>"+isbn+"<br /><b>Type: </b>"+type+"<br /><b>Title: </b>"+name+"<br /><b>Author: </b>"+authorname+"<br /><b>Year of Publication: </b>"+year+"<br /><b>Accessibility: </b>"+access+"<br /><b>Availability: </b>"+available+"<br /><b>Requirement: </b>"+requirement+"<br />";
-					}else{
-						var showMessage = "<strong><h4>Library Information: </h4></strong><br /><b>ID Material: </b>"+materialid+"<br /><b>ISBN/ISSN: </b>"+isbn+"<br /><b>Type: </b>"+type+"<br /><b>Title: </b>"+name+"<br /><b>Author: </b>"+authorname+"<br /><b>Year of Publication: </b>"+year+"<br /><b>Edition: </b>"+edvol+"<br /><b>Accessibility: </b>"+access+"<br /><b>Availability: </b>"+available+"<br /><b>Requirement: </b>"+requirement+"<br />";
-					}	
-				}
-				else{
-					if (edvol == '') {
-						var showMessage = "<strong><h4>Library Information: </h4></strong><br /><b>ID Material: </b>"+materialid+"<br /><b>ISBN/ISSN: </b>"+isbn+"<br /><b>Type: </b>"+type+"<br /><b>Course Classification: </b>"+course+"<br /><b>Title: </b>"+name+"<br /><b>Author: </b>"+authorname+"<br /><b>Year of Publication: </b>"+year+"<br /><b>Accessibility: </b>"+access+"<br /><b>Availability: </b>"+available+"<br /><b>Requirement: </b>"+requirement+"<br />";
-					}else{
-						var showMessage = "<strong><h4>Library Information: </h4></strong><br /><b>ID Material: </b>"+materialid+"<br /><b>ISBN/ISSN: </b>"+isbn+"<br /><b>Type: </b>"+type+"<br /><b>Course Classification: </b>"+course+"<br /><b>Title: </b>"+name+"<br /><b>Author: </b>"+authorname+"<br /><b>Year of Publication: </b>"+year+"<br /><b>Edition: </b>"+edvol+"<br /><b>Accessibility: </b>"+access+"<br /><b>Availability: </b>"+available+"<br /><b>Requirement: </b>"+requirement+"<br />";
-					}
-				}
-
-				window.onload = function() {                   
-				        showMaterial($(this)) 
-				}
-			}
-
-			$("table")
-				.tablesorter({
-						theme: 'blue',
-						widthFixed: true,
-						widgets: ['zebra']
-					})
-
-			.bind('pagerChange pagerComplete pagerInitialized pageMoved', function(e, c){
-				var msg = '"</span> event triggered, ' + (e.type === 'pagerChange' ? 'going to' : 'now on') + ' page <span class="typ">' + (c.page + 1) + '/' + c.totalPages + '</span>';
-				$('#display')
-					.append('<li><span class="str">"' + e.type + msg + '</li>')
-					.find('li:first').remove();
-				document.body.scrollTop = document.documentElement.scrollTop = 0;
-			})
-
-			.tablesorterPager(pagerOptions);
-
-		});
-	
-	</script>
 	<script>
 		//document.getElementById("success_update").style.display='none';
 		//document.getElementById("success_added").style.display='none';
+	
 	$('#view-nav').addClass('active');
 	$(document).ready(function(){
 				//for tooltip
 				$("a.tooltipLink").tooltip();
 	});
-		var offset = 220;
-                var duration = 500;
-                jQuery(window).scroll(function() {
-                    if (jQuery(this).scrollTop() > offset) {
-                        jQuery('.back-to-top').fadeIn(duration);
-                    } else {
-                        jQuery('.back-to-top').fadeOut(duration);
-                    }
-                });
-                
-                jQuery('.back-to-top').click(function(event) {
-                    event.preventDefault();
-                    jQuery('html, body').animate({scrollTop: 0}, duration);
-                    return false;
-                });
     </script>
 </body></html>

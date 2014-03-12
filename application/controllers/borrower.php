@@ -90,6 +90,11 @@ public function home(){
 			$data['borrowedCount'] = $this->borrowed_model->get_borrowed_material_count();
 			$data['reservedCount'] = $this->borrowed_model->get_reserved_material_count();
 			$data['overdueCount'] = $this->borrowed_model->get_overdue_material_count();
+
+			//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+			$data['enable_fine'] = $this->borrowed_model->get_fine_enable();
+			//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+			
 			//update
 			$this->load->model('user/reservation_model');
 			$data['list'] = $this->reservation_model->waitlisted_matid($userid);
@@ -100,7 +105,6 @@ public function home(){
 		}
 	}
 	
-	//7am update
 	public function login($message){
 		$is_logged_in = $this->is_logged_in();
 		$this->no_cache();
@@ -108,39 +112,40 @@ public function home(){
 			redirect('/borrower/home', 'refresh');
 		} else {
 		
-		if($message != null){
-			if($message != 'dne' && $message != 'dnm' && $message !='done' && $message !='verified' ){
-					$this->load->model('user/log_model');
-					$em = $this->input->post('email');
-					$borrower_info = $this->log_model->get_password($message);
-					$data['idnumber'] = $borrower_info[0]->idnumber ;
-					$data['password'] =$borrower_info[0] ->password;
-					$data['email'] = $borrower_info[0]->email ;
+		$data['message'] = $message;
+		$data['idnumber'] =null;
+		$data['password'] =null;
+		$data['email'] = null;
+		
+		$em = $this->session->userdata('forgot');
+		if($em){
+			if($message == 'deactivated'){
+				$this->load->model('user/log_model');
+				$borrower_info = $this->log_model->get_password($em);
+				$data['idnumber'] = $borrower_info[0]->idnumber ;
+				$data['password'] =$borrower_info[0] ->password;
+				$data['email'] = $borrower_info[0]->email ;
+				$data['message'] = $message;
 			}
-			else{
-			$data['idnumber'] =null;
-			$data['password'] =null;
-			$data['email'] = null;
-			}
-			$data['message'] = $message;
-			$this->load->view('user/forgot_pword',$data);
 		}
+		$this->load->view('user/forgot_pword',$data);
 		
 		}
-	}	//7am update
+	}
 	
 	public function check_user(){
 		$this->load->model('user/check_user_model');
 		
 		$user_count = $this->check_user_model->check_email();
-
+		$em = $this->input->post('email');
+		$this->session->set_userdata('forgot',$em);
 		//if user does not exist
 		if( $user_count != 1 ){
 			echo "0";
 		}else {
-
 			$active = $this->check_user_model->check_email_activation();
-
+			
+			//not activated
 			if($active == 1){
 				echo "3";
 			}else{//activated
@@ -167,7 +172,6 @@ public function home(){
 					$this->session->set_userdata('fname',$b_info[0]->fname);
 					$this->session->set_userdata('mname',$b_info[0]->mname);
 					$this->session->set_userdata('lname',$b_info[0]->lname);
-					$this->session->set_userdata('searchtype',0);
 					echo "1";
 				}
 			}
@@ -187,7 +191,7 @@ public function logout()
 
 	public function register(){
 		$this->load->helper('url');
-		$this->load->view('user/Register.php');
+		$this->load->view('user/register.php');
 	}
 
 	public function borrowed_materials() { 
@@ -207,6 +211,10 @@ public function logout()
 		$data['borrowedCount'] = $this->borrowed_model->get_borrowed_material_count();
 		$data['reservedCount'] = $this->borrowed_model->get_reserved_material_count();
 		$data['overdueCount'] = $this->borrowed_model->get_overdue_material_count();
+
+		//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+		$data['enable_fine'] = $this->borrowed_model->get_fine_enable();
+		//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 		
 		//update
 		$this->load->model('user/reservation_model');
@@ -256,24 +264,25 @@ public function resend_mail(){
 	$idnumber = $this->input->post('idnumber');
 	$password = SHA1($this->input->post('password'));
 
-	$this->verification_model->send_verification_email($idnumber, $email, $password);
+	if($this->verification_model->send_verification_email($idnumber, $email, $password)) {
+		echo "sent";
+	}
+	else echo "fail";
 }
 
 
 public function registration(){
-
-		
 		$this->load->model('user/verification_model');
 
 		$email = $this->input->post('email');
 		$idnumber = $this->input->post('idnumber');
 		$password = SHA1($this->input->post('password'));
 
-		
-		$this->verification_model->insert_user( $email, $idnumber, $password );
-
-
-
+		if($this->verification_model->send_verification_email($idnumber, $email, $password)){
+			$this->verification_model->insert_user( $email, $idnumber, $password );
+			echo "sent";
+		}
+		else echo "failed";
 	}
 
 public function validate_email($idnumber, $verification_code){
@@ -435,53 +444,61 @@ public function forgot_password()
 		{
 
 			$email = $this->input->post('email');
+			
 			$this->load->model('user/forgot_model');
 			$name = $this->forgot_model->get_name($email);
-			$name = $name[0]->fname;
-			$result = $this->forgot_model->verify_email($email);
+				
+			//email does not exist
+			if(! $name){
+				$ret_val = array('message'=> 'Email does not exist.','stat'=> 'fail');
+				echo json_encode($ret_val);
+			}
+			
+			else{
+				$name = $name[0]->fname;
+				$result = $this->forgot_model->verify_email($email);
 				if($result)
 				{
-
 					$verfied_email = $result[0]->email;
 					$verification_code = $result[0]->password;
 					$config = array(
 						'protocol' => 'smtp',
 						'smtp_host' => 'ssl://smtp.googlemail.com',
-    					'smtp_port' => 465,
-    					//'smtp_user' => 'icslibsystem@gmail.com',
-    					//'smtp_pass' => 'computerscience128'
-    					'smtp_user' => 'icslibsystem.dummy@gmail.com',
-    					'smtp_pass' => 'codeigniter'
+						'smtp_port' => 465,
+						'smtp_user' => 'icslibsystem.noreply@gmail.com',
+						'smtp_pass' => 'computerscience128'
+						//'smtp_user' => 'icslibsystem.dummy@gmail.com',
+						//'smtp_pass' => 'codeigniter'
 					);
 					$this->load->library('email',$config);
 					$this->email->set_newline("\r\n");
 
-					$this->email->from('icslibsystem@gmail.com', 'ICS Library');
+					$this->email->from('icslibsystem.noreply@gmail.com', 'ICS Library');
 					$this->email->to($verfied_email); 
 	
 	
-					$this->email->subject('Password Reset');
-					$this->email->message("Hello {$name}, Below is the code you need for password reset {$verification_code} ");
+					$this->email->subject('[iLS] Password reset for you, '. $name);
+					$this->email->message("It looks like you forgot your password in your iLS account. Do not panic! We have provided you a code below for resetting your password. {$verification_code} P.S. Please try not to forget your new password once you are successful in resetting it. P.P.S. Please ignore this email if you did not ask for a password reset.");
 	
 						if($this->email->send())
 						{
-							$ret_val = array('message'=> 'Verification code has been sent to your mail.','stat'=> 'success','verf_code' => $verification_code);
+							$ret_val = array('message'=> 'A verification code has been sent to your mail.','stat'=> 'success','verf_code' => $verification_code);
 							echo json_encode($ret_val);
 							
 						}
-
+						//email not sent
 						else
 						{
-							$ret_val = array('message'=> 'An error occured.','stat'=> 'fail');
+							$ret_val = array('message'=> 'Connection Error.','stat'=> 'failed');
 							echo json_encode($ret_val);
 						}
-				}
-
+				}/*
 				else
 				{
 					$ret_val = array('message'=> 'The email you entered is not registered.','stat'=> 'fail');
 					echo json_encode($ret_val);
-				}
+				}*/
+			}
 		}
 
 		else if($action == 'verify_code')
@@ -522,31 +539,29 @@ public function forgot_password()
 					$ret_val = array('message' => 'Error in resetting your password. Try again later.','stat' => 'fail');
 					echo json_encode($ret_val);
 			}
-
 		 }
-
-}
+	}
 
 public function checkUpdateEmail(){
-		$this->load->library('form_validation');
-		//field name, error message, validation rules
-		$email = $this->input->post('email');
-		$this->form_validation->set_rules('email','Email',
-			'trim|required|valid_email|max_length[50]');
-			
-			if($this->form_validation->run() == FALSE){
-				echo '1';
+	$this->load->library('form_validation');
+	//field name, error message, validation rules
+	$email = $this->input->post('email');
+	$this->form_validation->set_rules('email','Email',
+		'trim|required|valid_email|max_length[50]');
+		
+		if($this->form_validation->run() == FALSE){
+			echo '1';
+		}
+		else {
+			$this->load->model('user/update_model');
+			$in_borrower = $this->update_model->update_email_exist($email);
+			if($in_borrower[0]->count == 1){
+				echo '2';
 			}
-			else {
-				$this->load->model('user/update_model');
-				$in_borrower = $this->update_model->update_email_exist($email);
-				if($in_borrower[0]->count == 1){
-					echo '2';
-				}
-				else{
-					echo '0';
-				}
+			else{
+				echo '0';
 			}
+		}
 }
 
 public function checkUpdatePassword(){
@@ -615,94 +630,60 @@ public function getPassword()
 	$ret_pw = $cpword[0]->password;
 	$ret_val = array('opassword'=>$opassword, 'password'=>$ret_pw);
 	echo json_encode($ret_val);
-	
+}
 
-	}
+public function getPasswordForEmail()
+	{
+	$epassword = $this->input->post('epassword');
+	$idnumber = $this->input->post('idnumber');
 
-
+	$this->load->model('user/update_model');
+	$cpword = $this->update_model->get_password($idnumber);
+	//echo $cpword[0]->password;
+	$epassword = SHA1($epassword);
+	$ret_pw = $cpword[0]->password;
+	$ret_val = array('epassword'=>$epassword, 'password'=>$ret_pw);
+	echo json_encode($ret_val);
+}
 
 
 public function outside_search(){
-			
-	$search = 	$this->db->escape_str($this->input->post('searchbox'));
-		
-	$search_option = $this->input->post('category'); //array yung options
-	$type = $this->input->post('type');
 
-	if(empty($type) || $search==''){
-		$this->load->model('user/basic_search_model');
-		$result_info['value'] = $this->basic_search_model->get_search_res($search,$search_option);
+	$this->no_cache();
+	$this->load->helper('url');
+	
+	$search = 	$this->db->escape_str($this->input->post('searchbox'));
+	$userid = $this->session->userdata('email');
+	
+	$s_access_val = $this->input->post('s_access_val');
+	$category = $this->input->post('category'); 
+	$s_type = $this->input->post('s_type'); 
+	$s_accessibility = $this->input->post('s_accessibility'); 
+
+	$bsc = $this->input->post('bsc_search_btn');
+	$adv = $this->input->post('adv_search_btn'); 
+
+	if($adv){
+		$this->session->set_userdata('searchtype','1');
+		$this->load->model('user/advance_search_model');
+		$result_info['value'] = $this->advance_search_model->get_adv_search($search,$category,$s_access_val,$s_type,$s_accessibility);
+		$result_info['srch'] = 1;
+		$result_info['s_type'] = $s_type;
+		$result_info['s_accessibility'] = $s_accessibility;
+		$result_info['s_access_val'] = $s_access_val;
 	}
 	else{
-		$this->load->model('user/advance_search_model');
-		$result_info['value'] = $this->advance_search_model->get_adv_search($search,$search_option,$type);
+		$this->load->model('user/basic_search_model');
+		$result_info['value'] = $this->basic_search_model->get_search_res($search,$category);
+		$this->session->set_userdata('searchtype','0');
+		$result_info['srch'] = 0;
 	}
+	$result_info['input'] = $search;
+	$result_info['category'] = $category;
 
 	$this->load->view('user/search_results_view', $result_info);
 }
 
-
-
-/*public function new_search(){
-		$is_logged_in = $this->is_logged_in();
-		if( !$is_logged_in ){
-			redirect('/borrower/login/null', 'refresh');
-		}else{
-			$this->no_cache();
-			$this->load->helper('url');
-			
-			$search = 	$this->db->escape_str($this->input->post('searchbox'));
-			$userid = $this->session->userdata('email');
-			
-			$search_option = $this->input->post('category'); //array yung options
-			$type = $this->input->post('type');
-
-			if(empty($type) || $search==''){
-				$this->load->model('user/basic_search_model');
-				$result_info['value'] = $this->basic_search_model->get_search_res($search,$search_option);
-			}
-			else{
-				$this->load->model('user/advance_search_model');
-				$result_info['value'] = $this->advance_search_model->get_adv_search($search,$search_option,$type);
-			}
-			$this->load->model('user/basic_search_model');
-
-			
-
-
-
-
-
-
-
-		
-			$this->load->model('user/reservation_model');
-			$result_info['matid'] = $this->reservation_model->if_reserved($userid);
-			$result_info['material'] = $this->reservation_model->if_waitlisted($userid);
-			$result_info['total'] = $this->reservation_model->get_total($userid);
-			
-			$this->load->model('user/borrowed_model');
-			$result_info['borrowed'] = $this->borrowed_model->get_borrowed_material();
-			$result_info['res'] = $this->borrowed_model->get_reservations();
-			$result_info['overdue'] = $this->borrowed_model->get_overdue();
-			$result_info['readytoclaim'] = $this->borrowed_model->get_ready_to_claim();
-			
-		
-			$result_info['reserved'] = $this->borrowed_model->get_reserved_books();
-				
-			$result_info['borrowedCount'] = $this->borrowed_model->get_borrowed_material_count();
-			$result_info['reservedCount'] = $this->borrowed_model->get_reserved_material_count();
-			$result_info['overdueCount'] = $this->borrowed_model->get_overdue_material_count();
-			$this->load->model('user/reservation_model');
-			$result_info['list'] = $this->reservation_model->waitlisted_matid($userid);
-			$result_info['rank'] = $this->reservation_model->get_rank($userid);
-			$result_info['total'] = $this->reservation_model->get_total($userid); //end update
-			
-			$result_info['searchtext'] = $this->db->escape_str($this->input->post('searchbox'));
-			//$this->load->view('user/search_results_view', $result_info);
-			$this->load->view('user/search_results_view', $result_info);	
-		}
-	}*/
 
 	public function get_message(){
 		$this->load->model('user/borrowed_model'); 
@@ -711,15 +692,10 @@ public function outside_search(){
 		$data['reserved'] = $this->borrowed_model->get_reserved_books();
 		$data['overdue'] = $this->borrowed_model->get_overdue();	
 		$data['readytoclaim'] = $this->borrowed_model->get_ready_to_claim();
+		$data['fineenable'] = $this->borrowed_model->get_fine_enable();
 
 		echo json_encode($data);
 	}
-
-
-
-
-
-
 	
 
 public function new_search(){
@@ -733,31 +709,38 @@ public function new_search(){
 			$search = 	$this->db->escape_str($this->input->post('searchbox'));
 			$userid = $this->session->userdata('email');
 			
-			$search_option = $this->input->post('category'); //array yung options
 			$s_access_val = $this->input->post('s_access_val');
 			$category = $this->input->post('category'); 
 			$s_type = $this->input->post('s_type'); 
 			$s_accessibility = $this->input->post('s_accessibility'); 
 
-			$st = $this->session->userdata('searchtype');
-			
-			if($st == 0){
-
-				$this->load->model('user/basic_search_model');
-				$result_info['value'] = $this->basic_search_model->get_search_res($search,$search_option);
-			}
-			else if($st == 1){
-				
+			$bsc = $this->input->post('bsc_search_btn');
+			$adv = $this->input->post('adv_search_btn'); 
+		
+			if($adv){
+				$this->session->set_userdata('searchtype','1');
 				$this->load->model('user/advance_search_model');
 				$result_info['value'] = $this->advance_search_model->get_adv_search($search,$category,$s_access_val,$s_type,$s_accessibility);
+				$result_info['srch'] = 1;
+				$result_info['s_type'] = $s_type;
+				$result_info['s_accessibility'] = $s_accessibility;
+				$result_info['s_access_val'] = $s_access_val;
 			}
+			else{
+				$this->load->model('user/basic_search_model');
+				$result_info['value'] = $this->basic_search_model->get_search_res($search,$category);
+				$this->session->set_userdata('searchtype','0');
+				$result_info['srch'] = 0;
+			}
+			$result_info['input'] = $search;
+			$result_info['category'] = $category;
 
-			$this->load->model('user/basic_search_model');
+
+
 			$this->load->model('user/reservation_model');
 			$result_info['matid'] = $this->reservation_model->if_reserved($userid);
 			$result_info['material'] = $this->reservation_model->if_waitlisted($userid);
 			$result_info['total'] = $this->reservation_model->get_total($userid);
-			
 			$this->load->model('user/borrowed_model');
 			$result_info['borrowed'] = $this->borrowed_model->get_borrowed_material();
 			$result_info['res'] = $this->borrowed_model->get_reservations();
@@ -776,14 +759,20 @@ public function new_search(){
 			$result_info['rank'] = $this->reservation_model->get_rank($userid);
 			$result_info['total'] = $this->reservation_model->get_total($userid); //end update
 			
-			$result_info['searchtext'] = $this->db->escape_str($this->input->post('searchbox'));
+			//$result_info['searchtext'] = $this->db->escape_str($this->input->post('searchbox'));
 			$this->load->view('user/search_results_view', $result_info);
 		}
 	}
 
+	public function insert_rating(){
+		$this->load->model('user/rating_model');
+		$idnumber = $this->session->userdata('idnumber');
+		$isbn = $this->input->post('isbn');
+		$materialid = $this->input->post('materialid');
+		$rating = $this->input->post('rating');
 
-
-
+		$this->rating_model->check_rating(trim($materialid), trim($idnumber), trim($isbn),$rating);
+	}
 	
 }
 

@@ -10,6 +10,11 @@
 
 class Login_model extends CI_Model{
 
+	public function get_info(){
+		$query = $this->db->query("SELECT fname, mname, lname, email, enum, username FROM administrator WHERE username LIKE 'icslibadmin'");
+		return $query->row();
+	}
+
 	/**
 	* Function for checking if the username is existing or not
 	* 

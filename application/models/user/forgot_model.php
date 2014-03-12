@@ -33,11 +33,16 @@ class Forgot_model extends CI_Model{
 		$this->load->database();
 		$stmt = "SELECT idnumber FROM borrower WHERE email = '{$email}'";
 		$query = $this->db->query($stmt);
-		$result = $query->result();
-		$idnumber = $result[0]->idnumber;
-		$stmt = "SELECT fname FROM sample WHERE idnumber = '{$idnumber}'";
-		$query = $this->db->query($stmt);
-		return $query->result();
+		
+		if( $query->num_rows() == 0) return false;
+		
+		else{
+			$result = $query->result();
+			$idnumber = $result[0]->idnumber;
+			$stmt = "SELECT fname FROM sample WHERE idnumber = '{$idnumber}'";
+			$query = $this->db->query($stmt);
+			return $query->result();
+		}
 	}
 		
 }

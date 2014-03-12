@@ -205,6 +205,22 @@ class Borrowed_model extends CI_Model{
 		return $return_array;
 	}
 
+	public function get_fine_enable(){
+		$return_array = array();
+		$this->load->database();
+
+		$query = "SELECT fineenable FROM settings WHERE id=1";
+
+		$res = $this->db->query($query);
+		$query = $res->result();
+
+		//return $query;
+
+		foreach ($query as $tuple)
+				$return_array[count($return_array)] = (array)$tuple;
+			return $return_array;	
+	}
+
 }
 
 ?>

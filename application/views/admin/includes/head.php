@@ -11,7 +11,7 @@
 		<title>ICS-iLS</title>
 
 		<link href="<?php echo base_url();?>dist/css/bootstrap.css" rel="stylesheet">
-		<link href="<?php echo base_url();?>dist/css/carousel.css" rel="stylesheet">
+		<link href="<?php echo base_url();?>dist/css/modulestyleadmin.css" rel="stylesheet">
 		<link href="<?php echo base_url();?>dist/css/signin.css" rel="stylesheet">
 		<link href="<?php echo base_url();?>dist/css/style2.css" rel="stylesheet">
 		<link href="<?php echo base_url();?>dist/css/styles.css" rel="stylesheet" />

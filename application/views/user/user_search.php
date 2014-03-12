@@ -11,8 +11,8 @@
     <div class="row">
         <div class="col-md-3">
             <ul class="nav nav-pills nav-stacked">
-                <li><a href="<?php echo base_url(); ?>reserved_materials"><span class="glyphicon glyphicon-folder-close"></span><i class="fa fa-home fa-fw"></i>Library Inventory</a></li>
-                <li><a href="<?php echo base_url(); ?>profile"><span class="glyphicon glyphicon-user"></span><i class="fa fa-file-o fa-fw"></i>Manage Profile</a></li>
+                <li><a href="<?php echo site_url(); ?>/reserved_materials"><span class="glyphicon glyphicon-folder-close"></span><i class="fa fa-home fa-fw"></i>Library Inventory</a></li>
+                <li><a href="<?php echo site_url(); ?>/profile"><span class="glyphicon glyphicon-user"></span><i class="fa fa-file-o fa-fw"></i>Manage Profile</a></li>
                 <li class="active"><a href="#"><span class="glyphicon glyphicon-search"></span><i class="fa fa-bar-chart-o fa-fw"></i>Search Library</a></li>
             </ul>
         </div>
@@ -186,7 +186,7 @@
 					
 					$.ajax({
   						type: "POST",
-  						url: "<?php echo site_url('borrower/reserve');?>",
+  						url: "<?php echo site_url('/borrower/reserve');?>",
   						data: {materialid: materialid},
   						
 						success: function(data)

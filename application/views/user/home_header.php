@@ -39,24 +39,28 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="<?php echo base_url();?>"><img src="<?php echo base_url(); ?>dist/images/logo4.png" height="50px" width="165px"></a>
+          <a class="navbar-brand" href="<?php echo base_url();?>"><img src="<?php echo base_url(); ?>dist/images/logo.png" height="70px"></a>
         </div>
         <div class="navbar-collapse collapse">
 
             <!-- <form class="navbar-form navbar-right" role="form" method="post" action="login"> -->
       <form id = "login_form" class="navbar-form navbar-right" role="form">
-            <div class="form-group">
-             <!-- <input placeholder="Email" class="form-control" type="text" value="<?php echo set_value('username');?>" name="username"> -->
-       <input type="text" placeholder="Email" class="form-control"  name="uname">
-            </div>
-            <div class="form-group">
-              <input placeholder="Password" class="form-control" type="password" name="pword">
-            </div>
-      <button class="btn btn-primary" type="button" id = "sign_in">Sign in</button>
-         <!--   <button type="submit" name="login" class="btn btn-primary">Sign in</button> -->
-            <a href="register" name="signup" class="buttonhref white" >Sign up</a>
-            <p><a href="#forgot" id="forgotText" data-toggle="modal"> Forgot password? </a></p>
-      </form>
+                <div class="form-group">
+                 <!-- <input placeholder="Email" class="form-control" type="text" value="<?php echo set_value('username');?>" name="username"> -->
+                    <input type="text" placeholder="Email/ID Number" class="form-control"  name="uname">
+                </div>
+                <div class="form-group">
+                  <input placeholder="Password" class="form-control" type="password" name="pword">
+                </div>
+                   <button class="btn btn-primary" type="button" id = "sign_in">Sign in</button>
+             <!--   <button type="submit" name="login" class="btn btn-primary">Sign in</button> -->
+                
+                <p>
+                  <a href="<?php echo site_url();?>/borrower/register" name="signup">Create an account</a>
+                  <span id="tab"></span>
+                  <a href="#forgot" data-toggle="modal"> Forgot password? </a>
+                </p>
+          </form>
 
         </div><!--/.navbar-collapse -->
       </div>
@@ -96,7 +100,7 @@
         password = $("#login_form").find("input[name='pword']").val();
 
         $.ajax({
-            url: "<?php echo base_url();?>borrower/check_user",
+            url: "<?php echo site_url();?>/borrower/check_user",
             type: "POST",
             dataType: "html",
             data: { email: username, pword: password },

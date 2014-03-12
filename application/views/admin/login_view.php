@@ -3,7 +3,6 @@
 	<?php include 'includes/head.php'; ?>
 	
 	<body>
-		<?php include 'includes\header.php'; ?>
 		<div class="container">
 			<div class="signin">
 			<div class="panel panel-info">
@@ -37,7 +36,7 @@
 				password = $("#login_form").find("input[name='pword']").val();
 
 				$.ajax({
-						url: "<?php echo base_url();?>admin/check_admin",
+						url: "<?php echo site_url();?>/admin/check_admin",
 						type: "POST",
 						dataType: "html",
 						data: { uname: username, pword: password },
@@ -57,7 +56,7 @@
 								$("#message").fadeIn('slow');							
 							}
 							else {
-								window.location.href = "<?php echo site_url('admin/home'); ?>";
+								window.location.href = "<?php echo site_url();?>/admin/home";
 							}
 						}
 					});

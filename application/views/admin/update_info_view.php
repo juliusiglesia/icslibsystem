@@ -3,23 +3,24 @@
 <?php include 'includes/head.php'; ?>
 
 	<body>
-		 <?php include 'includes\header.php'; ?>
+		 <?php include 'includes/header.php'; ?>
         <div class="mainBody">
             <!-- Nav tabs -->
-           <?php include 'includes\sidebar.php'; ?>  
+           <?php include 'includes/sidebar.php'; ?> 
 
-        <div class="leftMain">
+        	<div class="leftMain">
 		        <div id="main-page">
+		        	<br />
+					<h2> Update Library Material </h2>
+					<ol class="breadcrumb">
+						<li><a href="<?php echo site_url()?>/admin/home">Home</a></li>
+						<li><a href="<?php echo site_url()?>/admin/update_material">View All Material</a></li>
+						<li class="active"> Update Library Material </li>
+					</ol>
 			        <div id = "main-content">
-			        	<br />
-						<h2> Update Library Material </h2>
-						<ol class="breadcrumb">
-							<li><a href="<?php echo base_url()?>admin/home">Home</a></li>
-							<li><a href="<?php echo base_url()?>admin/update_material">View All Material</a></li>
-							<li class="active"> Update Library Material </li>
-						</ol>
 						<div id="container">
 							<form name="update" id="update" class="form-horizontal">
+								<h2 class="form-signin-heading">Update Library Material: </h2>
 								<h4><?php echo $update_details->name; ?></h4> 
 								<div class="alert-container" style = 'height: 40px; margin-bottom: 19px;'>
 									<div style="display:none" id="success_update" class = "alert alert-success"></div>
@@ -30,9 +31,9 @@
 									<label id="preclass" name="preclass" class="col-sm-1 control-label"><?php $code = explode("-", $update_details->materialid); echo $code[0] . "-"; ?></label>
 									<div class="col-sm-1">
 										<input type="hidden" id="previous_matID" name="previous_matID" value="<?php echo $update_details->materialid;?>">
-										<input type="text" class="form-control" id="matID" placeholder="A1" name="materialid" pattern="[A-Za-z0-9]+"  required value="<?php $code = explode("-", $update_details->materialid); echo $code[1]; ?>">
+										<input type="text" maxlength="10" class="form-control" id="materialid" placeholder="A1" name="materialid" pattern="[A-Za-z0-9]+"  required value="<?php $code = explode("-", $update_details->materialid); echo $code[1]; ?>">
 									</div>
-										<span style="color: red;" name="helpmaterialid"> </span>
+										<span style="color: red;" id="helpmaterialid" name="helpmaterialid"> </span>
 								</div>
 								<div class="form-group">
 									<label for="type" class="col-sm-2 control-label">Type</label>
@@ -48,16 +49,17 @@
 										</select>
 									</div>
 								</div>
-		
 								<div id="isbn_div" class="form-group"
 										<?php if ($update_details->type == 'Thesis' || $update_details->type == 'CD' ||
 												$update_details->type == 'SP') echo "style='display:none'" ?>>
 									<label for="type" class="col-sm-2 control-label">ISBN</label>
 									<div class="col-sm-2">
-										<input type="text" class="form-control" value="<?php
+										<input type="hidden" id="previous_isbn" name="previous_isbn" value="<?php
+										if ($update_details->type == 'Book' || $update_details->type == 'Magazines' || $update_details->type == 'References' || $update_details->type == 'Journals') echo $update_details->isbn; ?>">
+										<input type="text" maxlength="10" class="form-control" value="<?php
 										if ($update_details->type == 'Book' || $update_details->type == 'Magazines' || $update_details->type == 'References' || $update_details->type == 'Journals') echo $update_details->isbn; ?>" name="isbn" id="isbn" pattern="[0-9]+" placeholder="ISBN"/>
 									</div>
-									<span style="color: red;" name="helpisbn">
+									<span style="color: red;" id="helpisbn" name="helpisbn"> </span>
 								</div>
 								<div id="course_div" class="form-group"
 										<?php if ($update_details->type == 'Thesis' || $update_details->type == 'Journals' ||
@@ -100,7 +102,7 @@
 								<div class="form-group">
 									<label for="title" class="col-sm-2 control-label">Title</label>
 									<div class="col-sm-5">
-										<textarea type="text" name="name" value="<?php echo $update_details->name;?>" class="form-control" id="title" placeholder="Title" name="materialid" pattern="[A-Z][A-Za-z0-9\(\)\/\ \.\,\-\'\?\!]+" required rows="2" cols="50"></textarea>
+										<textarea type="text" name="name" value="<?php echo $update_details->name;?>" class="form-control" id="title" placeholder="Title" pattern="[A-Z][A-Za-z0-9\(\)\/\ \.\,\-\'\?\!]+" required rows="2" cols="50"><?php echo $update_details->name;?></textarea>
 									</div>
 									<span style="color: red;" name="helpname">
 								</div>
@@ -111,7 +113,9 @@
 									</div>
 									<span style="color: red;" name="helpyear">
 								</div>
-								<div class="form-group"><br />
+								<div id="edvol_div" class="form-group"
+										<?php if ($update_details->type == 'Thesis' || $update_details->type == 'CD' ||
+												$update_details->type == 'SP') echo "style='display:none'" ?>><br/>
 									<label for="ed" class="col-sm-2 control-label">Edition</label>
 									<div class="form-inline col-sm-2">
 										<input type="text" name="edvol" value="<?php if ($update_details->edvol != 0) echo $update_details->edvol;?>" class="form-control" id="ed" placeholder="Edition (optional)" name="edvol" pattern="[0-9]">
@@ -147,9 +151,9 @@
 								<div class="form-group"><br />
 									<label class="col-sm-2 control-label">Author</label>
 									<div class="form-inline col-sm-6">
+										<span style='color: red;' name='helpauthor'></span>
 										<table id="formTable">
 										<?php
-											echo "<span style='color: red;' name='helpauthor'>";
 											$num_authors = count($update_details->author);
 											for ($i=0; $i<$num_authors; $i++){
 												echo "<tr>";
@@ -171,123 +175,183 @@
 							<div class="form-group">
 								<div class="col-sm-offset-2 col-sm-10"><br />
 									<button onclick="updateDetails()" class="btn btn-default" id="updateButton" name="update">Update</button>
+									<a href="<?php echo site_url()?>/admin/admin_search"><button type="button" class="btn btn-danger">Cancel</button></a>
 								</div>
 							</div>
-						<br /><br /><br /><br />
+							<br>
 						</div>	
 					</div>	
 				</div>	
 			</div>
-		<!-- Footer -->
-		<?php include 'includes\footer.php'; ?>
-		
-    <script src="<?php echo base_url();?>dist/js/holder.js"></script>
-	
-	<script>
-			function updateDetails(){
-				var correct = true;
-				var type = update.type.value;
-				if (type == 'Book' || type == 'References' || type == 'Journals' || type == 'Magazines')
-					correct = validateISBN();
-					
-				if (validateMaterialID() && validateName() && validateEdition() && disableFeatures() && correct) 
-						bootbox.dialog({
-							message: "Save changes to this library material?",
-							title: "Confirmation",
-							buttons: {
-								yes: {
-									label: "Save",
-									className: "btn-primary",
-									callback: function() {
-										
-										var preclass = document.getElementById("preclass").innerHTML;
-										var previous_matID = update.previous_matID.value;
-										var materialid = preclass + update.materialid.value;
-										var type = update.type.value;
-										if (type == 'Book' || type == 'References' || type == 'Journals' || type == 'Magazines')
-											var isbn = update.isbn.value;
-										else var isbn = "+" + materialid;
-										if (type == 'Book' || type == 'References' || type == 'CD')
-											var course = update.course.value;
-										else var course = null;
-										var name = update.name.value;
-										var year = update.year.value;
-										var edvol = update.edvol.value;
-										var access = update.access.value;
-										var available;
-										if(document.getElementById("yes").checked) available = 1;
-										else available = 0;
-										var requirement;
-										if(document.getElementById("none").checked) requirement = 0;
-										else requirement = 1;
 
-										var authors_fname = document.getElementsByName("fname");
-										var authors_mname = document.getElementsByName("mname");
-										var authors_lname = document.getElementsByName("lname");
-										
-										authors=new Array();
-										var i=0;
-										while (authors_fname[i]) {
-											array = new Array(authors_fname[i].value, authors_mname[i].value, authors_lname[i++].value);
-											authors.push(array);
-										}
-										//console.log(authors);
-										
-										$.ajax({
-											type: "POST",
-											url: "<?php echo base_url();?>admin/update_execution",
-											data: { previous_matID : previous_matID, 
-													materialid : materialid,
-													type : type,
-													isbn : isbn,
-													course : course,
-													name : name,
-													year : year,
-													edvol : edvol,
-													access : access,
-													available : available,
-													requirement: requirement,
-													authors : authors,
-												  },
-											beforeSend: function() {
-												//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
-												$("#error_message").html("loading...");
-											},
+		<?php include 'includes/footer.php'; ?>
 
-											error: function(xhr, textStatus, errorThrown) {
-													$('#error_message').html(textStatus);
-													//console.log(textStatus);
-											},
+		<script>
 
-											success: function( result ){
+			function finalcheckofupdate() {
+				if (validateName() && validateEdition() && disableFeatures() && validateAuthors())
+				bootbox.dialog({
+					message: "Save changes to this library material?",
+					title: "Confirmation",
+					buttons: {
+							yes: {
+							label: "Save",
+							className: "btn-primary",
+							callback: function() {
+															
+								var preclass = document.getElementById("preclass").innerHTML;
+								var previous_matID = update.previous_matID.value;
+								var materialid = preclass + update.materialid.value;
+								var type = update.type.value;
+							
+								if (type == 'Book' || type == 'References' || type == 'Journals' || type == 'Magazines')
+									var isbn = update.isbn.value;
+								else var isbn = "+" + materialid;
+							
+								if (type == 'Book' || type == 'References' || type == 'CD')
+									var course = update.course.value;
+								else var course = null;
+							
+								var name = update.name.value;
+								var year = update.year.value;
+								var edvol = update.edvol.value;
+								var access = update.access.value;
+								var previous_isbn = update.previous_isbn.value;
+								
+								var available;
+								if(document.getElementById("yes").checked) available = 1;
+								else available = 0;
 
-												if( result != "1" ){
-													$("#success_update").show();
-													$("#fail_update").hide();
-													$("#success_update").html("Library material successfully updated!");
-													$("#success_update").fadeIn('slow');
-													document.body.scrollTop = document.documentElement.scrollTop = 0;
-													setTimeout(function() { $('#success_update').fadeOut('slow') }, 5000);	
-												}
-											}
-										});
-									}
-								},
-								no: {
-									label: "No",
-									className: "btn-default"
+								var requirement;
+								if(document.getElementById("none").checked) requirement = 0;
+								else requirement = 1;
+
+								var authors_fname = document.getElementsByName("fname");
+								var authors_mname = document.getElementsByName("mname");
+								var authors_lname = document.getElementsByName("lname");
+								
+								authors=new Array();
+								var i=0;
+								while (authors_fname[i]) {
+									array = new Array(authors_fname[i].value, authors_mname[i].value, authors_lname[i++].value);
+									authors.push(array);
 								}
+															
+								$.ajax({
+									type: "POST",
+									url: "<?php echo site_url()?>/admin/update_execution",
+									data: { previous_matID : previous_matID, 
+											previous_isbn : previous_isbn,
+											materialid : materialid,
+											type : type,
+											isbn : isbn,
+											course : course,
+											name : name,
+											year : year,
+											edvol : edvol,
+											access : access,
+											available : available,
+											requirement: requirement,
+											authors : authors,
+										  },
+									beforeSend: function() {
+										//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
+										$("#error_message").html("loading...");
+									},
+
+									error: function(xhr, textStatus, errorThrown) {
+											$('#error_message').html(textStatus);
+											//console.log(textStatus);
+									},
+
+									success: function( result ){
+
+										if( result != "1" ){
+											$("#success_update").show();
+											$("#fail_update").hide();
+											$("#success_update").html("Library material successfully updated!");
+											$("#success_update").fadeIn('slow');
+											document.body.scrollTop = document.documentElement.scrollTop = 0;
+											setTimeout(function() { $("#success_update").html("Redirecting to View All Library Materials...");
+																	window.location.href = "<?php echo site_url()?>/admin/show_recent/"+materialid; }, 2000);	
+										}
+									}
+								});
 							}
-						});
-						else {
-							$("#success_update").hide();
-							$("#fail_update").show();
-							$("#fail_update").html("Some library material details are not valid!");
-							$("#fail_update").fadeIn('slow');
-							document.body.scrollTop = document.documentElement.scrollTop = 0;
+							},
+							no: {
+								label: "No",
+								className: "btn-default"
+							}
 						}
-				}
-					
+					});
+				else showError();
+			}
+
+			function showError(){
+				$("#success_update").hide();
+				$("#fail_update").show();
+				$("#fail_update").html("Some library material details are not valid!");
+				$("#fail_update").fadeIn('slow');
+				document.body.scrollTop = document.documentElement.scrollTop = 0;
+			}
+
+			function updateDetails(){
+
+				preclass = document.getElementsByName('preclass')[0].innerHTML;
+				materialid = update.materialid.value;
+				previous_matID = update.previous_matID.value;
+				type = update.type.value;
+
+				$.ajax({
+					url: "<?php echo site_url()?>/admin/check_new_materialid",
+					type: "POST",
+					data: { preclass: preclass, materialid : materialid, previous_matID : previous_matID},
+					success: function (result){
+						if ($.trim(result) == '1'){
+
+							$('#helpmaterialid').html("");
+
+							if (type == 'Book' || type == 'References' || type == 'Journals' || type == 'Magazines') {
+
+								isbn = update.isbn.value;
+								type = update.type.value;
+								previous_isbn = update.previous_isbn.value;
+
+								$.ajax({
+									url: "<?php echo site_url()?>/admin/check_new_isbn",
+									type: "POST",
+									data: { isbn : isbn , type : type , previous_isbn : previous_isbn},
+									success: function (result){
+										if ($.trim(result) == '1'){
+											$('#helpisbn').html("");
+											finalcheckofupdate();
+										}
+										else if ($.trim(result) == '2') {
+											$('#helpisbn').html("A library material with the same ISBN/ISSN already exists.");
+											showError();
+										}
+										else if ($.trim(result) == '3') {
+											$('#helpisbn').html("Invalid ISBN. Books and references require 10-digit ISBN. Journals and magazines require 8-digit ISSN.");
+											showError();
+										}
+									}
+								});
+							}
+							else finalcheckofupdate();
+						}
+						else if ($.trim(result) == '2') {
+							$('#helpmaterialid').html("Material ID already exists.");
+							showError();
+						}
+						else if ($.trim(result) == '3') {
+							$('#helpmaterialid').html("Invalid material id.");
+							showError();
+						}
+					}
+				});
+			}
+
 				var n = 1;
 				
 				function deleteRow(row){
@@ -358,22 +422,32 @@
 					$('#container1').modal('hide');
 				}
 				
-				
-				function validateMaterialID(){
-					msg = "Invalid input. ";
-					str = update.materialid.value;
-					if (str == "") {
-						msg+="Library Material ID is required. ";
-					}
-					if (!str.match(/^[A-Za-z0-9]+$/)) {
-						msg+="Characters are invalid.";
-					}
-					if (msg == "Invalid input. ") msg="";
 
-					document.getElementsByName("helpmaterialid")[0].innerHTML = msg;
-					if (msg == ""){ 
-						return true;
-					}
+				function validateMaterialID(){
+					
+					preclass = document.getElementsByName('preclass')[0].innerHTML;
+					materialid = update.materialid.value;
+					previous_matID = update.previous_matID.value;
+
+					$.ajax({
+						url: "<?php echo site_url()?>/admin/check_new_materialid",
+						type: "POST",
+						data: { preclass: preclass, materialid : materialid, previous_matID : previous_matID},
+						success: function (result){
+							if ($.trim(result) == '1'){
+								$('#helpmaterialid').html("");
+								return true;
+							}
+							else if ($.trim(result) == '2') {
+								$('#helpmaterialid').html("Material ID already exists.");
+								return false;
+							}
+							else if ($.trim(result) == '3') {
+								$('#helpmaterialid').html("Invalid material id.");
+								return false;
+							}
+						}
+					});
 				}
 				
 				function disableFeatures(){
@@ -388,6 +462,7 @@
 						//update.materialid.value = array[1];
 						document.getElementById("isbn_div").style.display = 'block';
 						document.getElementById("course_div").style.display = 'block';
+						document.getElementById("edvol_div").style.display = 'block';
 					}
 					else if(type == "SP"){
 						//add.isbn.disabled = true;
@@ -396,6 +471,7 @@
 						update.course.disabled = true;
 						document.getElementById("isbn_div").style.display = 'none';
 						document.getElementById("course_div").style.display = 'none';
+						document.getElementById("edvol_div").style.display = 'none';
 					}
 					else if(type == "References"){
 						//add.isbn.disabled = false;
@@ -404,6 +480,7 @@
 						document.getElementById("preclass").innerHTML = "R" + "-";
 						document.getElementById("isbn_div").style.display = 'block';
 						document.getElementById("course_div").style.display = 'block';
+						document.getElementById("edvol_div").style.display = 'block';
 					}
 					else if(type == "CD"){
 						//add.isbn.disabled = true;
@@ -411,6 +488,7 @@
 						document.getElementById("preclass").innerHTML = "CD" + "-";
 						document.getElementById("isbn_div").style.display = 'none';
 						document.getElementById("course_div").style.display = 'block';
+						document.getElementById("edvol_div").style.display = 'none';
 					}
 					else if(type == "Journals"){
 						//add.isbn.disabled = false;
@@ -419,6 +497,7 @@
 						document.getElementById("preclass").innerHTML = "J" + "-";
 						document.getElementById("isbn_div").style.display = 'block';
 						document.getElementById("course_div").style.display = 'none';
+						document.getElementById("edvol_div").style.display = 'block';
 					}
 					else if(type == "Magazines"){
 						//add.isbn.disabled = false;
@@ -427,6 +506,7 @@
 						document.getElementById("preclass").innerHTML = "M" + "-";
 						document.getElementById("isbn_div").style.display = 'block';
 						document.getElementById("course_div").style.display = 'none';
+						document.getElementById("edvol_div").style.display = 'block';
 					}
 					else if(type == "Thesis"){
 						//add.isbn.disabled = false;
@@ -435,7 +515,14 @@
 						document.getElementById("preclass").innerHTML = "T" + "-";
 						document.getElementById("isbn_div").style.display = 'none';
 						document.getElementById("course_div").style.display = 'none';
+						document.getElementById("edvol_div").style.display = 'none';
 					}
+
+
+					if (update.materialid.value != "") {
+						validateMaterialID();
+					}
+
 					if (validateYear())
 						if (year < 1950 || year > 2014) {
 							document.getElementsByName("helpyear")[0].innerHTML = "Invalid Input. Valid years are from 1950-2014 only.";
@@ -448,41 +535,30 @@
 				}
 				
 				function validateISBN(){
-					msg = "Invalid input. ";
-					str = update.isbn.value;
-					pattern = update.isbn.pattern;
-					
-					if(update.type.value == "Book" || update.type.value == "References" ){
-						if (str == "") {
-							msg+="ISBN-10 is required. ";
-						}
-						if (!str.match(/^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$/)) {
-							msg+="Characters are invalid.";
-							pattern = "[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]";
-						}
-						if (msg == "Invalid input. ") msg="";
+				
+					isbn = update.isbn.value;
+					type = update.type.value;
+					previous_isbn = update.previous_isbn.value;
 
-						document.getElementsByName("helpisbn")[0].innerHTML = msg;
-						if (msg == ""){ 
-							return true;
+					$.ajax({
+						url: "<?php echo site_url()?>/admin/check_new_isbn",
+						type: "POST",
+						data: { isbn : isbn , type : type , previous_isbn : previous_isbn},
+						success: function (result){
+							if ($.trim(result) == '1'){
+								$('#helpisbn').html("");
+								//return true;
+							}
+							else if ($.trim(result) == '2') {
+								$('#helpisbn').html("A library material with the same ISBN/ISSN already exists.");
+								//return false;
+							}
+							else if ($.trim(result) == '3') {
+								$('#helpisbn').html("Invalid ISBN. Books and references require 10-digit ISBN. Journals and magazines require 8-digit ISSN.");
+								//return false;
+							}
 						}
-					}
-					else{
-						if (str == "") {
-							msg+="ISBN-8 is required. ";
-						}
-						if (!str.match(/^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$/)) {
-							msg+="Characters are invalid.";
-							pattern = "[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]";
-						}
-						if (msg == "Invalid input. ") msg="";
-
-						document.getElementsByName("helpisbn")[0].innerHTML = msg;
-						if (msg == ""){ 
-							return true;
-						}
-					}
-					
+					});
 				}
 				
 				function validateName(){
@@ -500,6 +576,38 @@
 					if (msg == ""){ 
 						return true;
 					}
+				}
+
+				function validateAuthors(){
+					
+					var authors_fname = document.getElementsByName("fname");
+					var authors_mname = document.getElementsByName("mname");
+					var authors_lname = document.getElementsByName("lname");
+								
+					var i=0;
+					var flag = 0;
+					while (authors_fname[i]) {
+						if (authors_fname[i].value == "" || !authors_fname[i].value.match(/^[A-Z][A-Za-z0-9\.\-\'\ ]+$/)) {
+							flag = 1;
+							break;
+						}
+						if (authors_mname[i].value == "" || !authors_mname[i].value.match(/^[A-Z][A-Za-z0-9\.\-\'\ ]+$/)){
+							flag = 2;
+							break;
+						}
+						if (authors_lname[i].value == "" || !authors_lname[i++].value.match(/^[A-Z][A-Za-z0-9\.\-\'\ ]+$/)){
+							flag = 3;
+							break;
+						}
+					}
+
+					if (flag == 1) document.getElementsByName("helpauthor")[0].innerHTML = "First name invalid.";
+					else if (flag == 2) document.getElementsByName("helpauthor")[0].innerHTML = "Middle name invalid.";
+					else if (flag == 3) document.getElementsByName("helpauthor")[0].innerHTML = "Last name invalid.";
+					else if (flag == 0) document.getElementsByName("helpauthor")[0].innerHTML = "";
+
+					if (flag == 0) return true;
+					else return false;
 				}
 				
 				function validateYear(){
@@ -535,6 +643,7 @@
 					if (msg == ""){ 
 						return true;
 					}
+					else return false;
 				}
 		</script>
 	</body>

@@ -10,7 +10,7 @@
        <div class="col-xs-6 col-md-4"><br/><br/><br/>
           <legend><center><a href="#"><i class="glyphicon glyphicon-globe"></i></a> Sign up!</center></legend>
 
-          <form action="<?php echo base_url()?>registration" method="post" class="form" role="form">
+          <form action="<?php echo site_url()?>/registration" method="post" class="form" role="form">
 
           <div class="row"><br/>
             <div class="col-xs-4 col-md-12">
@@ -71,7 +71,8 @@
                   </div>
               </div>
             </div>
-          </div><br/>
+          </div>
+      <div id="reg"></div>
           <div class = "row"><br/>
              <div class="col-xs-4 col-md-12">
               <div class="form-group">
@@ -82,30 +83,10 @@
                   </div>
               </div>
             </div>
-          </div>  
+          </div>      
         </div>
     </div>
 </div>
-
-
-    <div class="modal fade" id="container1" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h3 class="modal-title" id="myModalLabel">Verify Account</h3>
-          </div>
-          <div id="details" class="modal-body">
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-primary">Ok</button>
-          </div>
-         </div>
-        </div>
-    </div>
-
-
-
          <!-- END OF SIGN UP -->
 <hr class="featurette-divider">
   <script src="<?php echo base_url(); ?>dist/js/bootstrap.js"></script>
@@ -114,7 +95,10 @@
   <script>
 
   $('#add').hide();
-  var flagSignUp = false;
+  var flagId = false;
+  var flagEmail = false;
+  var flagValidate = false;
+  var flagPass = false;
 
 
     $('#idnumber').blur( check_idnumber );
@@ -126,32 +110,34 @@
    function validatePassword(){  
       var password = document.getElementById('password').value;
       var password_conf = document.getElementById('password_conf').value;
-      if(password == password_conf){
-        $('#error_message3').html("");
-        flagSignUp =  true;
+    
+    if(password == password_conf){
+      $('#error_message3').html("");
+      flagValidate =  true;
       }else{
-        $('#error_message3').html("Password does not match. Check passwords");
-        flagSignUp =  false;
-        password_conf.focus;
-      }
+      $('#error_message3').html("Password does not match. Check passwords");
+      flagValidate =  false;
+      password_conf.focus;
+    }
     }
 
     function check_password(){
       var password = $('#password').val();
 
       $.ajax({
-        url: "<?php echo base_url();?>borrower/checkpassword",
+        url: "<?php echo site_url();?>/borrower/checkpassword",
         type: "POST",
         data: { password : password},
 
         success: function(result){
           if($.trim(result)=="1"){
-                   $('#error_message2').html("Password length must be atleast 6 characters");
-               flagSignUp =  false;
+         $('#error_message2').html("Password length must be atleast 6 characters");
+               flagPass =  false;
+         validatePassword();
             }
           else{
              $('#error_message2').html("");
-             flagSignUp =  true;
+             flagPass =  true;
           }
         }
       });
@@ -160,21 +146,21 @@
     function check_email(){
       var value = $('#emailid').val();
         $.ajax({
-          url: "<?php echo base_url();?>borrower/checkemail",
+          url: "<?php echo site_url();?>/borrower/checkemail",
           type: "POST",
           data: { email : value},
           success: function(result){
               if($.trim(result)=="2"){
-                   $('#error_message1').html("Email in use");
-                flagSignUp =  false;
+        $('#error_message1').html("Email in use");
+                flagEmail =  false;
               }
               else if($.trim(result)=="1"){
-                   $('#error_message1').html("Invalid email");
-                 flagSignUp =  false;
+                $('#error_message1').html("Invalid email");
+                flagEmail =  false;
               }
               else if($.trim(result)=="0"){
-                   $('#error_message1').html("");
-                 flagSignUp =  true;
+        $('#error_message1').html("");
+                flagEmail =  true;
               }
             }
         });
@@ -183,78 +169,80 @@
     function check_idnumber(){
         var value = $('#idnumber').val();
         $.ajax({
-          url: "<?php echo base_url();?>borrower/checkidnumber",
+          url: "<?php echo site_url();?>/borrower/checkidnumber",
           type: "POST",
           data: { idnumber : value},
           success: function(result){
             if($.trim(result)=="1"){
                $('#error_message').html("Idnumber in use");
-                flagSignUp =  false;
+                flagId =  false;
             }
             else if($.trim(result)=="2"){
                $('#error_message').html("Not in sample table");
-                 flagSignUp =  false;
+                 flagId =  false;
             }
             else if($.trim(result)=="3"){
                $('#error_message').html("Invalid idnumber");
-               flagSignUp =  false;
+               flagId =  false;
             }
             else if($.trim(result)=="0"){
                $('#error_message').html("");
-               flagSignUp =  true;
+               flagId =  true;
             }
           }
         } );
     }
 
-
-
-
     $('#sign_up').click( function(){
-        if( flagSignUp ){
+    check_idnumber();
+    check_email();
+    check_password();
+    
+        if( flagId && flagEmail && flagValidate && flagPass ){
+    
           var idnumber = document.getElementById('idnumber').value;
           var password = document.getElementById('password').value;
           var email = $('#emailid').val();
 
         $.ajax({
-          url: "<?php echo base_url();?>borrower/registration",
+          url: "<?php echo site_url();?>/borrower/registration",
           type: "POST",
           data: { idnumber : idnumber, password : password, email : email },
 
+      beforeSend: function() {
+        $("#reg").removeClass('alert alert-danger');
+        $("#reg").html("<center><img src='<?php echo base_url();?>dist/images/ajax-loader.gif' /></center>");
+      },
+      
+      success: function(result){
 
-          success: function(result){
-            bootbox.dialog({
-            message: "Please check your email for verification",
-            title: "Verify Account",
-            buttons:{
-              no: {
-                label: "Ok",
-                className: "btn-primary",
-                callback: function() {
-                   window.location.href = "borrower";
-                }
-              }
+        if(result.trim() == "sent"){
+          $("#reg").hide();
+          bootbox.dialog({
+          message: "One last step: verify your account. <strong>Pleace check your email for the verification link</strong>.",
+          title: "<h3>Successful registration!<h3>",
+          buttons:{
+            no: {
+            label: "Ok",
+            className: "btn-primary",
+            callback: function() {
+               window.location.href = "borrower";
             }
-            });
+            }
           }
-
-
-
+          });
+        }
+        else{
+          $("#reg").addClass("alert alert-danger");
+          $("#reg").html("<center>Connection error. Try again.</center>");
+        }
+        },
+      error: function(){
+        $("#reg").addClass("alert alert-danger");
+        $("#reg").html("<center>An error has occurred. Try again.</center>");
+      }
         });
-
-        } else {
-           bootbox.dialog({
-              message: "Please fill-out the form properly.",
-              title: "Complete Form",
-              buttons:{
-                no: {
-                label: "Ok",
-                className: "btn-primary"
-                }
-               }
-            });
-        };
-
+        }
     });
 
   </script>

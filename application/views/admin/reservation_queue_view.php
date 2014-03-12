@@ -6,77 +6,11 @@
 		<div class="mainBody">
 			<script>
 				function claim( thisDiv ){
-					var thisButton = thisDiv;
-					var parent = thisDiv.parent();
-					var idnumber = parent.siblings('.idnumber').text().trim();
-					var materialid = parent.siblings('.materialid').text().trim();
-					var isbn = parent.siblings('.isbn').text().trim();
-					if( isbn == "---" ) isbn = "+" + materialid;
-					
-					$.ajax({
-						type: "POST",
-						url: "<?php echo base_url();?>admin/check_reservation",
-						data: { materialid : materialid, idnumber : idnumber, isbn : isbn }, 
-
-						beforeSend: function() {
-							//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
-							$("#error_message").html("loading...");
-						},
-
-						error: function(xhr, textStatus, errorThrown) {
-								$('#error_message').html(textStatus);
-						},
-
-						success: function( result ){
-							alert(result);
-							if( parseInt(result.trim()) < 3 ){
-								claimBootbox(thisDiv);
-							} else {
-								alert( "The borrower has three materials borrowed. This page will be refreshed." );
-								$("#searchReservedBooks").val("");
-								$("#searchReservedButton").click();
-							}
-						}
-					});
+					claimBootbox(thisDiv);		
 				}
 				
 				function notify( thisDiv ){
-					var thisButton = thisDiv;
-					var parent = thisDiv.parent();
-					var idnumber = parent.siblings('.idnumber').text().trim();
-					var materialid = parent.siblings('.materialid').text().trim();
-					var isbn = parent.siblings('.isbn').text().trim();
-					if( isbn == "---" ) isbn = "+" + materialid;
-					
-					$.ajax({
-						type: "POST",
-						url: "<?php echo base_url();?>admin/check_reservation",
-						dataType : 'html',
-						data: { materialid : materialid, idnumber : idnumber, isbn : isbn }, 
-
-						beforeSend: function() {
-							//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
-							$("#error_message").html("loading...");
-						},
-
-						error: function(xhr, textStatus, errorThrown) {
-								$('#error_message').html(textStatus);
-						},
-
-						success: function( result ){
-							alert(result);
-							if( parseInt(result.trim()) < 3 ){
-								notifyBootbox( thisDiv );
-							} else {
-								alert( "The borrower has three materials borrowed. This page will be refreshed." );
-								$("#searchReservedBooks").val("");
-								$("#searchReservedButton").click();
-							}
-						}
-					});
-
-					
-					
+					notifyBootbox( thisDiv );
 				}
 
 				function claimBootbox( thisDiv ){
@@ -98,7 +32,7 @@
 									
 									$.ajax({
 										type: "POST",
-										url: "<?php echo base_url();?>admin/claim_reservation",
+										url: "<?php echo site_url()?>/admin/claim_reservation",
 										data: { materialid : materialid, idnumber : idnumber, isbn : isbn }, 
 
 										beforeSend: function() {
@@ -160,7 +94,7 @@
 
 									$.ajax({
 										type: "POST",
-										url: "<?php echo base_url();?>admin/notification",
+										url: "<?php echo site_url()?>/admin/notification",
 										data: { materialid : materialid, idnumber : idnumber, isbn : isbn }, 
 
 										beforeSend: function() {
@@ -215,7 +149,7 @@
 						<h2> Reservations View </h2>
 						<h5> <i> You are currently viewing the reservations that can be provided with a library material copy. </i> </h5>
 						<ol class="breadcrumb">
-							<li><a href="<?php echo base_url()?>admin/home">Home</a></li>
+							<li><a href="<?php echo site_url()?>/admin/home">Home</a></li>
 							<li class="active"> Reservations </li>
 						</ol>
 						<?php if( count($reservations) != 0 ){ ?>
@@ -343,7 +277,14 @@
 		
 		<script>
 			$('#reserved-nav').addClass('active');
-			
+			 // now, fadeout the html (whole page)
+			$('#view-nav').click(function(){
+				$("html").fadeOut(function () {
+        // when the animation is complete, set the new location
+        location = "<?php echo site_url(); ?>";
+    });
+			});
+	
 			$(document).ready(function(){		
 				function printAuthor( data ){
 					var ret = "";
@@ -428,7 +369,7 @@
 					var search = $("#searchReservedBooks").val();	
 					$.ajax({
 						type: "POST",
-						url: "<?php echo base_url();?>admin/search_reservations",
+						url: "<?php echo site_url()?>/admin/search_reservations",
 						dataType: "json",
 						data: { search : search }, 
 
@@ -437,7 +378,7 @@
 						},
 
 						error: function(xhr, textStatus, errorThrown) {
-								$('#error_message').html(textStatus);
+							$('#error_message').html(textStatus);
 						},
 
 						success: function( result ){
@@ -465,7 +406,7 @@
 								$('tbody').html("");
 								$('tbody').fadeIn('slow');
 
-								$('tbody').html("<td colspan = '8'><span style = 'center' > No results found </span> </td>");
+								$('tbody').html("<td colspan = '8'><span style = 'text-align: center' > <br /> <b>No results found</b> </span> <br /></td>");
 								$("table").tablesorter();
 							}
 

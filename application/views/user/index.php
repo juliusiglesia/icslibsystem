@@ -33,24 +33,28 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="index.php"><img src="<?php echo base_url(); ?>dist/images/logo4.png" height="50px" width="165px"></a>
+          <a class="navbar-brand" href="<?php echo base_url();?>"><img src="<?php echo base_url(); ?>dist/images/logo.png" height="70px"></a>
         </div>
         <div class="navbar-collapse collapse">
 
             <!-- <form class="navbar-form navbar-right" role="form" method="post" action="login"> -->
       <form id = "login_form" class="navbar-form navbar-right" role="form">
-            <div class="form-group">
-             <!-- <input placeholder="Email" class="form-control" type="text" value="<?php echo set_value('username');?>" name="username"> -->
-       <input type="text" placeholder="Email" class="form-control"  name="uname">
-            </div>
-            <div class="form-group">
-              <input placeholder="Password" class="form-control" type="password" name="pword">
-            </div>
-      <button class="btn btn-primary" type="button" id = "sign_in">Sign in</button>
-         <!--   <button type="submit" name="login" class="btn btn-primary">Sign in</button> -->
-            <a href="register" name="signup" class="buttonhref white" >Sign up</a>
-            <p><a href="#forgot" id="forgotText" data-toggle="modal"> Forgot password? </a></p>
-            </form>
+                <div class="form-group">
+                 <!-- <input placeholder="Email" class="form-control" type="text" value="<?php echo set_value('username');?>" name="username"> -->
+                    <input type="text" placeholder="Email/ID Number" class="form-control"  name="uname">
+                </div>
+                <div class="form-group">
+                  <input placeholder="Password" class="form-control" type="password" name="pword">
+                </div>
+                   <button class="btn btn-primary" type="button" id = "sign_in">Sign in</button>
+             <!--   <button type="submit" name="login" class="btn btn-primary">Sign in</button> -->
+                
+                <p>
+                  <a href="<?php echo site_url()?>/borrower/register" name="signup">Create an account</a>
+                  <span id="tab"></span>
+                  <a href="#forgot" data-toggle="modal"> Forgot password? </a>
+                </p>
+          </form>
 
         </div><!--/.navbar-collapse -->
       </div>
@@ -61,12 +65,13 @@
   <div class="modal-content">
     <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h3 class="modal-title" id="myModalLabel">Forgot password</h3>
+    <h3 class="modal-title" id="myModalLabel">Forgot password<br /></h3>(Please don't close this window unless you're finished)
     </div>
-    <div id="details" class="modal-body"><form id = "details_form"><input id = "email" type="email" class="form-control" placeholder="Enter Email address" required autofocus></form>
+    <div id="details" class="modal-body">	
+	<form id = "details_form"><input id = "email" type="email" class="form-control" placeholder="Enter Email address" required autofocus></form>
     </div>
     <div  id="modal-footer" class="modal-footer">
-    <button class="btn btn-primary" id="submit">Submit</button>
+	<div id='err'></div><button class="btn btn-primary" id="submit">Submit</button>
     <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true" id="cancel">Cancel</button>
     </div>
    </div>
@@ -88,7 +93,7 @@
       password = $("#login_form").find("input[name='pword']").val();
 
       $.ajax({
-          url: "<?php echo base_url();?>borrower/check_user",
+          url: "<?php echo site_url();?>/borrower/check_user",
           type: "POST",
           dataType: "html",
           data: { email: username, pword: password },
@@ -103,16 +108,15 @@
           success: function( result ){
             //if username DNE
             if(result == 0 ){
-              window.location.href = "<?php echo site_url('borrower/login/dne'); ?>";
+              window.location.href = "<?php echo site_url('forgot_pword/dne'); ?>";
             }
             //username exists, but pword does not match
             else if(result ==2){
-              window.location.href = "<?php echo site_url('borrower/login/dnm'); ?>";
+              window.location.href = "<?php echo site_url('forgot_pword/dnm'); ?>";
             }
             //username is deactivated
             else if(result == 3){
-              //  window.location.href = "<?php echo site_url('borrower/login/urlencode(" +username+ ")');?>";
-				  window.location.href = "<?php echo site_url('borrower/login/"+username+"'); ?>";
+				     window.location.href = "<?php echo site_url('forgot_pword/deactivated'); ?>";
               }
             //if username and password exists
             else {
@@ -129,45 +133,64 @@
 {   
   var flag = 0;
   var email;
-  var verf_code;  
+  var verf_code;
+
+	$('#forgot').on('hidden.bs.modal',function(e){
+		flag=0;
+		$("#details").replaceWith('<div id="details" class="modal-body"><input id="email" type="email" class="form-control" placeholder="Enter Email address" required autofocus>');
+		$("#err").hide();
+	});
+
   
   $("#submit").click(function(){
-
     if(flag ==0)
     { //email verification
       email = $("#email").val();
       $.ajax({
         type: "POST",
-        url: "<?php echo site_url('borrower/forgot_password');?>",
+        url: "<?php echo site_url('/borrower/forgot_password');?>",
         data: {'email':email,
              'action': 'verify_email'
             },
         dataType: "JSON",
+		beforeSend: function (){
+			$("#err").removeClass('alert alert-danger');
+			$("#err").html("<img src='<?php echo base_url();?>dist/images/ajax-loader.gif' />");
+		},		
         success: function(data) 
         {
-          
             if(data.stat == 'success')
             {
+			  $("#err").html("");
               $("#details").html('<b>'+data.message+'.</b><br><br><form id = "details_form"><input id = "code_input" type="email" class="form-control" placeholder="Enter verification code" required autofocus></form> ');
               verf_code = data.verf_code;
               flag = 1;
-
             }
+			else if(data.stat =='failed')
+			{
+				$("#err").show();
+				$("#err").addClass('alert alert-danger');
+				$("#err").html(data.message);
+				flag = 0;
+			}
             else
             {
-              $("#details").html('<b>'+data.message+' ' +data.stat+'.</b><br><br><form id = "details_form"><input id = "email" type="email" class="form-control" placeholder="Enter Email address" required autofocus></form> ');
-              flag = 0;
+				$("#err").show();
+				$("#err").addClass('alert alert-danger');
+				$("#err").html(data.message);
+				flag = 0;
                 
             }
         },
-        error: function()
-        {
-          alert('Error!');
+        error: function(xhr, data, errorThrown)
+        {	
+			
+			$("#err").show();
+			$("#err").addClass('alert alert-danger');
+			$("#err").html("An error occurred.");
         }
 
       });
-
-
     }
 
     else if(flag == 1)
@@ -181,15 +204,23 @@
               'action': 'verify_code'
               },
           dataType: "JSON",
+		  beforeSend: function (){
+			$("#err").removeClass('alert alert-danger');
+			$("#err").html("<img src='<?php echo base_url();?>dist/images/ajax-loader.gif' />");
+		  },
           success: function(data)
           {
               if(data.stat == 'success')
               {
+				$("#err").html("");
                 $("#details").html('<b>'+data.message+'</b><br><br><form id = "details_form"><input id = "new_password" type="password" class="form-control" placeholder="New Password" required><br><input id = "retype_new_pw" type="password" class="form-control" placeholder="Verify New Password" required></form>');
                 flag = 2; 
               }
               else
               {
+				$("#err").show();
+				$("#err").addClass('alert alert-danger');
+				$("#err").html("Code denied.");
                 $("#details").html('<b>'+data.message+'</b><br><br><form id = "details_form"><input id = "code_input" class="form-control" placeholder="Enter verification code" required autofocus></form>');
                 flag = 1;
               }
@@ -197,7 +228,9 @@
 
           error: function()
           {
-            alert('Ooops. Error.');
+            $("#err").show();
+			$("#err").addClass('alert alert-danger');
+			$("#err").html("An error has occured.");
           }
 
         });
@@ -210,56 +243,67 @@
       
         if(new_password == retype_new_pw)
         {
-          $.ajax({
-            url: "<?php echo site_url('borrower/forgot_password');?>",
-            type: "POST",
-            data: {'new_password': new_password,
-                'retype_new_pw': retype_new_pw,
-                'email': email,
-                'action': 'change_pw'
+		
+		if( new_password.length > 6){
+		
+			  $.ajax({
+				url: "<?php echo site_url('borrower/forgot_password');?>",
+				type: "POST",
+				data: {'new_password': new_password,
+					'retype_new_pw': retype_new_pw,
+					'email': email,
+					'action': 'change_pw'
 
-            },
-            dataType: "JSON",
-            success: function(data)
-            {
-                if(data.stat == 'success')
-                {
-                    $('#details').html('<b>'+data.message+'</b>');
-                    $("#modal-footer").html('<button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" id="done">Done</button>'); 
-                }
-                else
-                {
-                  $("#details").html('<b>'+data.message+'</b><br><br><form id = "details_form"><input id = "new_password" type="password" class="form-control" placeholder="New Password" required><br><input id = "retype_new_pw" type="password" class="form-control" placeholder="Verify New Password" required></form>');
-                  flag = 2;
-                }
-            },
-            error: function()
-            {
-              alert('Please try again.');
-            }
-          });
+				},
+				dataType: "JSON",
+				beforeSend: function (){
+				$("#err").removeClass('alert alert-danger');
+				$("#err").html("<img src='<?php echo base_url();?>dist/images/ajax-loader.gif' />");
+				},		
+				success: function(data)
+				{
+					if(data.stat == 'success')
+					{$("#err").html("");
+						$('#details').html('<b>'+data.message+'</b>');
+						$("#modal-footer").html('<button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" id="done">Done</button>'); 
+					}
+					else
+					{$("#err").html("");
+					  $("#details").html('<b>'+data.message+'</b><br><br><form id = "details_form"><input id = "new_password" type="password" class="form-control" placeholder="New Password" required><br><input id = "retype_new_pw" type="password" class="form-control" placeholder="Verify New Password" required></form>');
+					  flag = 2;
+					}
+				},
+				error: function()
+				{
+					$("#err").show();
+					$("#err").addClass('alert alert-danger');
+					$("#err").html("An error has occured.");
+				}
+			  });
+			}
+		//password <6 character
+		else{
+			$("#err").show();
+			$("#err").addClass('alert alert-danger');
+			$("#err").html("Invalid password.");
+			$("#details").html('<b>Password must be at least 6 characters</b><br><br><form id = "details_form"><input id = "new_password" type="password" class="form-control" placeholder="New Password" required><br><input id = "retype_new_pw" type="password" class="form-control" placeholder="Verify New Password" required></form>');
+			flag = 2;
+		}
+			
         }
-
+		//password don't match
         else
         {
-          $("#details").html('<b>Passwords must match</b><br><br><form id = "details_form"><input id = "new_password" type="password" class="form-control" placeholder="New Password" required><br><input id = "retype_new_pw" type="password" class="form-control" placeholder="Verify New Password" required></form>');
-          flag = 2;
+			$("#err").show();
+			$("#err").addClass('alert alert-danger');
+			$("#err").html("Invalid password.");
+			$("#details").html('<b>Passwords must match</b><br><br><form id = "details_form"><input id = "new_password" type="password" class="form-control" placeholder="New Password" required><br><input id = "retype_new_pw" type="password" class="form-control" placeholder="Verify New Password" required></form>');
+			flag = 2;
         }
       
       
     }
   });
-  
-  $("#cancel").click(function(){
-    flag = 0;
-    $("#details").replaceWith('<div id="details" class="modal-body"><input type="email" class="form-control" placeholder="Enter Email address" required autofocus>');
-  });
-  
-  $("#done").click(function(){
-    flag = 0;
-    $("#details").replaceWith('<div id="details" class="modal-body"><input type="email" class="form-control" placeholder="Enter Email address" required autofocus>');
-  });
-    
     
  });
 </script>
@@ -267,11 +311,9 @@
   
    <div class="row" id="container">
       <div class="container">
-         <center> <img src="<?php echo base_url(); ?>dist/css/banner_up_new.gif"></center>
+         <center> <img src="<?php echo base_url(); ?>dist/images/banner.png" class="img-responsive"></center>
       </div>
     </div>
-
-
 
     <div class="container marketing" id="fixsize">
     <br/>
@@ -280,7 +322,7 @@
           <img id="icons" alt="50x50" src="<?php echo base_url(); ?>dist/images/search.png">
           <h3>Looking for something?</h3>
       <p>Search for materials available in the library.</p>
-          <p><a class="btn btn-primary" href="<?php echo base_url();?>borrower/outside_search" role="button">Search now »</a></p>
+          <p><a class="btn btn-primary" href="<?php echo site_url();?>/borrower/outside_search" role="button">Search now »</a></p>
         </div><!-- /.col-lg-4 -->
 
         <div class="col-lg-4">
@@ -298,6 +340,11 @@
         
       </div><!-- /.row -->
       <!-- /END THE FEATURETTES -->
-      <?php include "home_footer.php"; ?>
 
+      <footer>
+        <center><p id="small">&copy; 2013-2014 CMSC 128 AB-6L. All Rights Reserved. <a href="<?php echo site_url(); ?>/borrower/about_us">About Us</a> 
+          | <a href="<?php echo base_url();?>dist/pdf/user/ILS Manual.pdf" target="_blank">Operations Manual</a> 
+          | <a href="<?php echo base_url();?>dist/pdf/user/ILS FAQ.pdf" target="_blank">FAQs</a></p>
+        </center>
+      </footer>
 </body></html>
