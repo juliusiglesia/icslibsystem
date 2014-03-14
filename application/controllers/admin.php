@@ -717,10 +717,10 @@ class Admin extends CI_Controller {
 			redirect('/admin/login', 'refresh');
 		} else {
 			$this->no_cache();
-		$this->load->model('admin/search_user_model');
-		$search = ""; 
-		$data['users'] = $this->search_user_model->get_users( $search );
-		$this->load->view('admin/get_user_view', $data);
+			$this->load->model('admin/search_user_model');
+			$search = ""; 
+			$data['users'] = $this->search_user_model->get_users( $search );
+			$this->load->view('admin/get_user_view', $data);
 		}
 	}
 
@@ -767,13 +767,21 @@ class Admin extends CI_Controller {
 	public function delete_account(){
 		$this->load->model('admin/delete_account_model');
 		$this->delete_account_model->delete_account();
+		$this->delete_account_model->delete_reservation();
 	}
 
 
 	public function settings(){
-		$this->load->model('admin/settings_model');	
-		$data['info'] = $this->settings_model->get_data();
-		$this->load->view('admin/settings', $data);
+		$is_logged_in = $this->is_logged_in();
+		if( !$is_logged_in ){
+			redirect('/admin/login', 'refresh');
+		} else {
+			$this->no_cache();
+			$data['user'] = $is_logged_in;
+			$this->load->model('admin/settings_model');	
+			$data['info'] = $this->settings_model->get_data();
+			$this->load->view('admin/settings', $data);
+		}
 	}
 
 	public function settings_for_enable(){	

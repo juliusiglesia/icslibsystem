@@ -23,7 +23,15 @@ class Delete_account_model extends CI_Model{
 	public function delete_account(){
 		$user = trim($this->input->post('idnumber'));
 		$query = $this->db->query("DELETE FROM borrower
+									WHERE idnumber LIKE '${user}'");
+		$query = $this->db->query("DELETE FROM reservation
 									WHERE idnumber LIKE '${user}'");	
+	}
+
+	public function DELETE_reservations(){
+		$user = trim($this->input->post('idnumber'));
+		$query = $this->db->query("DELETE FROM reservation
+									WHERE idnumber LIKE '${user}'");
 	}
 
 }

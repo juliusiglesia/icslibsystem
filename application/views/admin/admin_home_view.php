@@ -48,7 +48,7 @@
 						</div>	
 					</div>	
 					<div class="btn_container" style = "text-align: center; padding-right: 100px;" >
-						<a target = "_blank" href="<?php echo site_url();?>/admin/print_inventory"><button type="button" class="btn btn-primary">Generate Report</button></a>
+						<a onclick="window.open('<?php echo site_url();?>/admin/print_inventory')"><button type="button" class="btn btn-primary">Generate Report</button></a>
 					</div>			
 			</div>
 		</div>
