@@ -251,10 +251,10 @@
 		}
 		
 		$('#saveMax').click(function(){
-			if(max_check()){ 
+			//if(max_check()){ 
 				confirmUpdateSettings('maxDiv'); 
 				hideMax(); 
-			};
+			//};
 		});
 		
 		$('#cancelMax').click(function(){		
@@ -278,9 +278,10 @@
 
 		$('#savePass').click(function(){
 			if(valPword() && reNewPassInput_check()){ 
-				$('#newPassInput').val('');
+				confirmUpdateSettings('passwordDiv');
+				/*$('#newPassInput').val('');
 				$('#passInput').val('');			
-				$('#reNewPassInput').val('');
+				$('#reNewPassInput').val('');*/
 				hidePassword(); 
 			};	
 		});
@@ -490,6 +491,21 @@
 					type: "POST",
 					url: "<?php echo site_url()?>/admin/settings_for_max",
 					data: { max: max },
+					success : function( result ){
+						if( result == "" ){
+							console.log("Updated");
+						}
+	
+						$('table').trigger('update');
+					}
+				});
+			}
+			else if(thisDiv == 'passwordDiv'){
+				var newpw = document.getElementById('newPassInput').value;
+				$.ajax({
+					type: "POST",
+					url: "<?php echo site_url()?>/admin/settings_for_password",
+					data: { newpw: newpw },
 					success : function( result ){
 						if( result == "" ){
 							console.log("Updated");

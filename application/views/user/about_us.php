@@ -1,3 +1,13 @@
+<!--
+    Author: Marquez, Chandelle Joyce V.
+            2011-45001
+            CMSC128 AB-6L
+
+    Page: about_us.php
+    Description: This is the about us page of the iLS. This contains the developers of the iLS.
+
+
+-->
 <?php 
 
 	if($this->session->userdata('email'))

@@ -82,7 +82,7 @@
 							. implode(' AND ', $conditions)  . " ORDER BY l.name";	
 				}
 				$query = $this->db->query($stmt);
-				//echo $stmt;
+				
 				$query = $query->result();
 				echo "<br/><br/><br/><br/><br/><br/>".$stmt;
 				foreach ($query as $tuple){

@@ -22,7 +22,6 @@
   margin-left: 10px;
   margin-right: 10px;
 }
-
 /*Home page css*/
 #container{
   margin-top:25px;
@@ -518,7 +517,7 @@ body {
   margin-right:auto;
   margin-left:auto;
   width:1150px;
-  margin-top:1px;
+  margin-top:30px;
   border:1px solid transparent;
   min-height:500px;
 }
@@ -531,7 +530,7 @@ body {
   width:950px;
   border-top:1px solid transparent;
   margin-left:220px;
-  margin-top:-1px;
+  margin-top:-15px;
   min-height:300px;
 }
 

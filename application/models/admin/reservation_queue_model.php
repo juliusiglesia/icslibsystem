@@ -31,8 +31,9 @@ class Reservation_queue_model extends CI_Model{
 		*/
 
 		$search = trim($search);
-		$search = mysql_real_escape_string($search);
 		$search = htmlspecialchars($search);
+		$search = mysql_real_escape_string($search);
+		$search = filter_var($search, FILTER_SANITIZE_STRING);
 		$return_array = array();
 		// get all the materialids with reservations
 		$query = $this->db->query("SELECT DISTINCT reservation.materialid, reservation.isbn 
@@ -191,6 +192,9 @@ class Reservation_queue_model extends CI_Model{
 
 	public function search_reservations(){
 		$search = $this->input->post('search');
+		$search = htmlspecialchars($search);
+		$search = mysql_real_escape_string($search);
+		$search = filter_var($search, FILTER_SANITIZE_STRING);
 		return $this->get_reservations( $search );
 	}
 
