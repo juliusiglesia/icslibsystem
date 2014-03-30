@@ -14,20 +14,20 @@ class Insert_multiple_model extends CI_Model{
 			'isbn' => trim($file[1]),
 			'name' => trim($file[2]),
 			'course' => trim($file[3]),
-			'available' => trim($file[4]),
-			'access' => trim($file[5]),
-			'type' => trim($file[6]),
-			'year' => trim($file[7]),
-			'edvol' => trim($file[8]),
-			'requirement' => trim($file[9]),
-			'quantity' => trim($file[10])
+			'available' => 1,
+			'access' => trim($file[4]),
+			'type' => trim($file[5]),
+			'year' => trim($file[6]),
+			'edvol' => trim($file[7]),
+			'requirement' => trim($file[8]),
+			'quantity' => trim($file[9])
 		);
 
 		$this->db->insert('librarymaterial', $material);
 	}
 
 	public function insert_author( $file ){
-		$i = 11;
+		$i = 10;
 		$j = 0;
 
 		while( $j != count($file[$i]) ){

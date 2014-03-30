@@ -1,6 +1,16 @@
 <?php
+/*
+*	Filename: add_material_model.php
+*	Project Name: ICS Library System
+*	Date Created: 29 January 2014
+*	Created by: CMSC 128 AB-6L
+*
+*/
 	class Get_stats_model extends CI_Model {
-
+	
+	/*
+	*	Get the number of all the library, borrowed and reserved materials from the database.
+	*/
 	public function get_library_stats(){
          $sql = "SELECT IFNULL(SUM(quantity), 0) AS libmatcount, 
          					IFNULL(SUM(borrowedcopy), 0) AS bormatcount, 
@@ -11,7 +21,9 @@
          return $query->result();
      }	
 
- 	
+ 	/*
+	*	Get the number of all the library, borrowed and reserved materials from the database of the current week.
+	*/
 	public function get_current_week(){
 		$this->load->database();
 		$sql = "SELECT IFNULL(SUM(l.quantity), 0) AS libmatcount, 
@@ -23,9 +35,11 @@
 		$query = $this->db->query($sql);
 		return $query->result();
 	}
-	
+	/*
+	*	Get the number of all the library, borrowed and reserved materials from the database of the previous week.
+	*/
 	public function get_last_week(){
-		//last weeks ago
+		
 		$this->load->database();
 		$sql = "SELECT IFNULL(SUM(quantity), 0) AS libmatcount, 
          					IFNULL(COUNT(b.idnumber), 0) AS bormatcount, 
@@ -36,9 +50,11 @@
 		$query = $this->db->query($sql);
 		return $query->result();	
 	}
-	
+	/*
+	*	Get the number of all the library, borrowed and reserved materials from the database of the last two weeks .
+	*/
 	public function get_last_two_weeks(){
-		//2 weeks ago
+		
 		$this->load->database();
 		$sql = "SELECT IFNULL(SUM(quantity), 0) AS libmatcount, 
          					IFNULL(COUNT(b.idnumber), 0) AS bormatcount, 
@@ -49,9 +65,11 @@
 		$query = $this->db->query($sql);
 		return $query->result();	
 	}
-	
+	/*
+	*	Get the number of all the library, borrowed and reserved materials from the databas of the last three weeks.
+	*/
 	public function get_last_three_weeks(){
-		//3 weeks ago
+		
 		$this->load->database();
 		$sql = "SELECT IFNULL(SUM(l.quantity), 0) AS libmatcount, 
          					IFNULL(SUM(l.borrowedcopy), 0) AS bormatcount, 

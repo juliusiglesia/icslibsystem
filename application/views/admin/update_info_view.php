@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php include 'includes/head.php'; ?>
-
 	<body>
 		 <?php include 'includes/header.php'; ?>
         <div class="mainBody">
@@ -10,18 +9,17 @@
 
         	<div class="leftMain">
 		        <div id="main-page">
-		        	<br />
-					<h2> Update Library Material </h2>
-					<ol class="breadcrumb">
-						<li><a href="<?php echo site_url()?>/admin/home">Home</a></li>
-						<li><a href="<?php echo site_url()?>/admin/update_material">View All Material</a></li>
-						<li class="active"> Update Library Material </li>
-					</ol>
 			        <div id = "main-content">
 						<div id="container">
 							<form name="update" id="update" class="form-horizontal">
 								<h2 class="form-signin-heading">Update Library Material: </h2>
 								<h4><?php echo $update_details->name; ?></h4> 
+								
+								<ol class="breadcrumb">
+									<li><a href="<?php echo site_url()?>/admin/home">Home</a></li>
+									<li><a href="<?php echo site_url()?>/admin/update_material">View All Material</a></li>
+									<li class="active"> Update Library Material </li>
+								</ol>
 								<div class="alert-container" style = 'height: 40px; margin-bottom: 19px;'>
 									<div style="display:none" id="success_update" class = "alert alert-success"></div>
 									<div style="display:none" id="fail_update" class = "alert alert-danger"></div>

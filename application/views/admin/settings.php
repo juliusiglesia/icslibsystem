@@ -1,95 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 	<?php include 'includes/head.php'; ?>
+	
 	<body>
-        <?php include 'includes/header.php'; ?>
-        <div class="mainBody">
-            <!-- Nav tabs -->
-            <?php include 'includes/sidebar.php'; ?> 
+		<?php include 'includes/header.php'; ?>
+
+		<div class="mainBody">
+			<!-- Nav tabs -->
+			<?php include 'includes/sidebar.php'; ?>
 
 	         <div class="leftMain">
 	        	<div id="main-page">
+	        		<div class="row">
 	        		<div id = "main-content">
 						<div id="settings_container"> <br />
 						
 						<h2>Administrator Settings</h2><br />
 						
-						<legend> Semester Range </legend>
 						<div class="alert alert-success alert-dismissable" id="info_succ" style = 'height: 40px; margin: 20px; text-align: center; display:none;'>
 							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 							<strong>Update successful!</strong> Information successfully updated.
 						</div> 
-						
-						<div id = "infoDiv" class="form-horizontal" >
+						<div class="alert-container" style = 'height: 50px;'>
+							<div style="height: 45px; text-align: center;" id = "alert"> </div>
+						</div>
+						<div id = "fineDiv" class="form-inline">
+							<label class = "control-label"> Fine Settings </label> &nbsp;
+							<button class="btn btn-default" id="fineEnable" >Enable</button>
+							<button class="btn btn-default" id="fineDisable" >Disable</button>
 							<div class="form-group">
-								<label class="col-sm-3 control-label">Start of the Semester : </label>
-								<div class="col-sm-3">
-									<label class = "control-label" id="startDateText"> <?php echo $info[0]->start; ?> </label>
-									<input type="date" class="form-control" id="startDateInput" value = "<?php echo $info[0]->start; ?>"/>
-								</div>
-							</div>
-							<div class="form-group">
-								<label class="col-sm-3 control-label">End of the Semester : </label>
-								<div class="col-sm-3">
-									<label class = "control-label" id="endDateText"> <?php echo $info[0]->end; ?> </label>
-									<input type="date" class="form-control" id="endDateInput" value = "<?php echo $info[0]->end; ?>"/>
-								</div>
-							</div>
-							<div id = "infoDiv" class="form-horizontal" >
-								<div class="form-group">
-									<div class="col-sm-3">
-										<input type="button" class="btn btn-primary col-sm-6" id="updateInfo" value = "Update Info" />
-										<input type="button" class="btn btn-danger col-sm-6" id="cancel" value = "Cancel" />
-										<input type="button" class="btn btn-default col-sm-6" id="save" value = "Save" />
-									</div>
-								</div>
+								<label class="sr-only" for="fineInput">Fine</label>
+								<input type="number" class="form-control col-sm-1" id="fineInput" value = "<?php echo $info[0]->fine; ?>">
 							</div>
 						</div>
-						<br />
-						<legend> Fine Settings </legend>
-						
-						<div id = "fineDiv" class="form-horizontal" >
+						<br /> <br /> <br />
+
+						<div id = "maxDiv" class="form-inline">
+							<label class = "control-label"> Maximum Materials </label> &nbsp;
+							<button class="btn btn-default" id="updateMax" > Update </button>
+							<button class="btn btn-default" id="saveMax" > Save </button>
+							<button class="btn btn-default" id="cancelMax" > Cancel </button>
 							<div class="form-group">
-								<input type="number" class="control-label col-sm-1" id="fineInput" value = "<?php echo $info[0]->fine; ?>">
-								<div class="col-sm-1">
-									<input type="button" class="btn btn-default" id="fineEnable" value = "Enable Fine" />
-									<input type="button" class="btn btn-default" id="fineDisable" value = "Disable Fine" />
-								</div>
+								<label class="sr-only" for="maxInput">Maximum</label>
+								<!--label class="control-label col-sm-1" id="maxLabel" ><?php echo $info[0]->max; ?></label-->
+								<input type="number" class="form-control col-sm-1" id="maxInput" value = "<?php echo $info[0]->max; ?>">
 							</div>
 						</div>
-						<br /> <br />
+						<br /> <br /> <br />
 						
-						<legend> Maximum Materials Settings </legend>
-						
-						<div id = "maxDiv" class="form-horizontal" >
-							<div class="form-group">
-								<input type="text" class="control-label col-sm-1" id="maxInput" value = "<?php echo $info[0]->max; ?>">
-								<div class="col-sm-3">
-									<input type="button" class="btn btn-primary col-sm-6" id="updateMax" value = "Update Max" />
-									<input type="button" class="btn btn-default col-sm-6" id="saveMax" value = "Save" />
-									<input type="button" class="btn btn-danger col-sm-6" id="cancelMax" value = "Cancel" />
-								</div>
-							</div>
-						</div>
-						<br /> <br />
-						
-						<legend> Password Settings </legend>
+
+						<!--button class="btn btn-primary ladda-button" data-style="expand-right">
+							<span class="ladda-label"> Save snippet </span>
+						</button-->
+
+
 						<div id = "passwordDiv" class="form-horizontal" >
 							<div class="form-group">
-								<label class="col-sm-3 control-label"> Current Password : </label>
+								<label class="col-sm-2 control-label"> Current Password : </label>
 								<div class="col-sm-3">
 									<label class = "control-label" id="passText"> *************** </label>
 									<input type="password" class="form-control" id="passInput" value = "" >
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-3 control-label" id = "newPassLabel"> New Password : </label>
+								<label class="col-sm-2 control-label" id = "newPassLabel"> New Password : </label>
 								<div class="col-sm-3">
 									<input type="password" class="form-control" id="newPassInput" value = "" >
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-3 control-label" id = "reNewPassLabel" for = ""> Retype New Password : </label>
+								<label class="col-sm-2 control-label" id = "reNewPassLabel" for = ""> Retype New Password : </label>
 								<div class="col-sm-3">
 									<input type="password" class="form-control" id="reNewPassInput" value = "" >
 								</div>
@@ -102,9 +82,12 @@
 								</div>
 							</div>
 						</div>
-						<legend> Clear </legend>
-						<div id= "clearDiv">
-						<input id = "clear" type = "button" class = "btn btn-default" value = "Clear Reservations" style = 'margin-top: 12px;'/>
+						<br /><br /><br />
+						<div class="form-group">
+							<label class="col-sm-2 control-label"> Clear : </label>
+							<div class="col-sm-3">
+								<input id = "clear" type = "button" class = "btn btn-default" value = "Clear Reservations" style = 'margin-top: 12px;'/>
+							</div>
 						</div>
 					</div>
 					</div>
@@ -113,12 +96,9 @@
 				</div>
     </div>
 
-	<script src="<?php echo base_url();?>dist/js/jquery.js"></script>
-    <script src="<?php echo base_url();?>dist/js/bootstrap.js"></script>
-    <script src="<?php echo base_url();?>dist/js/holder.js"></script>
-    <script src="<?php echo base_url();?>dist/js/bootbox.min.js"></script>
 	<script>
 		var enable = "<?php echo $info[0]->fineenable; ?>";
+		var fineFlag = '';
 		
 		hideInfoInput();
 		hideFine();
@@ -151,12 +131,6 @@
 		}
 
 		function hideInfoLabel(){
-		
-			$('#startDateText').hide();
-			$('#endDateText').hide();
-
-			$('#startDateInput').show();
-			$('#endDateInput').show();
 				
 			
 			$('#save').show();
@@ -166,7 +140,7 @@
 		}
 		
 		function hideMax(){
-			$('#maxInput').show();
+			$('#maxInput').hide();
 			$('#updateMax').show();
 			$('#saveMax').hide();
 			$('#cancelMax').hide();
@@ -208,22 +182,22 @@
 		});
 
 		$('#fineEnable').click(function(){
-			$('#fineEnable').hide();
-			$('#fineDisable').show();
-			$('#fineInput').show();
-			enable_fine();
 
-			confirmUpdateSettings('fineDiv');	
+			fineFlag = 'enable';
+			confirmUpdateSettings('fineDiv');
+			
 		});
 
 
 		$('#fineDisable').click(function(){
-			$('#fineEnable').show();
-			$('#fineDisable').hide();
-			$('#fineInput').hide();
-			disable_fine();	
-
-			confirmUpdateSettings('fineDiv');
+			if(info_check()){
+				fineFlag = 'disable';
+				confirmUpdateSettings('fineDiv');
+			}
+		});
+		
+		$("#clear").click(function(){		
+			confirmUpdateSettings('clearDiv'); 	
 		});
 
 		function hideInfoInput(){
@@ -253,7 +227,6 @@
 		$('#saveMax').click(function(){
 			if(max_check()){ 
 				confirmUpdateSettings('maxDiv'); 
-				hideMax(); 
 			};
 		});
 		
@@ -273,17 +246,51 @@
 		});
 
 		$('#fineInput').on('change',function(){
-			confirmUpdateSettings('fineDiv');
+			var fine = document.getElementById('fineInput').value;
+				$.ajax({
+					type: "POST",
+					url: "<?php echo site_url()?>/admin/settings_for_fine",
+					data: { fine: fine },
+					success : function( result ){
+						if( result == "" ){
+							$('#alert').addClass("alert alert-success");
+							$("#alert").html("Successfully changed the fine");
+							$("#alert").fadeIn('slow');
+							setTimeout(function() { $('#alert').fadeOut('slow') }, 5000);
+						}
+	
+						$('table').trigger('update');
+					}
+				});
 		});				
 
 		$('#savePass').click(function(){
 			if(valPword() && reNewPassInput_check()){ 
+
+				var newpw = document.getElementById('newPassInput').value;
+				$.ajax({
+					type: "POST",
+					url: "<?php echo site_url()?>/admin/settings_for_password",
+					data: { newpw: newpw },
+					success : function( result ){
+						if( result == "" ){
+							$('#alert').addClass("alert alert-success");
+							$("#alert").html("Successfully changed password!");
+							$("#alert").fadeIn('slow');
+							setTimeout(function() { $('#alert').fadeOut('slow') }, 5000);
+						}
+	
+						$('table').trigger('update');
+				}
+				});
+
 				$('#newPassInput').val('');
 				$('#passInput').val('');			
 				$('#reNewPassInput').val('');
 				hidePassword(); 
-			};	
-		});
+				
+		}
+	});
 
 		function reNewPassInput_check(){
 			var newPassInput = document.getElementById('newPassInput').value;
@@ -337,37 +344,15 @@
 		}
 
 		function info_check(){
-			var start_sem = document.getElementById('startDateInput').value;
-			var end_sem = document.getElementById('endDateInput').value;
-			var start_sem_date = new Date(start_sem);
-			var end_sem_date = new Date(end_sem);
-			var current_date = new Date();
-			var oneDay = 24*60*60*1000;    // hours*minutes*seconds*milliseconds
-			
-			var months_difference;
-			months_difference = (end_sem_date.getFullYear() - start_sem_date.getFullYear()) * 12;
-			months_difference -= start_sem_date.getMonth();
-			months_difference += end_sem_date.getMonth();
-			if(months_difference <= 0) months_difference = 0;
-			
-			start_sem_date.setDate(start_sem_date.getDate()+1);
-			
-			if (start_sem_date < current_date) {
-				alert('The input for start sem is less than the current date');
+			var fine = document.getElementById('fineInput');
+			var filter = /^\d{1,2}$/; 
+			if (!filter.test(fine.value)){
+				alert('Invalid fine value.');
+				fine.focus;	
+
 				return false;
-			}
-			
-			if(end_sem.value < start_sem.value){
+			}else return true;
 				
-				alert('End of semester date should occur later than the start of semester date.');
-				return false;
-			}
-			
-			else if( months_difference < 5 || months_difference > 6){
-				alert('Invalid semester length.');
-				return false;
-			}
-			else return true;	
 		}
 
 		function enable_fine() {
@@ -383,7 +368,11 @@
 				url : "<?php echo site_url()?>/admin/settings_for_enable",
 				success : function( result ){
 					if( result == "" ){
-						console.log("Updated");
+						
+						$('#alert').addClass("alert alert-success");
+						$("#alert").html("Successfully enabled!");
+						$("#alert").fadeIn('slow');
+						setTimeout(function() { $('#alert').fadeOut('slow') }, 5000);
 					}
 
 					$('table').trigger('update');
@@ -404,7 +393,12 @@
 				url : "<?php echo site_url()?>/admin/settings_for_disable",
 				success : function( result ){
 					if( result == "" ){
-						console.log("Updated");
+			
+						
+						$('#alert').addClass("alert alert-success");
+						$("#alert").html("Successfully disabled!");
+						$("#alert").fadeIn('slow');
+						setTimeout(function() { $('#alert').fadeOut('slow') }, 5000);
 					}
 
 					$('table').trigger('update');
@@ -414,8 +408,19 @@
 		}
 		
 		function confirmUpdateSettings( thisDiv ){
-			bootbox.dialog({
-				message: "Yey?",
+			var msg;
+			if(fineFlag == 'enable' && thisDiv == 'fineDiv'){
+				msg = 'Are you sure to enable fine?';
+			}else if(fineFlag == 'disable' && thisDiv == 'fineDiv'){
+				msg = 'Are you sure to disable fine?';
+			}else if(thisDiv == 'maxDiv'){
+				msg = 'Are you sure to update maximum number of materials?';
+			}
+			else if(thisDiv == 'clearDiv'){
+				msg = 'Are you sure to clear all reservations?';
+			}
+			bootbox.dialog({	
+				message: msg,
 				title: "Update Settings",
 				onEscape: function() {},
 				buttons: {
@@ -423,24 +428,49 @@
 						label: "Yes, continue.",
 						className: "btn-primary",
 						callback: function() {
-							var password = prompt( "Please enter admin password" ).trim();
-							if( password != "" ){
-								$.ajax({
-									type : "POST",
-									url : "<?php echo site_url()?>/admin/check_password",
-									data : { password : password },
-									success : function( result ){
-													console.log( result );
-													if( result == "1" ){
- 														updateSettings(thisDiv);
-														initial_hide();
-													} else {
-														alert( "Wrong password!" );
-													}
-												}
+							var password;
+							//var password = prompt( "Please enter admin password" );
+							bootbox.dialog({
+							  message: "Password: <input type='password' id='pw' name='first_name'></input>",
+							  title: "Update settings",
+							  buttons: {
+								main: {
+								  label: "Confirm",
+								  className: "btn-primary",
+								  callback: function() {
+									console.log("Hi "+ $('#pw').val());
+									password = $('#pw').val();
+									if( password != "" ){
+										$.ajax({
+											type : "POST",
+											url : "<?php echo site_url()?>/admin/check_password",
+											data : { password : password },
+											success : function( result ){
+															console.log( result );
+															if( result == "1" ){
+																updateSettings(thisDiv);
+																initial_hide();
+															} else {
+																bootbox.dialog({
+																	message: "Error in password!",
+																	title: "Error Settings",
+																	onEscape: function() {},
+																	buttons: {
+																		no: {
+																			label: "Dismiss",
+																			className: "btn-default"
+																		}
+																	}
+																});
+															}
+														}
 
-								});								
-							}
+										});								
+									}
+								  }
+								}
+							  }
+							});
 						}
 					},
 					no: {
@@ -449,6 +479,8 @@
 					}
 				}
 			});
+			
+			
 		}
 		
 		function updateSettings( thisDiv ){
@@ -471,6 +503,17 @@
 			}
 			else if(thisDiv == 'fineDiv'){
 				var fine = document.getElementById('fineInput').value;
+				if( fineFlag == 'enable' ){
+					$('#fineEnable').hide();
+					$('#fineDisable').show();
+					$('#fineInput').show();
+					enable_fine();
+				}else{
+					$('#fineEnable').show();
+					$('#fineDisable').hide();
+					$('#fineInput').hide();
+					disable_fine();	
+				}
 				$.ajax({
 					type: "POST",
 					url: "<?php echo site_url()?>/admin/settings_for_fine",
@@ -478,6 +521,7 @@
 					success : function( result ){
 						if( result == "" ){
 							console.log("Updated");
+							//hideFine();
 						}
 	
 						$('table').trigger('update');
@@ -493,71 +537,37 @@
 					success : function( result ){
 						if( result == "" ){
 							console.log("Updated");
+							$('#alert').addClass("alert alert-success");
+							$("#alert").html("Successfully updated max reservations!");
+							$("#alert").fadeIn('slow');
+							setTimeout(function() { $('#alert').fadeOut('slow') }, 5000);
+							hideMax(); 
 						}
 	
 						$('table').trigger('update');
 					}
 				});
 			}
-		}
-		
-		function checkDays(){
-			var end_sem = document.getElementById('endDateInput').value;
-			var end_sem_date = new Date(end_sem);
-			var current_date = new Date();
-			var diff =  Math.floor(( Date.parse(end_sem_date) - Date.parse(current_date) ) / 86400000);
-				
-			if(diff > 10){
-				alert("Invalid number of days.");
-				return false;
-			}else return true;
-				
-		}
-
-		$("#clear").click(function(){
-			if(checkDays()){ 
-				confirmClearReserv('clearDiv'); 
-			};		
-		});
-		
-		function confirmClearReserv( thisDiv ){
-			bootbox.dialog({
-						message: "Are you sure you want to clear the reservations?",
-						title: "Clear Reservations",
-						buttons: {
-							yes: {
-								label: "Yes, continue.",
-								className: "btn-primary",
-								callback: function() {
-									$.ajax({
-										type: "POST",
-										url: "<?php echo site_url()?>/admin/clear_reservation",
-
-										beforeSend: function() {
-											//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
-											$("#error_message").html("loading...");
-										},
-
-										error: function(xhr, textStatus, errorThrown) {
-												$('#error_message').html(textStatus);
-										},
-
-										success: function( result ){
-											console.log("Cleared");
-											
-										}
-									});
-								}
-							},
-							no: {
-								label: "No.",
-								className: "btn-default"
-							}
+			else if(thisDiv == 'clearDiv'){
+				$.ajax({
+					type: "POST",
+					url: "<?php echo site_url()?>/admin/clear_reservation",
+					success : function( result ){
+						if( result == "" ){
+							console.log("Updated");
+							$('#alert').addClass("alert alert-success");
+							$("#alert").html("Successfully cleared all reservations!");
+							$("#alert").fadeIn('slow');
+							setTimeout(function() { $('#alert').fadeOut('slow') }, 5000);
+							hideMax(); 
 						}
-					});
-				
+	
+						$('table').trigger('update');
+					}
+				});		
+			}
 		}
+		
 	</script>
-
 	</body>
 </html>

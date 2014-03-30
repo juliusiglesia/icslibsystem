@@ -12,6 +12,9 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Admin extends CI_Controller {
 
+	public function __construct(){
+		parent::__construct();
+	}
 	
 	/*
 	*	Controls the view of reservations in the system
@@ -32,38 +35,51 @@ class Admin extends CI_Controller {
 			
 		}
 	}
-
+	/*
+	*	Function that search library material on the reseravtion table.
+	*/
 	public function search_reservations(){
+		
 		$this->load->model('admin/reservation_queue_model'); 
 		header('Content-Type: application/json', true);
 		$array = $this->reservation_queue_model->search_reservations();
-
 		echo json_encode($array);			
+		
 	}
 
 	/*
 	*	Controls the view of notification in the system
 	*/
 	public function notification(){
+		
 		// loads the model php file which will interact with the database
         $this->load->model('admin/notification_model'); 
 		//calls function save(), to save or to insert the data that has been processed
 
 		$materialid = $this->input->post('materialid');
+		
 		$idnumber = $this->input->post('idnumber');
 		$isbn = $this->input->post('isbn');
 
 		$this->notification_model->notify( $materialid, $idnumber, $isbn );
+	
     }
 
-	
+	/*
+	*	Function that diplays the inevntory report.
+	*/
 	public function print_inventory(){
-		// loads the model php file which will interact with the database
-		$this->load->model('admin/print_inventory_model'); 
-		// calls the function get_reservation_array(), and store it to the data array
-		$data['libinventory'] = $this->print_inventory_model->get_inventory_array();
-		// views the result by passing the data to the view php file
-		$this->load->view('admin/print_inventory_view', $data);	
+		$is_logged_in = $this->is_logged_in();
+		if( !$is_logged_in ){
+			redirect('/admin/login', 'refresh');
+		} else {
+			// loads the model php file which will interact with the database
+			$this->load->model('admin/print_inventory_model'); 
+			// calls the function get_reservation_array(), and store it to the data array
+			$data['libinventory'] = $this->print_inventory_model->get_inventory_array();
+			// views the result by passing the data to the view php file
+			$this->load->view('admin/print_inventory_view', $data);	
+		}
 	}
 
 	/**
@@ -110,6 +126,7 @@ class Admin extends CI_Controller {
 	*/
 
 	public function check_admin(){
+		
 		$this->load->model('admin/check_admin_model');
 		
 		$user_count = $this->check_admin_model->check_username();
@@ -170,84 +187,34 @@ class Admin extends CI_Controller {
 		$this->output->set_header("Cache-Control: no-store, no-cache, must-revalidate, no-transform, max-age=0, post-check=0, pre-check=0");
 		$this->output->set_header('Pragma: no-cache');
 	}
-
+	/*
+	*	Function that check if the admin is already logged in.
+	*/
 	public function is_logged_in(){
-		$this->update_reservations();
+		$this->load->model("admin/check_admin_model");
 		$user = $this->session->userdata('user');
-		return $user;
+		$is_valid = $this->check_admin_model->check_session_validity($user);
+		
+		if($is_valid){
+			$this->update_reservations();
+			return true;
+		}
+		else{
+			$this->session->sess_destroy();
+			return false;
+		}
 	}
-
+	
 	/*
-	*	function verification for displaying input text for:
-	*		1. email
-	*		2. password
-	*	input text for email will be required and must be valid email
-	*	input text for password will be required as well
-	*	then it will call the function verify()
+	* Redirect
 	*/
-
-	public function verification(){
-		$this->load->helper('form');
-		$this->load->helper('html');
-		$this->load->library('form_validation');
-
-		$this->form_validation->set_rules('password', 'Password', 'trim|required|sha1');
-		$this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email');
-		$this->load->model('admin/verification_model');
-		$this->load->view('admin/verification_view');
-
-		$this->verify();
-	}
-	/*
-	*	function verify() responsible for email sending using Email class
-	*/
-	public function verify(){
-	// loads the model php file to allow the access of the function verifying()
-        $this->load->model('admin/verification_model'); 
-	//if submit, process the data
-        if($this->input->post('submit')){
-			$email = $this->input->post('email');
-			$inputPw = sha1($this->input->post('password'));
-			$password = $inputPw;
-
-			/*
-			* 	the array $config is the set of configuration for the email
-			*	system.icslibrary@gmail.com is the sender
-			*	icslibraryadmin is the password of the send
-			*/
-			$config = Array(
-				'protocol' => 'smtp',
-				'smtp_host' => 'ssl://smtp.googlemail.com',
-				'smtp_port' => 465,
-				'smtp_user' => 'system.icslibrary@gmail.com',  		
-				'smtp_pass' => 'icslibraryadmin',		
-				'mailtype'  => 'html', 
-				'charset'   => 'iso-8859-1'
-			);
-			$this->load->library('email', $config);
-			$this->email->set_newline("\r\n");
-
-			/*
-			*	email->from('The sender's email', 'Name of the sender')
-			*	email->to('email to be sent to')
-			*	email->subject('The subject')
-			*	email->message('Your message')
-			*	*After the email attributes are set, then the email is ready to be sent*
-			*	email->send()
-			*/
-			$this->email->from('System.ICSLibrary@gmail.com', 'ICSLibrary Admin');
-			$this->email->to($email);
-			$this->email->subject('Email Verification');
-			$this->email->message('Hi this is your verification code: '.$password.' Good day!');
-			$this->email->send();		
-        }
-     }
-
 	public function index(){
-		$this->login();
+		redirect('/' );
 	}
-
-		public function borrowed_books() { 
+	/*
+	*	Function that displays all the borrowed books in the databse.
+	*/
+	public function borrowed_books() { 
 		// loads the model php file which will interact with the database
 
 		$is_logged_in = $this->is_logged_in();
@@ -262,7 +229,7 @@ class Admin extends CI_Controller {
 			if($this->input->post('search_borrowed_books')){
 
 				$word = $this->db->escape_str($this->input->post('search'));
-
+			
 				if ($word!="") {
 					$words = explode(" ", $word);
 					$array['borrowed_books'] = array();
@@ -292,7 +259,9 @@ class Admin extends CI_Controller {
 			$this->load->view('admin/borrowed_books_view', $array);
 		}
 	}
-
+	/*
+	*	Function that checks if the borrowed material has been returned.
+	*/
 	public function material_returned(){
 		// loads the model php file which will interact with the database
        	$this->load->model('admin/material_returned_model'); 
@@ -311,7 +280,9 @@ class Admin extends CI_Controller {
 		//$message = $this->input->post('message');
     	//$this->notification_model->notify( $materialid, $idnumber, $message );
     }
-
+	/*
+	*	Function that search a library material.
+	*/
 	public function admin_search() {
 
 		$is_logged_in = $this->is_logged_in();
@@ -360,7 +331,9 @@ class Admin extends CI_Controller {
 			}
 		}
 	}
-	
+	/*
+	*	Function that executes the update of a library material.
+	*/
 	public function update_execution(){
 		// loads the model php file which will interact with the database
        	$this->load->model('admin/admin_model'); 
@@ -372,22 +345,49 @@ class Admin extends CI_Controller {
 		//$this->save();
 		//var_dump($this-post());
 		$materialid = $this->input->post('materialid');
+		//$materialid = htmlspecialchars($materialid);
+		//$materialid = mysql_real_escape_string($materialid);
+		//$materialid = filter_var($materialid, FILTER_SANITIZE_STRING);
 		//echo $materialid;
 		$type = $this->input->post('type');
-		if ($type == 'Book' || $type == 'References' || $type == 'Journals' || $type == 'Magazines')
+		//$type = htmlspecialchars($type);
+		//$type = filter_var($type, FILTER_SANITIZE_STRING);
+		if ($type == 'Book' || $type == 'References' || $type == 'Journals' || $type == 'Magazines'){
 			$isbn = $this->input->post('isbn');
-		else $isbn = "+".$materialid;
-		if ($type == 'Book' || $type == 'References' || $type == 'CD')
+		//	$isbn = htmlspecialchars($isbn);
+		//	$isbn = filter_var($isbn, FILTER_SANITIZE_NUMBER_INT);
+		}else $isbn = "+".$materialid;
+		if ($type == 'Book' || $type == 'References' || $type == 'CD'){
 			$course = $this->input->post('course');
-		else $course = 0;
+		//	$course = htmlspecialchars($course);
+		//	$course = filter_var($course, FILTER_SANITIZE_STRING);
+		}else $course = 0;
 		$name = $this->input->post('name');
+		//$name = htmlspecialchars($name);
+		//$name = mysql_real_escape_string($name);
+		//$name = filter_var($name, FILTER_SANITIZE_STRING);
 		$year = $this->input->post('year');
+		//$year = htmlspecialchars($year);
+		//$year = filter_var($year, FILTER_SANITIZE_NUMBER_INT);
 		$edvol = $this->input->post('edvol');
+		//$edvol = htmlspecialchars($edvol);
+		//$edvol = filter_var($edvol, FILTER_SANITIZE_NUMBER_INT);
 		$access = $this->input->post('access');
+		//$access = htmlspecialchars($access);
+		//$access = filter_var($access, FILTER_SANITIZE_NUMBER_INT);
 		$available = $this->input->post('available');
+		//$available = htmlspecialchars($available);
+		//$available = filter_var($available, FILTER_SANITIZE_NUMBER_INT);
 		$requirement = $this->input->post('requirement');
+		//$requirement = htmlspecialchars($requirement);
+		//$requirement = filter_var($requirement, FILTER_SANITIZE_NUMBER_INT);
 		$previous_matID = $this->input->post('previous_matID');
+		//$previous_matID = htmlspecialchars($previous_matID);
+		//$previous_matID = mysqli_real_escape_string($previous_matID);
+		//$previous_matID = filter_var($previous_matID, FILTER_SANITIZE_STRING);	
 		$previous_isbn = $this->input->post('previous_isbn');
+		//$previous_isbn = htmlspecialchars($previous_isbn);
+		//$previous_isbn = filter_var($previous_isbn, FILTER_SANITIZE_NUMBER_INT);
 		/*$authors_fname = $this->input->post('authors_fname');
 		$authors_mname = $this->input->post('authors_mname');
 		$authors_lname = $this->input->post('authors_lname');
@@ -435,7 +435,9 @@ class Admin extends CI_Controller {
 		//$message = $this->input->post('message');
     	//$this->notification_model->notify( $materialid, $idnumber, $message );
     }
-
+    /*
+    *	Function that execute the addition of a library material.
+    */	
     public function add_execution(){
 		// loads the model php file which will interact with the database
        	$this->load->model('admin/admin_model'); 
@@ -447,20 +449,41 @@ class Admin extends CI_Controller {
 		//$this->save();
 		//var_dump($this-post());
 		$materialid = $this->input->post('materialid');
+		//$materialid = htmlspecialchars($materialid);
+		//$materialid = mysql_real_escape_string($materialid);
+		//$materialid = filter_var($materialid, FILTER_SANITIZE_STRING);
 		//echo $materialid;
 		$type = $this->input->post('type');
-		if ($type == 'Book' || $type == 'References' || $type == 'Journals' || $type == 'Magazines')
+		//$type = filter_var($type, FILTER_SANITIZE_STRING);
+		if ($type == 'Book' || $type == 'References' || $type == 'Journals' || $type == 'Magazines'){
 			$isbn = $this->input->post('isbn');
-		else $isbn = "+".$materialid;
-		if ($type == 'Book' || $type == 'References' || $type == 'CD')
+			//$isbn = htmlspecialchars($isbn);
+			//$isbn = filter_var($isbn, FILTER_SANITIZE_NUMBER_INT);
+		}else $isbn = "+".$materialid;
+		if ($type == 'Book' || $type == 'References' || $type == 'CD'){
 			$course = $this->input->post('course');
-		else $course = null;
+			//$course = htmlspecialchars($course);
+			//$course = filter_var($course, FILTER_SANITIZE_STRING);
+		}else $course = null;
 		$name = $this->input->post('name');
+		//$name = htmlspecialchars($name);
+		//$name = mysql_real_escape_string($name);
+		//$name = filter_var($name, FILTER_SANITIZE_STRING);
 		$year = $this->input->post('year');
+		//$year = filter_var($year, FILTER_SANITIZE_NUMBER_INT);
+		//$year = htmlspecialchars($year);
 		$edvol = $this->input->post('edvol');
+		//$edvol = htmlspecialchars($edvol);
+		//$edvol = filter_var($edvol, FILTER_SANITIZE_NUMBER_INT);
 		$access = $this->input->post('access');
+		//$access = htmlspecialchars($access);
+		//$access = filter_var($access, FILTER_SANITIZE_NUMBER_INT);
 		$available = $this->input->post('available');
+		//$available = htmlspecialchars($available);
+		//$available = filter_var($available, FILTER_SANITIZE_NUMBER_INT);
 		$requirement = $this->input->post('requirement');
+		//$requirement = htmlspecialchars($requirement);
+		//$requirement = filter_var($requirement, FILTER_SANITIZE_NUMBER_INT);
 		
 		$library_material_data = array (
 			'materialid' => $materialid,
@@ -476,9 +499,12 @@ class Admin extends CI_Controller {
 		);
 		
 		$authors = $this->input->post('authors');
+		//$authors = htmlspecialchars($authors);
+		//$authors = mysql_real_escape_string($authors);
+		//$authors = filter_var($authors, FILTER_SANITIZE_STRING);
 		$all_authors = array ();
 		
-		for ($i=0; $i<count($authors); $i++) {
+		for ($i=0; $i < count($authors); $i++) {
 
 			$entry = array (
 				'materialid' => $materialid,
@@ -503,34 +529,48 @@ class Admin extends CI_Controller {
 		//$message = $this->input->post('message');
     	//$this->notification_model->notify( $materialid, $idnumber, $message );
     }
-	
-	public function show_recent($materialid){
-
-		$this->load->model('admin/admin_model');
-		$filter = "none";
-		$type = "allTypes";
-		$access ="allAccess";
-		$avail ="allAvail";
-		$data['sql2'] = array();
-		$query_result = $this->admin_model->search($filter,$type,$materialid,$access,$avail);
-		array_push($data['sql2'], $query_result[0]);
-		$data['flag'] = $data['sql2'];
-		$this->load->view('admin/show_recent_view',$data);
+	/*
+	*	Function that shows the recently added / updated library material.
+	*/
+	public function show_recent($materialid=""){
+		$is_logged_in = $this->is_logged_in();
+		if( !$is_logged_in ){
+			redirect('/admin/login', 'refresh');
+		} else {
+			$this->load->model('admin/admin_model');
+			$filter = "none";
+			$type = "allTypes";
+			$access ="allAccess";
+			$avail ="allAvail";
+			$data['sql2'] = array();
+			$query_result = $this->admin_model->search($filter,$type,$materialid,$access,$avail);
+			array_push($data['sql2'], $query_result[0]);
+			$data['flag'] = $data['sql2'];
+			$this->load->view('admin/show_recent_view',$data);
+		}
 	}
-
+	/*
+	*	Function that updates a library material.
+	*/
 	public function update_material()
 	{	
-		$this->load->model('admin/update_info_model'); 
-		
-		$materialid = $this->input->post('materialid');
-		
-		if (!$materialid) redirect ("admin/admin_search");
-		
-		$data['update_details'] = $this->update_info_model->get_update_details($materialid);
-		
-		$this->load->view('admin/update_info_view', $data);
+		$is_logged_in = $this->is_logged_in();
+		if( !$is_logged_in ){
+			redirect('/admin/login', 'refresh');
+		} else {
+			$this->no_cache();
+			$data['user'] = $is_logged_in;
+			$this->load->model('admin/update_info_model'); 
+			$materialid = $this->input->post('materialid');
+			if (!$materialid) redirect ("admin/admin_search");
+			$data['update_details'] = $this->update_info_model->get_update_details($materialid);		
+			$this->load->view('admin/update_info_view', $data);
+		}
 			
 	}
+	/*
+	*	Function that deletes a library material.
+	*/
 	public function delete_material(){	
 		
 		$this->load->model('admin/admin_model');
@@ -559,7 +599,9 @@ class Admin extends CI_Controller {
 
 		//$this->admin_search();
 	}
-	
+	/*
+	*	Function that adds a library material.
+	*/
 	public function add_material() {
 	$is_logged_in = $this->is_logged_in();
 		if( !$is_logged_in ){
@@ -570,7 +612,9 @@ class Admin extends CI_Controller {
 		$this->load->view('admin/add_material_view');
 		}
 	}
-	
+	/*
+	*	Function that checks the format of the input isbn.
+	*/
 	public function isbn1_check ($str) {
 		if (preg_match('/^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$/',$str)) {
 			return true;
@@ -579,6 +623,9 @@ class Admin extends CI_Controller {
 			return false;
 		}
 	}
+	/*
+	*	Function that checks the format of the input isbn.
+	*/
 	public function isbn2_check ($str) {
 		if (preg_match('/^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$/',$str)) {
 			return true;
@@ -587,7 +634,9 @@ class Admin extends CI_Controller {
 			return false;
 		}
 	}
-
+	/*
+	*	Function that check the isbn depending upon the type of the library material.
+	*/
 	public function check_new_isbn( ){
 		$isbn = $this->input->post('isbn');
 		$type = $this->input->post('type');
@@ -612,7 +661,9 @@ class Admin extends CI_Controller {
 			else echo '2';
 		}
 	}
-
+	/*
+	*	Function that checks the input isbn depending upon the type of the library material.
+	*/
 	public function check_isbn( ){
 		$isbn = $this->input->post('isbn');
 		$type = $this->input->post('type');
@@ -638,7 +689,9 @@ class Admin extends CI_Controller {
 		if (preg_match('/^[A-Za-z0-9]+$/',$str)) return true;
 		else return false;
 	}
-
+	/*
+	*	Function that checks the input materialid.
+	*/
 	public function check_materialid(){
 		$materialid = $this->input->post('materialid');
 		$preclass = $this->input->post('preclass');
@@ -660,7 +713,9 @@ class Admin extends CI_Controller {
 			else echo '2';
 		}
 	}
-
+	/*
+	*	Function that checks the new input materialid.
+	*/
 	public function check_new_materialid(){
 		$materialid = $this->input->post('materialid');
 		$preclass = $this->input->post('preclass');
@@ -685,7 +740,9 @@ class Admin extends CI_Controller {
 			else echo '2';
 		}
 	}
-
+	/*
+	*	Function that change claim date of the reserved material.
+	*/
 	public function claim_reservation(){
 		$this->load->model('admin/reservation_queue_model');
 		$materialid = $this->input->post('materialid');
@@ -702,7 +759,9 @@ class Admin extends CI_Controller {
 		Page for admin settings
 	*/
 	
-
+	/*
+	*	Function that search a user.
+	*/
 	public function search_user(){
 		$this->load->model('admin/search_user_model');
 		if ( !$this->input->post('search') ) $search = ""; 
@@ -710,7 +769,9 @@ class Admin extends CI_Controller {
 
 		echo json_encode($this->search_user_model->get_users( $search ));
 	}
-
+	/*
+	*	Function that gets all the necessary info about the user.
+	*/
 	public function get_user(){
 		$is_logged_in = $this->is_logged_in();
 		if( !$is_logged_in ){
@@ -723,7 +784,9 @@ class Admin extends CI_Controller {
 		$this->load->view('admin/get_user_view', $data);
 		}
 	}
-
+	/*
+	*	Function that adds multiplie library materials.
+	*/
 	public function add_multiple(){
 	$is_logged_in = $this->is_logged_in();
 		if( !$is_logged_in ){
@@ -733,109 +796,172 @@ class Admin extends CI_Controller {
 		$this->load->view('admin/add_multiple_view');
 	}
 	}
-
 	
+	/*
+	*	Function that inserts multiple library materials.
+	*/
 	public function insert_multiple(){
+		$is_logged_in = $this->is_logged_in();
+		if( !$is_logged_in ){ return; }
+		
 		$this->load->model('admin/insert_multiple_model');
 		$this->insert_multiple_model->insert_to_db();	
 			
 	}
-
+	/*
+	*	Function that checks the input isbn.
+	*/
 	public function check_add_isbn( ){
 		$this->load->model('admin/check_input_model');
 		$isbn = $this->input->post('isbn');
 		echo $this->check_input_model->check_isbn($isbn);
 	}
-
+	/*
+	*	Function that checks the input materialid.
+	*/
 	public function check_add_materialid( ){
 		$this->load->model('admin/check_input_model');
 		$materialid = $this->input->post('materialid');
 		echo $this->check_input_model->check_materialid($materialid);
 	}
-
+	/*
+	*	Function that clears all the reservations.
+	*/
 	public function clear_reservation(){
+		$is_logged_in = $this->is_logged_in();
+		if( !$is_logged_in ){ return; }
+		
 		$this->load->model('admin/clear_reservation_model');
 		$this->clear_reservation_model->clear();
 		
 	}
-
+	/*
+	*	Function that checks the password of the user.
+	*/
 	public function check_password(){
 		$this->load->model('admin/delete_account_model');
 		echo $this->delete_account_model->check_combination();
 	} 
-
+	/*
+	*	Function that deletes account of the user.
+	*/
 	public function delete_account(){
+		$is_logged_in = $this->is_logged_in();
+		if( !$is_logged_in ){ return; }
+		
 		$this->load->model('admin/delete_account_model');
 		$this->delete_account_model->delete_account();
+		$this->delete_account_model->delete_reservations();
 	}
 
-
+	/*
+	*	Function that controls the setting as a whole.
+	*/
 	public function settings(){
-		$this->load->model('admin/settings_model');	
-		$data['info'] = $this->settings_model->get_data();
-		$this->load->view('admin/settings', $data);
+		$is_logged_in = $this->is_logged_in();
+		if( !$is_logged_in ){
+			redirect('/admin/login', 'refresh');
+		} else {
+			$this->no_cache();
+			$data['user'] = $is_logged_in;
+			$this->load->model('admin/settings_model');	
+			$data['info'] = $this->settings_model->get_data();
+			$this->load->view('admin/settings', $data);
+		}
 	}
-
+	/*
+	*	Function that controls the setting for fine enable.
+	*/
 	public function settings_for_enable(){	
+		$is_logged_in = $this->is_logged_in();
+		if( !$is_logged_in ){ return; }
+		
 		$this->load->model('admin/settings_model');
 		$this->settings_model->set_enable();	
 	
 	}
-	
+	/*
+	*	Function that controls the setting for fine disable.
+	*/
 	public function settings_for_disable(){
+		$is_logged_in = $this->is_logged_in();
+		if( !$is_logged_in ){ return; }
 		
-		$this->load->model('admin/settings_model');
-		
+		$this->load->model('admin/settings_model');	
 		$this->settings_model->set_disable();	
 	
 	}
-
+	/*
+	*	Function that controls the setting for semster range.
+	*/
 	public function settings_for_info(){
-	
+		$is_logged_in = $this->is_logged_in();
+		if( !$is_logged_in ){ return; }
+		
 		$this->load->model('admin/settings_model');
 
 		$start_sem_value = $this->input->post('start_sem_value');
 		$end_sem_value = $this->input->post('end_sem_value');
 
-		//$expectedreturn = $this->reservation_queue_model->update_claimed_date( $materialid, $isbn, $idnumber, $start_date );
 		$this->settings_model->set_info( $start_sem_value, $end_sem_value );		
 	}
-
+	/*
+	*	Function that controls the setting for fine.
+	*/
 	public function settings_for_fine(){
-	
+		$is_logged_in = $this->is_logged_in();
+		if( !$is_logged_in ){ return; }
+		
 		$this->load->model('admin/settings_model');
 
 		$fine = $this->input->post('fine');
-
-		//$expectedreturn = $this->reservation_queue_model->update_claimed_date( $materialid, $isbn, $idnumber, $start_date );
+		$fine = htmlspecialchars($fine);
+		$fine = filter_var($fine, FILTER_SANITIZE_NUMBER_INT);
 		$this->settings_model->set_fine( $fine );	
 	}
-	
+	/*
+	*	Function that controls the setting for password
+	*/
 	public function settings_for_password(){
+		$is_logged_in = $this->is_logged_in();
+		if( !$is_logged_in ){ return; }
 		
 		$this->load->model('admin/settings_model');
 		
 		$newpw = $this->input->post('newpw');
-
-		//$expectedreturn = $this->reservation_queue_model->update_claimed_date( $materialid, $isbn, $idnumber, $start_date );
+		$newpw = htmlspecialchars($newpw);
+		$newpw = mysql_real_escape_string($newpw);
+		$newpw = filter_var($newpw, FILTER_SANITIZE_STRING);
 		$this->settings_model->set_password( $newpw );		
 	}
-
-	public function settings_for_max(){
 	
+	/*
+	*	Function that controls the setting for the maximum allowable reservation.
+	*/
+	public function settings_for_max(){	
+		$is_logged_in = $this->is_logged_in();
+		if( !$is_logged_in ){ return; }
+
 		$this->load->model('admin/settings_model');
 
 		$max = $this->input->post('max');
-
-		//$expectedreturn = $this->reservation_queue_model->update_claimed_date( $materialid, $isbn, $idnumber, $start_date );
+		$max = htmlspecialchars($max);
+		$max = mysql_real_escape_string($max);
+		$max = filter_var($max, FILTER_SANITIZE_NUMBER_INT);
 		$this->settings_model->set_max( $max );	
 	}
 	
+	/*
+	*	Function that checks the current tail of reservation queue.
+	*/
 	public function check_reservation(){
 		$this->load->model('admin/reservation_queue_model');
 		echo $this->reservation_queue_model->check_reservation();
 	}
-
+	
+	/*
+	*	Function that updates the reservation queue.
+	*/
 	public function update_reservations(){
 		$this->load->model('admin/reservation_queue_model');
 		$this->reservation_queue_model->update_reservations();		

@@ -10,19 +10,9 @@
 
     <title>ICS-iLS</title>
 
-    <!-- Bootstrap core CSS -->
+
     <link href="<?php echo base_url(); ?>dist/css/bootstrap.css" rel="stylesheet">
 
-    <!-- Just for debugging purposes. Don't actually copy this line! -->
-    <!--[if lt IE 9]><script src="../../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-    <![endif]-->
-
-    <!-- Custom styles for this template -->
     <link href="<?php echo base_url(); ?>dist/css/carousel.css" rel="stylesheet">
     <link href="<?php echo base_url(); ?>dist/css/modulestyle.css" rel="stylesheet">
     
@@ -71,12 +61,13 @@
   <div class="modal-content">
     <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h3 class="modal-title" id="myModalLabel">Forgot password</h3>
+    <h3 class="modal-title" id="myModalLabel">Forgot password<br /></h3>(Please don't close this window unless you're finished)
     </div>
-    <div id="details" class="modal-body"><form id = "details_form"><input id = "email" type="email" class="form-control" placeholder="Enter Email address" required autofocus></form>
+    <div id="details" class="modal-body">	
+	<form id = "details_form"><input id = "email" type="email" class="form-control" placeholder="Enter Email address" required autofocus></form>
     </div>
     <div  id="modal-footer" class="modal-footer">
-    <button class="btn btn-primary" id="submit">Submit</button>
+	<div id='err'></div><button class="btn btn-primary" id="submit">Submit</button>
     <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true" id="cancel">Cancel</button>
     </div>
    </div>
@@ -86,6 +77,12 @@
 
 
     <script type="text/javascript">
+	
+	$('#forgot').on('hidden.bs.modal',function(e){
+		flag=0;
+		$("#details").replaceWith('<div id="details" class="modal-body"><input id="email" type="email" class="form-control" placeholder="Enter Email address" required autofocus>');
+		$("#err").hide();
+	});
     
       $("#login_form").keypress(function(event){
         if(event.keyCode == 13){
@@ -116,20 +113,23 @@
             success: function( result ){
             //if username DNE
             if(result == 0 ){
-              window.location.href = "<?php echo site_url('borrower/login/dne'); ?>";
+              alert('Invalid input for email/idnumber');
+              //window.location.href = "<?php echo site_url('borrower/login/dne'); ?>";
+
             }
             //username exists, but pword does not match
             else if(result ==2){
-              window.location.href = "<?php echo site_url('borrower/login/dnm'); ?>";
+              window.location.href = "<?php echo site_url('/borrower/login/dnm'); ?>";
             }
             //username is deactivated
             else if(result == 3){
               //  window.location.href = "<?php echo site_url('borrower/login/urlencode(" +username+ ")');?>";
-				  window.location.href = "<?php echo site_url('borrower/login/"+username+"'); ?>";
-              }
+
+				      window.location.href = "<?php echo site_url('/borrower/login/"+username+"'); ?>";
+            }
             //if username and password exists
-            else {
-              window.location.href = "<?php echo site_url('borrower/home'); ?>";
+            else{
+              window.location.href = "<?php echo site_url('/borrower/home'); ?>";
             }
           }
           });
@@ -145,63 +145,84 @@
   
   $("#submit").click(function(){
 
-    if(flag ==0)
+if(flag ==0)
     { //email verification
       email = $("#email").val();
       $.ajax({
         type: "POST",
-        url: "<?php echo site_url('borrower/forgot_password');?>",
+        url: "<?php echo site_url('/borrower/forgot_password');?>",
         data: {'email':email,
              'action': 'verify_email'
             },
         dataType: "JSON",
+		beforeSend: function (){
+			$("#err").removeClass('alert alert-danger');
+			$("#err").html("<img src='<?php echo base_url();?>dist/images/ajax-loader.gif' />");
+		},		
         success: function(data) 
         {
-          
             if(data.stat == 'success')
             {
+			  $("#err").html("");
               $("#details").html('<b>'+data.message+'.</b><br><br><form id = "details_form"><input id = "code_input" type="email" class="form-control" placeholder="Enter verification code" required autofocus></form> ');
               verf_code = data.verf_code;
               flag = 1;
-
             }
+			else if(data.stat =='failed')
+			{
+				$("#err").show();
+				$("#err").addClass('alert alert-danger');
+				$("#err").html(data.message);
+				flag = 0;
+			}
             else
             {
-              $("#details").html('<b>'+data.message+' ' +data.stat+'.</b><br><br><form id = "details_form"><input id = "email" type="email" class="form-control" placeholder="Enter Email address" required autofocus></form> ');
-              flag = 0;
+				$("#err").show();
+				$("#err").addClass('alert alert-danger');
+				$("#err").html(data.message);
+				flag = 0;
                 
             }
         },
-        error: function()
-        {
-          alert('Error!');
+        error: function(xhr, data, errorThrown)
+        {	
+			
+			$("#err").show();
+			$("#err").addClass('alert alert-danger');
+			$("#err").html("An error occurred.");
         }
 
       });
-
-
     }
 
     else if(flag == 1)
     {  //code verification
       var code_input = $("#code_input").val();
         $.ajax({
-          url:"<?php echo site_url('borrower/forgot_password');?>",
+          url:"<?php echo site_url('/borrower/forgot_password');?>",
           type: "POST",
           data: {'code_input':code_input,
               'verf_code': verf_code,
               'action': 'verify_code'
               },
           dataType: "JSON",
+		  beforeSend: function (){
+			$("#err").removeClass('alert alert-danger');
+			$("#err").html("<img src='<?php echo base_url();?>dist/images/ajax-loader.gif' />");
+		  },
           success: function(data)
           {
               if(data.stat == 'success')
               {
+				$("#err").html("");
                 $("#details").html('<b>'+data.message+'</b><br><br><form id = "details_form"><input id = "new_password" type="password" class="form-control" placeholder="New Password" required><br><input id = "retype_new_pw" type="password" class="form-control" placeholder="Verify New Password" required></form>');
                 flag = 2; 
               }
               else
               {
+				$("#err").show();
+				$("#err").addClass('alert alert-danger');
+				$("#err").html("Code denied.");
                 $("#details").html('<b>'+data.message+'</b><br><br><form id = "details_form"><input id = "code_input" class="form-control" placeholder="Enter verification code" required autofocus></form>');
                 flag = 1;
               }
@@ -209,7 +230,9 @@
 
           error: function()
           {
-            alert('Ooops. Error.');
+            $("#err").show();
+			$("#err").addClass('alert alert-danger');
+			$("#err").html("An error has occured.");
           }
 
         });
@@ -222,57 +245,67 @@
       
         if(new_password == retype_new_pw)
         {
-          $.ajax({
-            url: "<?php echo site_url('borrower/forgot_password');?>",
-            type: "POST",
-            data: {'new_password': new_password,
-                'retype_new_pw': retype_new_pw,
-                'email': email,
-                'action': 'change_pw'
+		
+		if( new_password.length > 6){
+		
+			  $.ajax({
+				url: "<?php echo site_url('borrower/forgot_password');?>",
+				type: "POST",
+				data: {'new_password': new_password,
+					'retype_new_pw': retype_new_pw,
+					'email': email,
+					'action': 'change_pw'
 
-            },
-            dataType: "JSON",
-            success: function(data)
-            {
-                if(data.stat == 'success')
-                {
-                    $('#details').html('<b>'+data.message+'</b>');
-                    $("#modal-footer").html('<button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" id="done">Done</button>'); 
-                }
-                else
-                {
-                  $("#details").html('<b>'+data.message+'</b><br><br><form id = "details_form"><input id = "new_password" type="password" class="form-control" placeholder="New Password" required><br><input id = "retype_new_pw" type="password" class="form-control" placeholder="Verify New Password" required></form>');
-                  flag = 2;
-                }
-            },
-            error: function()
-            {
-              alert('Please try again.');
-            }
-          });
+				},
+				dataType: "JSON",
+				beforeSend: function (){
+				$("#err").removeClass('alert alert-danger');
+				$("#err").html("<img src='<?php echo base_url();?>dist/images/ajax-loader.gif' />");
+				},		
+				success: function(data)
+				{
+					if(data.stat == 'success')
+					{$("#err").html("");
+						$('#details').html('<b>'+data.message+'</b>');
+						$("#modal-footer").html('<button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" id="done">Done</button>'); 
+					}
+					else
+					{$("#err").html("");
+					  $("#details").html('<b>'+data.message+'</b><br><br><form id = "details_form"><input id = "new_password" type="password" class="form-control" placeholder="New Password" required><br><input id = "retype_new_pw" type="password" class="form-control" placeholder="Verify New Password" required></form>');
+					  flag = 2;
+					}
+				},
+				error: function()
+				{
+					$("#err").show();
+					$("#err").addClass('alert alert-danger');
+					$("#err").html("An error has occured.");
+				}
+			  });
+			}
+		//password <6 character
+		else{
+			$("#err").show();
+			$("#err").addClass('alert alert-danger');
+			$("#err").html("Invalid password.");
+			$("#details").html('<b>Password must be at least 6 characters</b><br><br><form id = "details_form"><input id = "new_password" type="password" class="form-control" placeholder="New Password" required><br><input id = "retype_new_pw" type="password" class="form-control" placeholder="Verify New Password" required></form>');
+			flag = 2;
+		}
+			
         }
-
+		//password don't match
         else
         {
-          $("#details").html('<b>Passwords must match</b><br><br><form id = "details_form"><input id = "new_password" type="password" class="form-control" placeholder="New Password" required><br><input id = "retype_new_pw" type="password" class="form-control" placeholder="Verify New Password" required></form>');
-          flag = 2;
+			$("#err").show();
+			$("#err").addClass('alert alert-danger');
+			$("#err").html("Invalid password.");
+			$("#details").html('<b>Passwords must match</b><br><br><form id = "details_form"><input id = "new_password" type="password" class="form-control" placeholder="New Password" required><br><input id = "retype_new_pw" type="password" class="form-control" placeholder="Verify New Password" required></form>');
+			flag = 2;
         }
       
       
     }
   });
-  
-  $("#cancel").click(function(){
-    flag = 0;
-    $("#details").replaceWith('<div id="details" class="modal-body"><input type="email" class="form-control" placeholder="Enter Email address" required autofocus>');
-  });
-  
-  $("#done").click(function(){
-    flag = 0;
-    $("#details").replaceWith('<div id="details" class="modal-body"><input type="email" class="form-control" placeholder="Enter Email address" required autofocus>');
-  });
-    
     
  });
 </script>
- 

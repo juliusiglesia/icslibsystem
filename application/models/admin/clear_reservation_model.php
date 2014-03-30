@@ -1,7 +1,7 @@
 <?php
 
 /*
-*	Filename: reservation_queue_model.php
+*	Filename: clear_reservation_model.php
 *	Project Name: ICS Library System
 *	Date Created: 23 January 2014
 *	Created by: Julius M. Iglesia
@@ -18,6 +18,12 @@ class Clear_reservation_model extends CI_Model{
 	public function clear(){
 		$query = "TRUNCATE TABLE reservation";
 		$this->db->query($query);
+
+		//insert into log
+		//Admin cleared the reservation table
+		$stmt = "INSERT INTO log( `action`, `time`, `idnumber`) 
+						  VALUES( 'cleared reservation', NOW(), 'Admin')";
+		$this->db->query($stmt);				  
 	}
 }
 

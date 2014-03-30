@@ -31,10 +31,11 @@
 										
 									</select>
 								</td>					
-							<td align="left">	
-								<input type= "textbox" name="searchbox" size="50" style="width: 360px" value="<?php if(isset($input)) echo $input; ?>" />
+
+							<td align="left">																								<!--EDITED -->
+								<input type= "textbox" name="searchbox" size="50" style="width: 360px" value="<?php if(isset($input)) echo htmlspecialchars($input); ?>" />
 								<input type="submit" value="Search" name="bsc_search_btn" id="bsc_search_btn" />
-								<input type="submit" value="Search" name="adv_search_btn" id="adv_search_btn" />
+								<input type="submit" value="Search" name="adv_search_btn" id="adv_search_btn" /> 
 								<a class="btn collapse-data-btn" id="s_advance" href="#update">Advanced Search</a>
 								<a class="btn collapse-data-btn" id="s_basic" href="#update">Basic Search</a>
 							</td>
@@ -116,6 +117,7 @@
 		if(!isset($srch)) $srch = 0;
 
 		if($srch == 0 ){
+
 		}
 		else{
 			echo "$('#s_advance').hide();";

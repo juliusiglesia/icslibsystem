@@ -53,5 +53,24 @@ class Check_admin_model extends CI_Model{
 										and password LIKE '${password}'");
 		return $query->num_rows();
 	}
+
+	/**
+	* Function for checking if the username is existing or not
+	* 
+	*
+	* @access	public
+	* @param	none
+	* @return	none
+	*
+	*/
+
+	public function check_session_validity($user){
+		$query = $this->db->query("SELECT * 
+									FROM administrator 
+									WHERE username LIKE '${user}'");
+
+		if($query->num_rows() == 1) return true;
+		else return false;
+	}
 }
 ?>

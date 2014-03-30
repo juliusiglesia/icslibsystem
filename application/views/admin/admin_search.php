@@ -3,7 +3,6 @@
 	<?php include 'includes/head.php'; ?>
 		
 	<script>
-
 		function deleteBook( thisDiv ){
 			bootbox.dialog({
 				message: "You are about to delete a library material from the database. Continue?",
@@ -126,13 +125,9 @@
 							<br/>
 						  
                     </form>
-					
-                     <div class="alert-container" style = 'height: 40px; margin: 30px;'>
-							<div style="display:none" id = "success_delete" class = "alert alert-success">  </div>
-							<div style="display:none" id = "fail_delete" class = "alert alert-danger">  </div>
-						</div> 
+                    <br />
                     <?php
-                        echo "<table border = '1' id='myTable' class = 'table table-hover'>
+                        echo "<table class = 'table table-hover table-bordered'>
                             <thead>
                                 <tr>
 									<th style='width:11%;'><b><center>ISBN/ISSN</center></b></th>
@@ -206,8 +201,8 @@
 												echo "<td align='center'>";
 												echo "<form method='post' name='update' action='update_material'>";
 												echo "<input type='hidden' name='materialid' value='" . $q->materialid . "'/>";
-												echo "<button type='submit' class='updateButton btn btn-default' name='update'><span class='glyphicon glyphicon-edit'></button></form>";
-												echo "<button onclick = 'deleteBook($(this))' class='deleteButton btn btn-danger' name='return'><span class='glyphicon glyphicon-remove'></button>";
+												echo "<button type='submit' class='updateButton btn btn-default' name='update'><a data-toggle='tooltip' class='tooltipLink' data-original-title='Edit'><span class='glyphicon glyphicon-edit'></span></a></button></form>";
+												echo "<button onclick = 'deleteBook($(this))' class='deleteButton btn btn-danger' name='return'><a data-toggle='tooltip' class='tooltipLink' data-original-title='Delete'><span class='glyphicon glyphicon-remove'></span></a></button>";
 												echo "</td></tr>";
 											}
                                        	echo "</tbody>";

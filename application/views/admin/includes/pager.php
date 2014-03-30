@@ -1,11 +1,11 @@
 <div class="pager">
 	<!--<img src="../addons/pager/icons/first.png" class="first" alt="First" />
 	<img src="../addons/pager/icons/prev.png" class="prev" alt="Prev" />-->
-	<span class="first" style="cursor:pointer">First</span>
-	<span class="prev" style="cursor:pointer">Prev</span>
+	<img class="first" style="cursor:pointer" src = "<?php echo base_url()?>dist/images/first.png" />
+	<img class="prev" style="cursor:pointer" src = "<?php echo base_url()?>dist/images/prev.png" />
 	<strong> <span class="pagedisplay"></span></strong> <!--this can be any element, including an input-->
-	<span class="next" style="cursor:pointer">Next</span>
-	<span class="last" style="cursor:pointer">Last</span>
+	<img class="next" style="cursor:pointer" src = "<?php echo base_url()?>dist/images/next.png" />
+	<img class="last" style="cursor:pointer" src = "<?php echo base_url()?>dist/images/last.png" />
 	<br/>
 	<span>Page size: </span>
 	<select class="pagesize" title="Select page size">

@@ -24,8 +24,11 @@ class Notification_model extends CI_Model{
 	public function get_idnumber() {
 		$query = $this->db->query('SELECT idnumber FROM borrower');
 		return $query->result();
-	}//end of get_idnumber
-
+	}
+	/*
+	* Update reservation set the value of startdate and claimdate when the admin notified the user.
+	* Insert changes or actions into table log.
+	*/
 	public function notify( $materialid, $idnumber, $isbn){	
 		echo $materialid."<br />";
 		echo $idnumber."<br />";
@@ -39,6 +42,11 @@ class Notification_model extends CI_Model{
 		$query = "UPDATE reservation SET started = 1, startdate = '${time}', claimdate = '${claimdate}' WHERE materialid LIKE '${materialid}' AND idnumber LIKE '${idnumber}' AND isbn LIKE '${isbn}'";
 		echo $query;
 		$this->db->query($query);
+	
+		$stmt = "INSERT INTO log( `action`, `time`, `idnumber`) 
+						  VALUES( 'Notified a user', NOW(), 'Admin')";
+		$this->db->query($stmt);
+
 	}
 }//end of class
 

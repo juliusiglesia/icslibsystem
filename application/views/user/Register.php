@@ -1,13 +1,18 @@
 <?php include 'home_header.php'; ?>   
 <!-- START OF SIGN UP -->
-<div class="container">
+<div class="container" id="register-container-margin">
     <div class="row">
-              INSERT SOMETHING HERE
-        <div></div>
-        <div class = "col-xs-12 col-sm-6 col-md-8">
-          <img src='<?php echo base_url(); ?>dist/images/side.png' alt = '' width = "500" height = "500">
+        <div class = "col-xs-12 col-sm-5 col-md-8 col-lg-offset-1" id="side-png-background">
+            <div id="bg">
+              <h3>A Friendly Reminder:</h3>
+              <ul class="ul-font">
+                  <li>Only registered UPLB students and faculty can sign up for an iLS account.</li>
+                  <li>For UPLB constituents, please provide your valid student number or employee number as your ID number.</li>
+                  <li>Non-UPLB users must proceed directly to the ICS Library to be able to browse a library material.</li>
+              </ul>
+            </div>
         </div>
-       <div class="col-xs-6 col-md-4"><br/><br/><br/>
+       <div class="col-xs-6 col-md-4 col-lg-offset-1"><br/><br/><br/>
           <legend><center><a href="#"><i class="glyphicon glyphicon-globe"></i></a> Sign up!</center></legend>
 
           <form action="<?php echo site_url()?>/registration" method="post" class="form" role="form">
@@ -16,10 +21,10 @@
             <div class="col-xs-4 col-md-12">
                <div class="form-group">
                     <div class="col-sm-4">
-                      <label for="idnumber"> ID Number </label> 
+                      <label for="idnumber"> ID Number </label>
                     </div>
                   <div class="col-sm-8">
-                    <input class="form-control" name="idnumber" id="idnumber" value="<?php echo set_value('idnumber');?>" type="text" required />
+                    <input placeholder="XXXX-XXXXX or XXXXXXXXX" class="form-control" name="idnumber" id="idnumber" value="<?php echo set_value('idnumber');?>" type="text" required />
                      <div class="error-space">
                        <span id="error_message" class="error_color"></span>
                     </div>
@@ -34,7 +39,7 @@
                       <label for="email"> Email </label><br/>
                     </div>
                   <div class="col-sm-8">
-                    <input class="form-control" name="email" id="emailid" value="<?php echo set_value('email');?>" type="email" required>
+                    <input placeholder="validemail@domain" class="form-control" name="email" id="emailid" value="<?php echo set_value('email');?>" type="email" required>
                      <div class="error-space">
                        <span id="error_message1" class="error_color"></span>
                     </div>
@@ -49,7 +54,7 @@
                       <label for="password"> Password </label><br/>
                     </div>
                   <div class="col-sm-8">
-                    <input class="form-control" name="password" id="password" type="password"/>
+                    <input placeholder="Enter password" class="form-control" name="password" id="password" type="password"/>
                      <div class="error-space">
                        <span id="error_message2" class="error_color"></span>
                     </div>
@@ -64,7 +69,7 @@
                       <label for="password_conf"> Re-enter password </label><br/>
                     </div>
                   <div class="col-sm-8">
-                    <input class="form-control" name="password_conf" id="password_conf" onblur="validatePassword()" type="password"/>
+                    <input placeholder="Re-enter password" class="form-control" name="password_conf" id="password_conf" onblur="validatePassword()" type="password"/>
                      <div class="error-space">
                        <span id="error_message3" class="error_color"></span>
                     </div>
@@ -131,7 +136,7 @@
 
         success: function(result){
           if($.trim(result)=="1"){
-         $('#error_message2').html("Password length must be atleast 6 characters");
+         $('#error_message2').html("Password length must be atleast 6 alphanumeric characters");
                flagPass =  false;
          validatePassword();
             }
@@ -155,7 +160,7 @@
                 flagEmail =  false;
               }
               else if($.trim(result)=="1"){
-                $('#error_message1').html("Invalid email");
+                $('#error_message1').html("Email must be in xxxx@domain format<br/>ex. xxxxx@gmail.com");
                 flagEmail =  false;
               }
               else if($.trim(result)=="0"){
@@ -178,11 +183,11 @@
                 flagId =  false;
             }
             else if($.trim(result)=="2"){
-               $('#error_message').html("Not in sample table");
+               $('#error_message').html("Not a registered UPLB constituent");
                  flagId =  false;
             }
             else if($.trim(result)=="3"){
-               $('#error_message').html("Invalid idnumber");
+               $('#error_message').html("Invalid idnumber<br/> xxxx-xxxxx or xxxxxxxxxx");
                flagId =  false;
             }
             else if($.trim(result)=="0"){

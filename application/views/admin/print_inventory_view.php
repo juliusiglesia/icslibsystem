@@ -16,7 +16,7 @@
  */
 
 // Include the main TCPDF library (search for installation path).
-require_once('/application/third_party/tcpdf_min/tcpdf.php');
+require_once('includes/tcpdf_min/tcpdf.php');
 
 // extend TCPF with custom functions
 class MYPDF extends TCPDF {
@@ -210,7 +210,7 @@ $pdf->writeHTML($html, true, false, true, false, '');
 
 $pdf->ColoredTable($header, $libinventory['refs']);
 
-$html = '<br/><br/><br/><br/>Certified true and accurate by: <b><u>MRS. MAYETH GIRONELLA</u></b><br/>Signature:';
+$html = '<br/><br/><br/><br/>Certified true and accurate by: <b><u>MRS. MARITES M. GIRONELLA</u></b><br/>Signature:';
 $pdf->writeHTML($html, true, false, true, false, '');
 
 // ---------------------------------------------------------

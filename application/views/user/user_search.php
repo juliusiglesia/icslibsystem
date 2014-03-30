@@ -24,7 +24,7 @@
 						<div class="container">
 			
 				<br />
-				 <?php include 'user_search_bar_view.php'?>
+				 <?php include 'user_search_bar_view.php'; ?>
 
 				<table width='70%' align= "center" id="result_engine" summary="Results" border="1" cellspacing="5" cellpadding="5">
 						<thead>

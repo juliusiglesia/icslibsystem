@@ -35,7 +35,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="<?php echo base_url();?>"><img src="<?php echo base_url(); ?>dist/images/logo4.png" height="50px" width="165px"></a>
+          <a class="navbar-brand" href="<?php echo base_url();?>"><img src="<?php echo base_url(); ?>dist/images/logo.png" height="70px"></a>
         </div>
       </div>
     </div>
@@ -106,6 +106,7 @@
 			  data: { email: username, pword: password },
 
 			  beforeSend: function() {
+				$("#failed").html("<center><img src='<?php echo base_url();?>dist/images/ajax-loader.gif' /></center>");
 			  },
 
 			  error: function(xhr, textStatus, errorThrown) {

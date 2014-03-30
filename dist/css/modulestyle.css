@@ -293,3 +293,87 @@ a.tooltipLink { color: inherit; }
 .button-color{
 	color: #41586c;
 }
+
+.error-space{
+  height: 20px;
+  font-size: 12px;
+}
+
+#err{
+	float:left;
+	height:35px;
+	width:170px;
+	padding-top:5px;
+	text-align:center;
+	margin:0px;
+}
+
+#reg{
+	height:25px;
+	padding:0px;
+	margin:0px;
+}
+.back-to-top {
+    position: fixed;
+    bottom: 2em;
+    right: 0px;
+    text-decoration: none;
+    color: #000000;
+    background-color: rgba(235, 235, 235, 0.80);
+    font-size: 12px;
+    padding: 1em;
+    display: none;
+}
+
+.back-to-top:hover {    
+    background-color: rgba(135, 135, 135, 0.50);
+} 
+
+#side-png-background{
+	color:#141414;
+	padding-top:100px;
+	padding-right: 50px;
+	padding-left:10px;
+	width:500px;
+	height:500px;
+	background-image: url(../images/side2.png);
+}
+
+#register-container-margin{
+	margin-top: 18px;
+}
+
+.ul-font{
+	color:#141414;
+	font-size:17px;
+}
+
+#bg{
+	padding:10px;
+	/*background: rgba(211,211,211,0.3);*/
+} 
+
+.badge{
+	background-color:#BC0000;
+}
+
+table.tablesorter .tablesorter-headerRow .tablesorter-headerAsc {
+  background: url("../images/up.fw.png") no-repeat;
+  background-position: center right;
+  cursor: pointer;
+  padding-right: 30px;  
+}
+
+table.tablesorter .tablesorter-headerRow .tablesorter-headerDesc {
+  background: url("../images/down.fw.png") no-repeat;
+  background-position: center right;
+  cursor: pointer;
+  padding-right: 30px;  
+}
+
+table.tablesorter .tablesorter-headerRow .tablesorter-headerUnSorted {
+  background: url("../images/unsorted.fw.png") no-repeat;
+  background-position: center right;
+  cursor: pointer;
+  padding-right: 30px;  
+}

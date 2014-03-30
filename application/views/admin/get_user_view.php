@@ -5,6 +5,22 @@
 		<script type="text/javascript">
 
 		function confirmDeleteAccount( thisDiv ){
+			var borrowed = thisDiv.parent().siblings('.info').children('.borrowed').text().trim();
+			if(borrowed > 0){
+				bootbox.dialog({
+					message: "Please return borrowed books before deleting account",
+					title: "Error Delete Account",
+					onEscape: function() {},
+					buttons: {
+						no: {
+							label: "Dismiss",
+							className: "btn-default"
+						}
+					}
+				});
+				return;
+			}
+			
 			bootbox.dialog({
 				message: "This account will be deleted. Are you sure you want to proceed?",
 				title: "Delete Account",
@@ -14,23 +30,49 @@
 						label: "Yes, continue.",
 						className: "btn-primary",
 						callback: function() {
-							var password = prompt( "Please enter admin password" ).trim();
-							if( password != "" ){
-								$.ajax({
-									type : "POST",
-									url : "<?php echo base_url(); ?>admin/check_password",
-									data : { password : password },
-									success : function( result ){
-													console.log( result );
+							bootbox.dialog({
+							  message: "Password: <input type='password' id='pw'></input>",
+							  title: "Update settings",
+							  buttons: {
+								main: {
+								  label: "Confirm",
+								  className: "btn-primary",
+								  callback: function() {
+									console.log("Hi "+ $('#pw').val());
+									password = $('#pw').val();
+									if( password != "" ){
+										if(borrowed > 0){
+											alert( "Warning! Please return borrowed books before deleting your account" );
+										}
+										else if( password != "" ){
+											$.ajax({
+												type : "POST",
+												url : "<?php echo site_url(); ?>/admin/check_password",
+												data : { password : password },
+												success : function( result ){
 													if( result == "1" ){
  														deleteAccount(thisDiv);
 													} else {
-														alert( "Wrong password!" );
+														bootbox.dialog({
+															message: "Error in password!",
+															title: "Error Delete Account",
+															onEscape: function() {},
+															buttons: {
+																no: {
+																	label: "Dismiss",
+																	className: "btn-default"
+																}
+															}
+														});
 													}
 												}
-
-								});								
-							}
+											});								
+										}								
+									}
+								  }
+								}
+							  }
+							});
 						}
 					},
 					no: {
@@ -45,12 +87,32 @@
 			var idnumber = thisDiv.parent().siblings('.idnumber').text().trim();
 			$.ajax({
 				type : "POST",
-				url : "<?php echo base_url(); ?>admin/delete_account",
+				url : "<?php echo site_url(); ?>/admin/delete_account",
 				data : { idnumber : idnumber },
+				beforeSend: function() {
+					$("#alert").show();
+					$("#alert").removeClass("alert alert-success");
+					$("#alert").html("<center><img src='<?php echo base_url();?>dist/images/ajax-loader.gif' /></center>");
+				},
+
+				error: function(xhr, textStatus, errorThrown) {
+					$("#alert").addClass("alert alert-success");
+					$("#alert").html( "<strong>" + xhr.status + " " + xhr.statusText + "</strong>");
+					$("#alert").fadeIn('slow');
+				},
 				success : function( result ){
 					if( result == "" ){
-						console.log("Deleted");
-						$('#'+idnumber).remove();
+						$("#alert").fadeOut('slow', function( ){
+							
+							$("#alert").addClass( " alert alert-success " );
+							$("#alert").html("<strong>" + idnumber + "</strong> account was removed.");
+							$('#'+idnumber).remove();
+							$("#alert").fadeIn('slow');
+		
+							document.body.scrollTop = document.documentElement.scrollTop = 0;
+							setTimeout(function() { $('#alert').fadeOut('slow') }, 5000);	
+						});
+						
 					}
 
 					$('table').trigger('update');
@@ -102,22 +164,23 @@
 									<th width="10%"><center>Student/Employee Number</center></th>
 									<th width="55%"><center>Borrower Information</center></th>
 									<th width="15%"><center>Status</center></th>
-									<th width="20%"><center>Remove</center></th>
+									<td width="20%"><center>Remove</center></td>
 								</tr>
 							</thead>
 							
 							<tbody>
-								<?php  
+								<?php 
 									foreach ($users as $data){
 										$data = (array)$data;
 										echo "<tr id = '${data['idnumber']}'>";
 										echo "<td class = 'idnumber' > ${data['idnumber']}  </td>";
-										echo "<td>"; 
+										echo "<td class = 'info' >"; 
 										echo "<strong><span class = 'fname'> ${data['fname']} </span> <span class = 'mname'> ${data['mname']}  </span> <span class = 'lname'> ${data['lname']}  </span> </strong> <br /> ${data['email']}  <br />"; 
 										echo "<span class = 'college'> ${data['college']}  </span> - <span class = 'course'> ${data['course']} </span>"; 
-										
+
 										if( $data['classification'] == 'F' ) echo "<span class = 'classification'><i> (Faculty) </i> </span><br />"; 
 										else echo "<span class = 'classification'><i> (Student) </i> </span><br />"; 
+										echo "Borrowed Book(s): <span class = 'borrowed'> ${data['borrowed']} </span> Overdue Book(s): <span class = 'overdue'> ${data['overdue']} </span> Reserved Book(s): <span class = 'reserved'> ${data['reserved']} </span>";
 										echo "</td>";
 										echo "<td> <strong> ${data['status']} </strong> </td>";
 										echo "<td> <button class = 'btn btn-default' onclick = 'confirmDeleteAccount($(this))' > Delete Account </button> </td>";
@@ -147,10 +210,10 @@
 			}
 
 			function printStatus( status ){
-				return "<td class = 'status'> <strong>" + status + "</strong></td>"
+				return "<td class = 'status'> <strong>" + status + "</strong></td><br />"
 			}
 
-			function printBorrowerInfo( fname, mname, lname, email, course, college, classification ){
+			function printBorrowerInfo( fname, mname, lname, email, course, college, classification, borrowed, overdue, reserved ){
 				ret = "<td> <strong> <span class = 'fname'> " + fname + " </span><span class = 'fname'> " + mname + " </span><span class = 'fname'> " + lname + " </span> </strong> <br />";
 				ret += "<span class = 'email'> " + email + " </span><br />";
 				ret += "<span class = 'college'> " + college + "  </span> - <span class = 'course'> " + course + " </span>";
@@ -158,11 +221,11 @@
 				if( classification == 'F' ) ret += "<span class = 'classification'><i> (Faculty) </i> </span><br />"; 
 				else ret += "<span class = 'classification'><i> (Student) </i> </span><br />"; 
 
-				ret += "</td>";
-
+				ret += "<span class = 'borrowed'> Borrowed Book(s): " + borrowed + " </span> <span class = 'overdue'> Overdue Book(s): " + overdue + " </span> <span class = 'reserved'> Reserved Book(s): " + reserved + " </span> </td>";
+				ret += "</td> <br />";
 				return ret;
 			}
-			
+
 			function printButton( ){
 				return "<td> <button class = 'btn btn-default' onclick = 'confirmDeleteAccount($(this))' > Delete Account </button> </td>";
 			}
@@ -171,7 +234,7 @@
 				var content = "";
 
 				content += printIdNumber( data.idnumber );
-				content += printBorrowerInfo( data.fname, data.mname, data.lname, data.email, data.course, data.college, data.classification );
+				content += printBorrowerInfo( data.fname, data.mname, data.lname, data.email, data.course, data.college, data.classification, data.borrowed, data.overdue, data.reserved );
 				content += printStatus( data.status );
 				content += printButton();
 				
@@ -185,7 +248,22 @@
 					url : "<?php echo site_url(); ?>/admin/search_user",
 					data : { search : search },
 					dataType : "json",
+					beforeSend: function() {
+						$("#alert").show();	
+						$("#alert").removeClass("alert alert-success");
+						$("#alert").html("<center><img src='<?php echo base_url();?>dist/images/ajax-loader.gif' /></center>");
+					},
+
+					error: function(xhr, textStatus, errorThrown) {
+						$("#alert").addClass("alert alert-success");
+						$("#alert").html( "<strong>" + xhr.status + " " + xhr.statusText + "</strong>");
+						$("#alert").fadeIn('slow');
+					},
 					success : function( result ){
+						$("#alert").fadeOut('slow', function(){
+							$("#alert").hide();	
+						});
+
 						if( result.length != 0 ){
 							$('tbody').html("");
 							for( var i = 0; i < result.length; i++ ){
@@ -209,6 +287,12 @@
 			});	
 		</script>
 		<script>
+				$("#searchUser").keypress(function(event){
+					if(event.keyCode == 13){
+						event.preventDefault();
+						$("#searchUserButton").click();
+					}
+				});
 				//back to top code
 				var offset = 220;
 			    var duration = 500;

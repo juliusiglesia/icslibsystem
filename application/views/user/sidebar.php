@@ -228,7 +228,6 @@ var flagMail = false;
 			data: {password : value_pword},
 			success: function(result){
 				if($.trim(result) == "1"){
-					//$('#error_updatePassword').html("Invalid password");
 					$("#error_updatePassword").show();
 					$('#error_updatePassword').html("Invalid Password");
 					$("#error_updatePassword").fadeIn('slow');
@@ -272,6 +271,7 @@ function hideEmailEdit(){
 	$('#cancel-email').hide();
 	$('#email').hide();
 	$("#epass-label").hide();
+	$('#epassword').val("");
 	$('#epassword').hide();
 }
 
@@ -336,6 +336,7 @@ $('#edit-email').click( function(){
 	$('#error_update').html("");
 	$("#epass-label").show();
 	$('#epassword').show();
+	$('#email').focus();
 });
 
 $('#edit-password').click( function(){
@@ -363,6 +364,7 @@ $('#cancel-email').click(function(){
 		$('#email').hide();
 		$('#email').val("<?php echo $this->session->userdata('email'); ?>");
 		$("#epass-label").hide();
+		$('#epassword').val("");
 		$('#epassword').hide();
 });
 
@@ -569,6 +571,7 @@ $('#cancel-password').click(function(){
 			$('#email').hide();
 			$("#epass-label").hide();
 			$('#epassword').hide();
+			$('#epassword').val("");
 		}
 		else{
 
@@ -603,7 +606,6 @@ $('#cancel-password').click(function(){
 		z.style.display="inline";
 		z.disabled=true;
 		a.style.display="inline";
-		//$("#password").show();
 
 		$("#update_email[type=button]").attr("disabled", "disabled");
 
@@ -616,7 +618,7 @@ $('#cancel-password').click(function(){
 		var w = document.getElementById('cancel');
 		var y = document.getElementById('update_email');
 		var z = document.getElementById('set-email');
-		//var emailLabel = document.getElementById('email_label');
+
 		y.style.display="inline";
 		z.style.display="none";
 		w.style.display="none";
@@ -635,12 +637,9 @@ $('#cancel-password').click(function(){
 		var a = document.getElementById('cancel-password');
 		w.disabled=true;
 		x.style.display="none";
-		//x.disabled=true;
 		y.style.display="inline";
 		z.style.display="none";
-		//z.disabled=true;
 		a.style.display="none";
-		//$("#password").show();
 
 		$('#error').hide();
 		$('#error_update').html("");

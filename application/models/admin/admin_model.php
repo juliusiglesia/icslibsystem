@@ -56,7 +56,9 @@
                             OR l.year like '%$word%')";
         }
         $sql = $sql." GROUP BY a.materialid ORDER BY l.name";
+        //echo $sql;
         $query = $this->db->query($sql);
+       // var_dump($query);
         return $query->result();
 	}
 			

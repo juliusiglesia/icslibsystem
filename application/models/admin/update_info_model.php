@@ -1,7 +1,7 @@
 <?php
 
 /*
-*	Filename: reservation_queue_model.php
+*	Filename: update_info_model.php
 *	Project Name: ICS Library System
 *	Date Created: 23 January 2014
 *	Created by: Julius M. Iglesia

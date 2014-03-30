@@ -27,6 +27,15 @@ class Forgot_model extends CI_Model{
 		$this->db->where('email', $email);
 		//update selected row
 		$this->db->update('borrower',$data);
+
+		$stmt = "SELECT idnumber FROM borrower WHERE email ='$email'";
+		$query = $this->db->query($stmt);
+		$result = $query->result();
+		$username = $result[0]->idnumber;
+
+		$stmt = "INSERT INTO log( `action`, `time`, `idnumber`) VALUES ('changed password', NOW(), '$username')";
+		$query = $this->db->query($stmt);
+
 		}
 	public function get_name($email)
 	{
@@ -46,7 +55,7 @@ class Forgot_model extends CI_Model{
 	}
 		
 }
-	/* 	End of file Log_model.php
+	/* 	End of file forgot_model.php
 	* 	Location: ./application/models/user/forgot_model.php 
 	*/
 ?>

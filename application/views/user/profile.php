@@ -1,5 +1,4 @@
 
-
 <?php 
 
 	if($this->session->userdata('email'))
@@ -68,7 +67,7 @@
 												<th width="5%" abbr="ISBN" scope="col" title="ISBN/ISSN">ISBN/ISSN</th>
 												<th width="10%" abbr="lmID" scope="col" title="Library Material ID">Library Material ID</th>
 												<th width="5%" abbr="type" scope="col" title="Type">Type</th>
-												<th width="75%" abbr="CourseClassification" scope="col" title="Description">Description</th>
+												<th width="65%" abbr="CourseClassification" scope="col" title="Description">Description</th>
 												
 
 												<?php
@@ -79,9 +78,10 @@
 
 												};
 													if($fine_enable=='1'){
-														?>
-															<th width="5%" abbr="ISBN" scope="col" title="Fine">Fine</th>
-														<?php
+															echo "<th width='5%' abbr='fine' scope='col' title='Fine'>Fine</th>";
+													}
+													else{
+														echo "<th width='15%' abbr='status' scope='col' title='Status'>Status</th>";	
 													}
 												?>
 											</tr>
@@ -112,7 +112,7 @@
 									else if($row['type']== 'Magazines')
 										$type = "<a data-toggle='tooltip' class='tooltipLink' data-original-title='Magazine'><span class='glyphicon glyphicon-picture'></span></a>";
 									else if($row['type'] == 'Thesis')
-										$type = "<a data-toggle='tooltip' class='tooltipLink' data-original-title='Thesi'><span class='glyphicon glyphicon-bookmark'></span></a>";
+										$type = "<a data-toggle='tooltip' class='tooltipLink' data-original-title='Thesis'><span class='glyphicon glyphicon-bookmark'></span></a>";
 																	
 									echo "$type</center></td>";
 									echo "<td><span class='table-text'><b>${row['name']}</b></span><br><span class='author'>${row['authorname']}. ${row['year']}.</span></td>";
@@ -125,8 +125,21 @@
 											}else{
 												echo "0";
 											}
-											echo "</center></span></td>";
+											
 										}
+										else{
+											echo "<td><span class='table-text'><center>";
+											if("${row['user_fine']}" > 0 ){
+												echo "OVERDUE";
+											}else{
+												$date='';
+												foreach($returndate as $return)
+													$date = $return['expected_return'];
+												echo "Due date: ". $date;
+											}
+												
+										}
+									echo "</center></span></td>";
 									echo "</tr>";
 								}
 							}
@@ -208,7 +221,7 @@
 									}
 								}
 								  echo "<td> ${rrank} of ${t_q} </td>";
-								  echo "<td><button class=\"cancel_button btn btn-danger\" data-dismiss=\"modal\" name = 'materialid' value='${row['materialid']}'><span class='glyphicon glyphicon-remove'></button>" . "</td>";
+								  echo "<td><button class=\"cancel_button btn btn-danger\" data-dismiss=\"modal\" name = 'materialid' value='${row['materialid']}'><a data-toggle='tooltip' class='tooltipLink' data-original-title='Cancel reservation'><span class='glyphicon glyphicon-remove'></span></a></button>" . "</td>";
 								  echo "</tr>";
 							  }
 						}

@@ -22,7 +22,6 @@
   margin-left: 10px;
   margin-right: 10px;
 }
-
 /*Home page css*/
 #container{
   margin-top:25px;
@@ -146,6 +145,7 @@ body {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
+
 .form-signin input[type="password"] {
   margin-bottom: 10px;
   border-top-left-radius: 0;
@@ -155,40 +155,40 @@ body {
 /* TABLES - STYLE */
 table.tablesorter {
   font-family:arial;
-  background-color: #e6EEEE;
   margin:10px 0pt 15px;
-  font-size: 12pt !important;
   width: 100%;
   text-align: left;
 }
-table.tablesorter thead tr th, table.tablesorter tfoot tr th {
-  background-color: #e6EEEE;
-  font-size: 12pt;
-  padding: 4px;
-}
-table.tablesorter thead tr .header {
-  background-image: url(bg.gif);
-  background-repeat: no-repeat;
+
+/* tablesorter-header tablesorter-headerUnSorted 
+  tablesorter-header tablesorter-headerAsc
+  tablesorter-header tablesorter-headerDesc
+*/
+
+
+table.tablesorter .tablesorter-headerRow th.tablesorter-headerAsc {
+  background: url("../images/up.fw.png") no-repeat;
   background-position: center right;
   cursor: pointer;
+  padding-right: 30px;  
 }
-table.tablesorter tbody td {
-  color: #3D3D3D;
-  padding: 4px;
-  background-color: #FFF;
-  vertical-align: top;
+
+table.tablesorter .tablesorter-headerRow th.tablesorter-headerDesc {
+  background: url("../images/down.fw.png") no-repeat;
+  background-position: center right;
+  cursor: pointer;
+  padding-right: 30px;  
 }
-table.tablesorter tbody tr.odd td {
-  background-color:#F0F0F6;
+
+table.tablesorter .tablesorter-headerRow th.tablesorter-headerUnSorted {
+  background: url("../images/unsorted.fw.png") no-repeat;
+  background-position: center right;
+  cursor: pointer;
+  padding-right: 30px;  
 }
-table.tablesorter thead tr .headerSortUp {
-  background-image: url(asc.gif);
-}
-table.tablesorter thead tr .headerSortDown {
-  background-image: url(desc.gif);
-}
-table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
-background-color: #8dbdd8;
+
+table.tablesorter .tablesorter-headerRow {
+  font-weight: bold;
 }
 
 .title, .table-text{
@@ -198,6 +198,7 @@ background-color: #8dbdd8;
 .author{
   font-size:12px;
 }
+
 
 /*For footer */
 div#page {
@@ -518,7 +519,7 @@ body {
   margin-right:auto;
   margin-left:auto;
   width:1150px;
-  margin-top:1px;
+  margin-top:30px;
   border:1px solid transparent;
   min-height:500px;
 }
@@ -531,7 +532,7 @@ body {
   width:950px;
   border-top:1px solid transparent;
   margin-left:220px;
-  margin-top:-1px;
+  margin-top:-15px;
   min-height:300px;
 }
 

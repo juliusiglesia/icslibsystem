@@ -72,8 +72,8 @@
 	        <div id="main-page">
 	            <div id = "main-content">
 	            	<br />
-					<h2> All Library Materials </h2>
-					<h5> <i> You are viewing all library materials. </i> </h5>
+					<h2> Currenlty Added Material </h2>
+					<h5> <i> You are viewing the recently added material. </i> </h5>
 					<ol class="breadcrumb">
 						<li><a href="<?php echo site_url()?>/admin/home">Home</a></li>
 						<li class="active"> View All Materials </li>
@@ -124,7 +124,7 @@
 							<div style="display:none" id = "fail_delete" class = "alert alert-danger">  </div>
 						</div> 
                     <?php
-                        echo "<table border = '1' id='myTable' class = 'table table-hover'>
+                        echo "<table class = 'table table-hover table-bordered'>
                             <thead>
                                 <tr>
 									<th style='width:11%;'><b><center>ISBN/ISSN</center></b></th>
@@ -206,25 +206,7 @@
                                     }
                                 echo "</table>";   
                          ?>
-						<div class="pager">
-							<!--<img src="../addons/pager/icons/first.png" class="first" alt="First" />
-							<img src="../addons/pager/icons/prev.png" class="prev" alt="Prev" />-->
-							<span class="first" style="cursor:pointer">First</span>
-							<span class="prev" style="cursor:pointer">Prev</span>
-							<strong> <span class="pagedisplay"></span></strong> <!--this can be any element, including an input-->
-							<span class="next" style="cursor:pointer">Next</span>
-							<span class="last" style="cursor:pointer">Last</span>
-							<br/>
-							<span>Page size: </span>
-							<select class="pagesize" title="Select page size">
-								<option value="10">10</option>
-								<option value="20">20</option>
-								<option value="30">30</option>
-								<option value="40">40</option>
-							</select>
-							<span>Go to: </span>
-							<select class="gotoPage" title="Select page number"></select>
-						</div>
+			<?php include 'includes/pager.php'; ?>
                     </div><!-- main content -->
                 </div><!-- main page -->
         </div><!-- left -->

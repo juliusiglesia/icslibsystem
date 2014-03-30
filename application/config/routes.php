@@ -47,6 +47,7 @@ $route['admin/reservation'] = 'admin/reservation_queue';
 $route['admin/notification'] = 'admin/notification';
 $route['admin/inventory'] = 'admin/print_inventory';
 $route['admin/login'] = 'admin/login';
+$route['admin/show_recent/(:any)'] = 'admin/show_recent/$1';
 
 $route['borrower'] = 'borrower';
 $route['borrower/login/(:any)'] = 'borrower/login/$1';
