@@ -88,6 +88,10 @@
 				}
 
 				$query = $this->db->query($stmt);
+<<<<<<< HEAD
+=======
+				
+>>>>>>> master
 				$query = $query->result();
 				
 				foreach ($query as $tuple){

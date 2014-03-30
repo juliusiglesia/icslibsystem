@@ -225,9 +225,14 @@
 		}
 		
 		$('#saveMax').click(function(){
-			if(max_check()){ 
+			//if(max_check()){ 
 				confirmUpdateSettings('maxDiv'); 
+<<<<<<< HEAD
 			};
+=======
+				hideMax(); 
+			//};
+>>>>>>> master
 		});
 		
 		$('#cancelMax').click(function(){		
@@ -266,6 +271,7 @@
 
 		$('#savePass').click(function(){
 			if(valPword() && reNewPassInput_check()){ 
+<<<<<<< HEAD
 
 				var newpw = document.getElementById('newPassInput').value;
 				$.ajax({
@@ -285,8 +291,12 @@
 				});
 
 				$('#newPassInput').val('');
+=======
+				confirmUpdateSettings('passwordDiv');
+				/*$('#newPassInput').val('');
+>>>>>>> master
 				$('#passInput').val('');			
-				$('#reNewPassInput').val('');
+				$('#reNewPassInput').val('');*/
 				hidePassword(); 
 				
 		}
@@ -548,6 +558,7 @@
 					}
 				});
 			}
+<<<<<<< HEAD
 			else if(thisDiv == 'clearDiv'){
 				$.ajax({
 					type: "POST",
@@ -560,6 +571,77 @@
 							$("#alert").fadeIn('slow');
 							setTimeout(function() { $('#alert').fadeOut('slow') }, 5000);
 							hideMax(); 
+=======
+			else if(thisDiv == 'passwordDiv'){
+				var newpw = document.getElementById('newPassInput').value;
+				$.ajax({
+					type: "POST",
+					url: "<?php echo site_url()?>/admin/settings_for_password",
+					data: { newpw: newpw },
+					success : function( result ){
+						if( result == "" ){
+							console.log("Updated");
+						}
+	
+						$('table').trigger('update');
+					}
+				});
+			}
+		}
+		
+		function checkDays(){
+			var end_sem = document.getElementById('endDateInput').value;
+			var end_sem_date = new Date(end_sem);
+			var current_date = new Date();
+			var diff =  Math.floor(( Date.parse(end_sem_date) - Date.parse(current_date) ) / 86400000);
+				
+			if(diff > 10){
+				alert("Invalid number of days.");
+				return false;
+			}else return true;
+				
+		}
+
+		$("#clear").click(function(){
+			if(checkDays()){ 
+				confirmClearReserv('clearDiv'); 
+			};		
+		});
+		
+		function confirmClearReserv( thisDiv ){
+			bootbox.dialog({
+						message: "Are you sure you want to clear the reservations?",
+						title: "Clear Reservations",
+						buttons: {
+							yes: {
+								label: "Yes, continue.",
+								className: "btn-primary",
+								callback: function() {
+									$.ajax({
+										type: "POST",
+										url: "<?php echo site_url()?>/admin/clear_reservation",
+
+										beforeSend: function() {
+											//$("#con").html('<img src="/function-demos/functions/ajax/images/loading.gif" />');
+											$("#error_message").html("loading...");
+										},
+
+										error: function(xhr, textStatus, errorThrown) {
+												$('#error_message').html(textStatus);
+										},
+
+										success: function( result ){
+											console.log("Cleared");
+											
+										}
+									});
+								}
+							},
+							no: {
+								label: "No.",
+								className: "btn-default"
+							}
+>>>>>>> master
 						}
 	
 						$('table').trigger('update');

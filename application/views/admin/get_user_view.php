@@ -30,6 +30,7 @@
 						label: "Yes, continue.",
 						className: "btn-primary",
 						callback: function() {
+<<<<<<< HEAD
 							bootbox.dialog({
 							  message: "Password: <input type='password' id='pw'></input>",
 							  title: "Update settings",
@@ -50,6 +51,20 @@
 												url : "<?php echo site_url(); ?>/admin/check_password",
 												data : { password : password },
 												success : function( result ){
+=======
+							var password = prompt( "Please enter admin password" ).trim();
+							
+							if(borrowed > 0){
+								alert( "Warning! Please return borrowed books before deleting your account" );
+							}
+							else if( password != "" ){
+								$.ajax({
+									type : "POST",
+									url : "<?php echo site_url(); ?>/admin/check_password",
+									data : { password : password },
+									success : function( result ){
+													console.log( result );
+>>>>>>> master
 													if( result == "1" ){
  														deleteAccount(thisDiv);
 													} else {

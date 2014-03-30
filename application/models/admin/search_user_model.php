@@ -54,13 +54,21 @@ class Search_user_model extends CI_Model{
 									ORDER BY borrower.idnumber ASC");
 
 		$result_array = $query->result();
+<<<<<<< HEAD
 
+=======
+		
+>>>>>>> master
 		date_default_timezone_set('Asia/Manila');
 		$date_now = date("Y-m-d", time());
 
 		foreach ($result_array as $data) {
 			$idnum = $data->idnumber;
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> master
 			//borrowed books
 			$where = "status LIKE 'BORROWED' and idnumber LIKE '$idnum'";
 			$query = $this->db->query("SELECT IFNULL(COUNT(*), 0) as borrowed
@@ -69,11 +77,19 @@ class Search_user_model extends CI_Model{
 			$data->borrowed = $query->row()->borrowed;
 			//overdue books
 
+<<<<<<< HEAD
 			$where = "status LIKE 'BORROWED' and DATEDIFF('${date_now}', expectedreturn) < 0 and idnumber LIKE '$idnum'";
 			$query = $this->db->query("SELECT IFNULL(COUNT(*), 0) as overdue
 										FROM borrowedmaterial 
 										WHERE ${where}");
 
+=======
+			$where = "DATEDIFF('${date_now}', expectedreturn) < 0 and idnumber LIKE '$idnum'";
+			$query = $this->db->query("SELECT IFNULL(COUNT(*), 0) as overdue
+									FROM borrowedmaterial 
+									WHERE ${where}");
+			
+>>>>>>> master
 			$data->overdue = $query->row()->overdue;
 
 			//reserved books
@@ -81,7 +97,11 @@ class Search_user_model extends CI_Model{
 			$query = $this->db->query("SELECT IFNULL(COUNT(*), 0) as reserved
 									FROM reservation 
 									WHERE ${where}");
+<<<<<<< HEAD
 
+=======
+			
+>>>>>>> master
 			$data->reserved = $query->row()->reserved;
 		}
 		return $result_array;

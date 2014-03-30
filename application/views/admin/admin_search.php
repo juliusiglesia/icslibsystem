@@ -1,9 +1,22 @@
+<!--
+	Author: Marquez, Chandelle Joyce V.
+			2011-45001
+			CMSC 128 AB-6L
+
+	Page: admin_search.php
+	Description: View for search library materials.
+-->
 <!DOCTYPE html>
 <html lang="en">
 	<?php include 'includes/head.php'; ?>
 		
 	<script>
+<<<<<<< HEAD
 		function deleteBook( thisDiv ){
+=======
+
+		function deleteBook( thisDiv ){	//function for deleting a book
+>>>>>>> master
 			bootbox.dialog({
 				message: "You are about to delete a library material from the database. Continue?",
 				title: "Confirmation",
@@ -31,7 +44,7 @@
 
 								success: function( result ){
 
-									if ($.trim(result) == '1'){
+									if ($.trim(result) == '1'){//if there is no one borrowing/reserving the book, delete book.
 										$("#fail_delete").hide();
 										$("#success_delete").show();
 										$("#success_delete").html("Library Material successfully deleted from the database.");

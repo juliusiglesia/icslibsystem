@@ -208,6 +208,67 @@ class Admin extends CI_Controller {
 	/*
 	* Redirect
 	*/
+<<<<<<< HEAD
+=======
+
+	public function verification(){
+		$this->load->helper('form');
+		$this->load->helper('html');
+		$this->load->library('form_validation');
+
+		$this->form_validation->set_rules('password', 'Password', 'trim|required|sha1');
+		$this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email');
+		$this->load->model('admin/verification_model');
+		$this->load->view('admin/verification_view');
+		
+		$this->verify();
+	}
+	/*
+	*	function verify() responsible for email sending using Email class
+	*/
+	public function verify(){
+	// loads the model php file to allow the access of the function verifying()
+        $this->load->model('admin/verification_model'); 
+	//if submit, process the data
+        if($this->input->post('submit')){
+			$email = $this->input->post('email');
+			$inputPw = sha1($this->input->post('password'));
+			$password = $inputPw;
+
+			/*
+			* 	the array $config is the set of configuration for the email
+			*	system.icslibrary@gmail.com is the sender
+			*	icslibraryadmin is the password of the send
+			*/
+			$config = Array(
+				'protocol' => 'smtp',
+				'smtp_host' => 'ssl://smtp.googlemail.com',
+				'smtp_port' => 465,
+				'smtp_user' => 'system.icslibrary@gmail.com',  		
+				'smtp_pass' => 'icslibraryadmin',		
+				'mailtype'  => 'html', 
+				'charset'   => 'iso-8859-1'
+			);
+			$this->load->library('email', $config);
+			$this->email->set_newline("\r\n");
+
+			/*
+			*	email->from('The sender's email', 'Name of the sender')
+			*	email->to('email to be sent to')
+			*	email->subject('The subject')
+			*	email->message('Your message')
+			*	*After the email attributes are set, then the email is ready to be sent*
+			*	email->send()
+			*/
+			$this->email->from('System.ICSLibrary@gmail.com', 'ICSLibrary Admin');
+			$this->email->to($email);
+			$this->email->subject('Email Verification');
+			$this->email->message('Hi this is your verification code: '.$password.' Good day!');
+			$this->email->send();		
+        }
+     }
+
+>>>>>>> master
 	public function index(){
 		redirect('/' );
 	}
@@ -229,6 +290,10 @@ class Admin extends CI_Controller {
 			if($this->input->post('search_borrowed_books')){
 
 				$word = $this->db->escape_str($this->input->post('search'));
+<<<<<<< HEAD
+=======
+				$word = 
+>>>>>>> master
 			
 				if ($word!="") {
 					$words = explode(" ", $word);
@@ -345,6 +410,7 @@ class Admin extends CI_Controller {
 		//$this->save();
 		//var_dump($this-post());
 		$materialid = $this->input->post('materialid');
+<<<<<<< HEAD
 		//$materialid = htmlspecialchars($materialid);
 		//$materialid = mysql_real_escape_string($materialid);
 		//$materialid = filter_var($materialid, FILTER_SANITIZE_STRING);
@@ -388,6 +454,51 @@ class Admin extends CI_Controller {
 		$previous_isbn = $this->input->post('previous_isbn');
 		//$previous_isbn = htmlspecialchars($previous_isbn);
 		//$previous_isbn = filter_var($previous_isbn, FILTER_SANITIZE_NUMBER_INT);
+=======
+		$materialid = htmlspecialchars($materialid);
+		$materialid = mysql_real_escape_string($materialid);
+		$materialid = filter_var($materialid, FILTER_SANITIZE_STRING);
+		//echo $materialid;
+		$type = $this->input->post('type');
+		$type = htmlspecialchars($type);
+		$type = filter_var($type, FILTER_SANITIZE_STRING);
+		if ($type == 'Book' || $type == 'References' || $type == 'Journals' || $type == 'Magazines'){
+			$isbn = $this->input->post('isbn');
+			$isbn = htmlspecialchars($isbn);
+			$isbn = filter_var($isbn, FILTER_SANITIZE_NUMBER_INT);
+		}else $isbn = "+".$materialid;
+		if ($type == 'Book' || $type == 'References' || $type == 'CD'){
+			$course = $this->input->post('course');
+			$course = htmlspecialchars($course);
+			$course = filter_var($course, FILTER_SANITIZE_STRING);
+		}else $course = 0;
+		$name = $this->input->post('name');
+		$name = htmlspecialchars($name);
+		$name = mysql_real_escape_string($name);
+		$name = filter_var($name, FILTER_SANITIZE_STRING);
+		$year = $this->input->post('year');
+		$year = htmlspecialchars($year);
+		$year = filter_var($year, FILTER_SANITIZE_NUMBER_INT);
+		$edvol = $this->input->post('edvol');
+		$edvol = htmlspecialchars($edvol);
+		$edvol = filter_var($edvol, FILTER_SANITIZE_NUMBER_INT);
+		$access = $this->input->post('access');
+		$access = htmlspecialchars($access);
+		$access = filter_var($access, FILTER_SANITIZE_NUMBER_INT);
+		$available = $this->input->post('available');
+		$available = htmlspecialchars($available);
+		$available = filter_var($available, FILTER_SANITIZE_NUMBER_INT);
+		$requirement = $this->input->post('requirement');
+		$requirement = htmlspecialchars($requirement);
+		$requirement = filter_var($requirement, FILTER_SANITIZE_NUMBER_INT);
+		$previous_matID = $this->input->post('previous_matID');
+		$previous_matID = htmlspecialchars($previous_matID);
+		$previous_matID = mysql_real_escape_string($previous_matID);
+		$previous_matID = filter_var($previous_matID, FILTER_SANITIZE_STRING);	
+		$previous_isbn = $this->input->post('previous_isbn');
+		$previous_isbn = htmlspecialchars($previous_isbn);
+		$previous_isbn = filter_var($previous_isbn, FILTER_SANITIZE_NUMBER_INT);
+>>>>>>> master
 		/*$authors_fname = $this->input->post('authors_fname');
 		$authors_mname = $this->input->post('authors_mname');
 		$authors_lname = $this->input->post('authors_lname');
@@ -449,6 +560,7 @@ class Admin extends CI_Controller {
 		//$this->save();
 		//var_dump($this-post());
 		$materialid = $this->input->post('materialid');
+<<<<<<< HEAD
 		//$materialid = htmlspecialchars($materialid);
 		//$materialid = mysql_real_escape_string($materialid);
 		//$materialid = filter_var($materialid, FILTER_SANITIZE_STRING);
@@ -484,6 +596,43 @@ class Admin extends CI_Controller {
 		$requirement = $this->input->post('requirement');
 		//$requirement = htmlspecialchars($requirement);
 		//$requirement = filter_var($requirement, FILTER_SANITIZE_NUMBER_INT);
+=======
+		$materialid = htmlspecialchars($materialid);
+		$materialid = mysql_real_escape_string($materialid);
+		$materialid = filter_var($materialid, FILTER_SANITIZE_STRING);
+		//echo $materialid;
+		$type = $this->input->post('type');
+		$type = filter_var($type, FILTER_SANITIZE_STRING);
+		if ($type == 'Book' || $type == 'References' || $type == 'Journals' || $type == 'Magazines'){
+			$isbn = $this->input->post('isbn');
+			$isbn = htmlspecialchars($isbn);
+			$isbn = filter_var($isbn, FILTER_SANITIZE_NUMBER_INT);
+		}else $isbn = "+".$materialid;
+		if ($type == 'Book' || $type == 'References' || $type == 'CD'){
+			$course = $this->input->post('course');
+			$course = htmlspecialchars($course);
+			$course = filter_var($course, FILTER_SANITIZE_STRING);
+		}else $course = null;
+		$name = $this->input->post('name');
+		$name = htmlspecialchars($name);
+		$name = mysql_real_escape_string($name);
+		$name = filter_var($name, FILTER_SANITIZE_STRING);
+		$year = $this->input->post('year');
+		$year = filter_var($year, FILTER_SANITIZE_NUMBER_INT);
+		$year = htmlspecialchars($year);
+		$edvol = $this->input->post('edvol');
+		$edvol = htmlspecialchars($edvol);
+		$edvol = filter_var($edvol, FILTER_SANITIZE_NUMBER_INT);
+		$access = $this->input->post('access');
+		$access = htmlspecialchars($access);
+		$access = filter_var($access, FILTER_SANITIZE_NUMBER_INT);
+		$available = $this->input->post('available');
+		$available = htmlspecialchars($available);
+		$available = filter_var($available, FILTER_SANITIZE_NUMBER_INT);
+		$requirement = $this->input->post('requirement');
+		$requirement = htmlspecialchars($requirement);
+		$requirement = filter_var($requirement, FILTER_SANITIZE_NUMBER_INT);
+>>>>>>> master
 		
 		$library_material_data = array (
 			'materialid' => $materialid,
@@ -499,9 +648,15 @@ class Admin extends CI_Controller {
 		);
 		
 		$authors = $this->input->post('authors');
+<<<<<<< HEAD
 		//$authors = htmlspecialchars($authors);
 		//$authors = mysql_real_escape_string($authors);
 		//$authors = filter_var($authors, FILTER_SANITIZE_STRING);
+=======
+		$authors = htmlspecialchars($authors);
+		$authors = mysql_real_escape_string($authors);
+		$authors = filter_var($authors, FILTER_SANITIZE_STRING);
+>>>>>>> master
 		$all_authors = array ();
 		
 		for ($i=0; $i < count($authors); $i++) {
@@ -529,6 +684,7 @@ class Admin extends CI_Controller {
 		//$message = $this->input->post('message');
     	//$this->notification_model->notify( $materialid, $idnumber, $message );
     }
+<<<<<<< HEAD
 	/*
 	*	Function that shows the recently added / updated library material.
 	*/
@@ -548,6 +704,21 @@ class Admin extends CI_Controller {
 			$data['flag'] = $data['sql2'];
 			$this->load->view('admin/show_recent_view',$data);
 		}
+=======
+	
+	public function show_recent($materialid=""){
+		
+		$this->load->model('admin/admin_model');
+		$filter = "none";
+		$type = "allTypes";
+		$access ="allAccess";
+		$avail ="allAvail";
+		$data['sql2'] = array();
+		$query_result = $this->admin_model->search($filter,$type,$materialid,$access,$avail);
+		array_push($data['sql2'], $query_result[0]);
+		$data['flag'] = $data['sql2'];
+		$this->load->view('admin/show_recent_view',$data);
+>>>>>>> master
 	}
 	/*
 	*	Function that updates a library material.
